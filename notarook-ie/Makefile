@@ -4,8 +4,8 @@ EXE      = notarookie
 GCC      = gcc
 RM       = rm
 
-HEADERS  = constants.h globals.h
-SRCS     = init.c engine.c
+HEADERS  = constants.h functions.h macros.h enums.h
+SRCS     = init.c engine.c bboard.c
 OBJS     = $(SRCS:.c=.o)
 
 UNAME := $(shell uname)

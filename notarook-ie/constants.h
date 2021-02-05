@@ -1,10 +1,58 @@
+/**
+ * This main header file contains the other included headers, as
+ * well as many of the definitions used throughout the other files
+ * in this program.
+ * 
+ * Yeah, it's messy. Maybe at some point I'll actually separate things
+ * out more granularly into other header files, but for now this will do
+ * just fine, thank you.
+ */
+
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-#define NAME "NotARook-ie v1.0"
+#include "functions.h"
+#include "enums.h"
+#include "macros.h"
+
+/*
+ * Hello valued reader of this source code!
+ *
+ * Throughout reading, you'll see a lot of instances of
+ * uint64_t values. The reason for this is that I want
+ * to guarantee that I will have fixed-width 64 bit unsigned
+ * values to use a bitboards to track pieces throughout the program.
+ * The reason I didn't use an "unsigned long long" is to guarantee
+ * that no matter what OS runs this code, the size will be the same.
+ */
+
+#define DEBUG
+
+// kind of messy, but this whole mess allows us to throw in
+// assert debug statements without mass commenting them out later
+// just comment out line 10
+// to be clear, I took this from a book and didn't come up with this macro
+// myself
+#ifndef DEBUG
+#define ASSERT(n)
+#else
+#define ASSERT(n) \
+if(!(n)) { \
+printf("%s - Failed!!", #n); \
+printf(" on %s ", __DATE__); \
+printf("at %s ", __TIME__); \
+printf("in file %s ", __FILE__); \
+printf("at line %d ", __LINE__); \
+exit(1);}
+#endif
+
+#define NAME "NotARook-ie v1.0.0"
 
 // number in half-moves
 // this is a safe assumption; I don't think games can be 1024 full turns
@@ -13,34 +61,7 @@
 #define BOARD_SQ_NUM 120
 #define STANDARD_BOARD_SIZE 64
 
-/* define an enum for all of the pieces (including the null piece) */
-/* w = white, b = black */
-/* P = pawn, N = knight, B = bishop, Q = queen, K = king */
-enum PIECES { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
-
-/* Next enums are for ranks and files */
-/* Null file and null rank needed for the extra board padding */
-enum FILES { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
-enum RANKS { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
-
-/* Next enum is for the colors */
-enum COLORS { WHITE, BLACK, BOTH };
-
-/* next up are the board squares */
-enum BOARD_SQUARES {
-  A1 = 21, B1, C1, D1, E1, F1, G1, H1,
-  A2 = 31, B2, C2, D2, E2, F2, G2, H2,
-  A3 = 41, B3, C3, D3, E3, F3, G3, H3,
-  A4 = 51, B4, C4, D4, E4, F4, G4, H4,
-  A5 = 61, B5, C5, D5, E5, F5, G5, H5,
-  A6 = 71, B6, C6, D6, E6, F6, G6, H6,
-  A7 = 81, B7, C7, D7, E7, F7, G7, H7,
-  A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
-};
-
-/* for castling purposes */
-/* maps to the castle_permission 32 bit int in the board */
-enum CASTLING { WKCAS = 1, WQCAS = 2, BKCAS = 4, BQCAS = 8 };
+#define MAGIC_BIT_NUM 0x783A9B23
 
 // Struct used to store moves so that we can undo moves later (hence the name)
 // for definitions of each member of the struct, see the board representation
@@ -82,11 +103,19 @@ typedef struct Board {
 
   Undo_t history[MAX_GAME_MOVES];
 
+  // 13 instead of 12 cause of EMPTY at pos 0 in the PIECES enum
+  // used to speed up move gen and the search stage
+  int32_t piece_list[13][10];
+
 } Board_t;
 
-/* converts from file and rank to array number */
-/* f is file, r is rank */
-#define CONVERT_COORDS(f,r) ((21 + (f)) + ((r) * 10))
 
+// goes from [0, 120) to [0, 64)
+// in other words, convert an engine chess board to the regular
+extern int32_t ENGINE_TO_REGULAR[BOARD_SQ_NUM];
+
+// goes from [0, 64) to [0, 120)
+// in other words, convert a regular chess board to the engine
+extern int32_t REGULAR_TO_ENGINE[STANDARD_BOARD_SIZE];
 
 #endif
