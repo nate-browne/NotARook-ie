@@ -4,8 +4,8 @@ EXE      = notarookie
 GCC      = gcc
 RM       = rm
 
-HEADERS  =
-SRCS     =
+HEADERS  = constants.h globals.h
+SRCS     = init.c engine.c
 OBJS     = $(SRCS:.c=.o)
 
 UNAME := $(shell uname)
@@ -40,7 +40,7 @@ memcheck: $(EXE)
 
 clean:
 	@echo "Cleaning up"
-	$(RM) -f bin/*.o $(EXE) .DS_Store
+	$(RM) -f *.o $(EXE) .DS_Store
 	@echo ""
 	@echo "Clean."
 
