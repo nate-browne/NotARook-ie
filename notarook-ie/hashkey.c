@@ -19,7 +19,7 @@ uint64_t generate_hashkeys(const Board_t *board) {
   for( ; sq < BOARD_SQ_NUM; ++sq) {
     piece = board->pieces[sq];
 
-    if(piece != NO_SQ && piece != EMPTY) {
+    if(piece != NO_SQ && piece != EMPTY && piece != OFFBOARD) {
       ASSERT(piece >= wP && piece <= bK);
       result ^= PIECE_KEYS[piece][sq];
     }
