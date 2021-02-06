@@ -66,6 +66,7 @@ exit(1);}
 
 // why this value in particular? no freaking idea.
 // it just worked so... ¯\_(ツ)_/¯
+// you can find more about it here: https://www.chessprogramming.org/Looking_for_Magics
 #define MAGIC_BIT_NUM 0x783A9B23
 
 // Struct used to store moves so that we can undo moves later (hence the name)
@@ -80,6 +81,39 @@ typedef struct Undo {
   uint64_t hashkey;
 
 } Undo_t;
+
+/**
+ *                        MOVE REPRESENTATION
+ * this engine will use 32 bit unsigned integers to represent moves.
+ * We could use signed, but since we're using only the least significant 7 nibbles,
+ * it doesn't really matter. Plus, it's generally safer to use unsigned when manipulating
+ * bits.
+ * 
+ * The layout is as follows
+ * 0000 0000 0000 0000 0000 0111 1111 -> From section of the move (0x7F)
+ * 0000 0000 0000 0011 1111 1000 0000 -> To section of the move (0x7F shifted << by 7)
+ * 0000 0000 0011 1100 0000 0000 0000 -> captured piece (if any) (0xF shifted << by 14)
+ * 0000 0000 0100 0000 0000 0000 0000 -> en passant (a.k.a. on croissant) (0x40000)
+ * 0000 0000 1000 0000 0000 0000 0000 -> pawn start (0x80000 or 0x8 shifted by 16)
+ * 0000 1111 0000 0000 0000 0000 0000 -> promotion (0xF00000 or 0xF shifted by 20) 
+ * 0001 0000 0000 0000 0000 0000 0000 -> castling (0x1000000)
+ * 
+ * To see the macros that we use to interact with these, check macros.h
+ */
+
+// not macros, but useful flags for the above idea
+#define MFLAGEP 0x40000 // en passant
+#define MFLAGPS 0x80000 // pawn start
+#define MFLAGCAS 0x1000000 // castle
+#define MFLAGCAP 0x7C000 // capture (of any kind)
+#define MFLAGPR 0xF00000 // promotion
+
+
+// Struct for representing a move
+typedef struct Move {
+  uint32_t move; // the move played
+  int32_t score; // the score associated with that move
+} Move_t;
 
 // our board representation
 typedef struct Board {
@@ -149,7 +183,19 @@ extern int32_t RANKS_BOARD[BOARD_SQ_NUM];
 extern bool PIECE_BIG[13];
 extern bool PIECE_MAJ[13];
 extern bool PIECE_MIN[13];
+extern bool PIECE_KNIGHT[13];
+extern bool PIECE_KING[13];
+extern bool PIECE_ROOK_QUEEN[13];
+extern bool PIECE_BISHOP_QUEEN[13];
+
+// used for keeping track of values and colors of board pieces
 extern int32_t PIECE_VAL[13];
 extern int32_t PIECE_COL[13];
+
+// used to get directions pieces can move
+extern const int KNIGHT_DIRS[8];
+extern const int ROOK_DIRS[4];
+extern const int BISHOP_DIRS[4];
+extern const int KING_DIRS[8];
 
 #endif

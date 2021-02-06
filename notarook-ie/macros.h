@@ -26,4 +26,16 @@
 #define SQ64(sq120) (ENGINE_TO_REGULAR[(sq120)])
 #define SQ120(sq64) (REGULAR_TO_ENGINE[(sq64)])
 
+/* macros to shorten interactions with the arrays in consts.c */
+#define IsBQ(p) (PIECE_BISHOP_QUEEN[(p)])
+#define IsRQ(p) (PIECE_ROOK_QUEEN[(p)])
+#define IsKn(p) (PIECE_KNIGHT[(p)])
+#define IsKi(p) (PIECE_KING[(p)])
+
+/* macros for interacting with the move struct */
+#define FROMSQ(m) ((m) & 0x7F)
+#define TOSQ(m) (((m) >> 7) & 0x7F)
+#define CAPTURED(m) (((m) >> 14) & 0xF)
+#define PROMOTED(m) (((m) >> 20) & 0xF)
+
 #endif

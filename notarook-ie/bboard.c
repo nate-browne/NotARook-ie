@@ -5,7 +5,8 @@
  * See https://en.wikipedia.org/wiki/Bitboard for more info.
  * 
  * Lots of this stuff comes from the chess programming wiki, in case
- * you're interested
+ * you're interested. Specifically, from here:
+ * https://www.chessprogramming.org/Looking_for_Magics
  */
 
 #include "constants.h"
