@@ -27,5 +27,8 @@ extern uint64_t generate_hashkeys(const Board_t *);
 /* board.c */
 extern void reset_board(Board_t *);
 extern bool parse_FEN(char *, Board_t *);
+extern void print_board(const Board_t *);
+extern void update_material(Board_t *);
+extern void check_board(const Board_t *);
 
 #endif

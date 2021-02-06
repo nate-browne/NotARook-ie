@@ -48,13 +48,14 @@ printf("%s - Failed!!", #n); \
 printf(" on %s ", __DATE__); \
 printf("at %s ", __TIME__); \
 printf("in file %s ", __FILE__); \
-printf("at line %d ", __LINE__); \
+printf("at line %d\n", __LINE__); \
 exit(1);}
 #endif
 
 #define NAME "NotARook-ie v1.0.0"
 
-#define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
 // number in half-moves
 // this is a safe assumption; I don't think games can be 1024 full turns
@@ -101,9 +102,10 @@ typedef struct Board {
   uint64_t hashkey; // unique key generated for each position generated
 
   int32_t piece_num[13]; // 13 instead of 12 cause of EMPTY at pos 0 in the PIECES enum
-  int32_t big_pieces[3]; // anything that isn't a pawn
-  int32_t maj_pieces[3]; // rooks and queens only
-  int32_t min_pieces[3]; // bishops and knights only
+  int32_t big_pieces[2]; // anything that isn't a pawn
+  int32_t maj_pieces[2]; // rooks and queens only
+  int32_t min_pieces[2]; // bishops and knights only
+  int32_t material[2]; // holds value of material for black and white
 
   Undo_t history[MAX_GAME_MOVES];
 
@@ -132,5 +134,22 @@ extern uint64_t PIECE_KEYS[13][BOARD_SQ_NUM];
 // only hashing if it's white's turn, so just need one
 extern uint64_t SIDE_KEY;
 extern uint64_t CASTLE_KEYS[16];
+
+// used when printing the board in board.c
+extern const char PIECE_CHAR[];
+extern const char SIDE_CHAR[];
+extern const char RANK_CHAR[];
+extern const char FILE_CHAR[];
+
+// used to answer question "what rank/file is <square> on?"
+extern int32_t FILES_BOARD[BOARD_SQ_NUM];
+extern int32_t RANKS_BOARD[BOARD_SQ_NUM];
+
+// used to ask a true false question for each piece
+extern bool PIECE_BIG[13];
+extern bool PIECE_MAJ[13];
+extern bool PIECE_MIN[13];
+extern int32_t PIECE_VAL[13];
+extern int32_t PIECE_COL[13];
 
 #endif

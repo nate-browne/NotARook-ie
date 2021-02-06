@@ -7,6 +7,138 @@
 #include "constants.h"
 
 /**
+ * Checks if a given board position is actually valid.
+ * Kind of a chonky boi of a function.
+ * Returns void instead of a boolean cause it uses
+ * our ASSERT macro to enforce validity, ending the program
+ * if the board isn't valid.
+ */
+void check_board(const Board_t * board) {
+  int32_t temp_piece_num[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+  int32_t temp_big_piece[2] = {0,0};
+  int32_t temp_maj_piece[2] = {0,0};
+  int32_t temp_min_piece[2] = {0,0};
+  int32_t temp_material[2] = {0,0};
+
+  int32_t sq64, temp_piece, temp_pnum, sq120, color, piece_count;
+
+  // used to validate pawn bit boards
+  uint64_t temp_pawns[3] = {0, 0, 0};
+  temp_pawns[WHITE] = board->pawns[WHITE];
+  temp_pawns[BLACK] = board->pawns[BLACK];
+  temp_pawns[BOTH] = board->pawns[BOTH];
+
+  // first, validate the piece list
+  for(temp_piece = wP; temp_piece <= bK; ++temp_piece) {
+    for(temp_pnum = 0; temp_pnum < board->piece_num[temp_piece]; ++temp_pnum) {
+      sq120 = board->piece_list[temp_piece][temp_pnum];
+      ASSERT(board->pieces[sq120] == temp_piece);
+    }
+  }
+
+  // next, validate piece count/other counts
+  for(sq64 = 0; sq64 < STANDARD_BOARD_SIZE; ++sq64) {
+    sq120 = SQ120(sq64);
+    temp_piece = board->pieces[sq120];
+    temp_piece_num[temp_piece]++;
+    color = PIECE_COL[temp_piece];
+
+    if(PIECE_BIG[temp_piece]) temp_big_piece[color]++;
+    if(PIECE_MIN[temp_piece]) temp_min_piece[color]++;
+    if(PIECE_MAJ[temp_piece]) temp_maj_piece[color]++;
+
+    temp_material[color] += PIECE_VAL[temp_piece];
+  }
+
+  for(temp_piece = wP; temp_piece <= bK; ++temp_piece)
+    ASSERT(temp_piece_num[temp_piece] == board->piece_num[temp_piece]);
+
+  // validate the bitboard counts
+  piece_count = count_bits(temp_pawns[WHITE]);
+  ASSERT(piece_count == board->piece_num[wP]);
+
+  piece_count = count_bits(temp_pawns[BLACK]);
+  ASSERT(piece_count == board->piece_num[bP]);
+
+  piece_count = count_bits(temp_pawns[BOTH]);
+  ASSERT(piece_count == board->piece_num[wP] + board->piece_num[bP]);
+
+  // validate the bitboard squares
+  while(temp_pawns[WHITE]) {
+    sq64 = pop_bit(&temp_pawns[WHITE]);
+    ASSERT(board->pieces[SQ120(sq64)] == wP);
+  }
+
+  while(temp_pawns[BLACK]) {
+    sq64 = pop_bit(&temp_pawns[BLACK]);
+    ASSERT(board->pieces[SQ120(sq64)] == bP);
+  }
+
+  while(temp_pawns[BOTH]) {
+    sq64 = pop_bit(&temp_pawns[BOTH]);
+    ASSERT((board->pieces[SQ120(sq64)] == bP) || (board->pieces[SQ120(sq64)] == wP));
+  }
+
+  // check the material, piece counts, move, and the hashcode
+  ASSERT(temp_material[WHITE] == board->material[WHITE] && temp_material[BLACK] == board->material[BLACK]);
+  ASSERT(temp_min_piece[WHITE] == board->min_pieces[WHITE] && temp_min_piece[BLACK] == board->min_pieces[BLACK]);
+  ASSERT(temp_maj_piece[WHITE] == board->maj_pieces[WHITE] && temp_maj_piece[BLACK] == board->maj_pieces[BLACK]);
+  ASSERT(temp_big_piece[WHITE] == board->big_pieces[WHITE] && temp_big_piece[BLACK] == board->big_pieces[BLACK]);
+
+  ASSERT(board->side == WHITE || board->side == BLACK);
+  ASSERT(generate_hashkeys(board) == board->hashkey);
+
+  // check the en passant value
+  // either we don't have one, or if we do and it's white to move then it's on the 6th rank
+  // or if it's black to move then it's on the 3rd rank
+  ASSERT(board->passant == NO_SQ || (RANKS_BOARD[board->passant] == RANK_6 && board->side == WHITE)
+          || (RANKS_BOARD[board->passant] == RANK_3 && board->side == BLACK));
+
+  // make sure the kings are still on the board
+  ASSERT(board->pieces[board->kings_sq[WHITE]] == wK);
+  ASSERT(board->pieces[board->kings_sq[BLACK]] == bK);
+}
+
+/**
+ * Updates the values of the arrays for the material on the board
+ */
+void update_material(Board_t *board) {
+  int32_t piece, sq, index, color;
+
+  for(index = 0; index < BOARD_SQ_NUM; ++index) {
+    sq = index;
+    piece = board->pieces[index];
+
+    if(piece != OFFBOARD && piece != EMPTY) {
+      color = PIECE_COL[piece];
+
+      // count up the pieces by type
+      if(PIECE_BIG[piece]) board->big_pieces[color]++;
+      if(PIECE_MAJ[piece]) board->maj_pieces[color]++;
+      if(PIECE_MIN[piece]) board->min_pieces[color]++;
+
+      // set up material values
+      board->material[color] += PIECE_VAL[piece];
+
+      // places pieces in the piece list
+      board->piece_list[piece][board->piece_num[piece]++] = sq;
+
+      // set up king square
+      if(piece == wK || piece == bK) board->kings_sq[color] = sq;
+
+      // handle pawns
+      if(piece == wP) {
+        SETBIT(board->pawns[WHITE], SQ64(sq));
+        SETBIT(board->pawns[BOTH], SQ64(sq));
+      } else if(piece == bP) {
+        SETBIT(board->pawns[BLACK], SQ64(sq));
+        SETBIT(board->pawns[BOTH], SQ64(sq));
+      }
+    }
+  }
+}
+
+/**
  * Takes a FEN string and sets up the board accordingly
  * For more info on FEN, see https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
  */
@@ -93,7 +225,7 @@ bool parse_FEN(char *fen, Board_t *board) {
         return false;
     }
 
-    for( ; ind < count; ++ind) {
+    for(ind = 0; ind < count; ++ind) {
       sq64 = rank * 8 + file;
       sq120 = SQ120(sq64);
 
@@ -155,9 +287,9 @@ bool parse_FEN(char *fen, Board_t *board) {
     ASSERT(rank >= RANK_1 && rank <= RANK_8);
 
     if(board->side == WHITE) {
-      ASSERT(rank == 6);
+      ASSERT(rank == RANK_6);
     } else {
-      ASSERT(rank == 3);
+      ASSERT(rank == RANK_3);
     }
 
     board->passant = CONVERT_COORDS(file, rank);
@@ -174,7 +306,7 @@ bool parse_FEN(char *fen, Board_t *board) {
 
     ind = 0;
 
-    while(*fen != ' ' && ind < 10) {
+    while((*fen != ' ' && *fen != '\0') && ind < 10) {
       num_parsed[ind] = *fen;
       ++fen;
       ++ind;
@@ -182,24 +314,28 @@ bool parse_FEN(char *fen, Board_t *board) {
 
     if(!tmp) {
       board->ply = atoi(num_parsed);
-      ASSERT(isdigit(board->ply));
     } else {
       board->hist_ply = atoi(num_parsed);
-      ASSERT(isdigit(board->hist_ply));
     }
 
-    fen++;
+    // if we're at the end of the string, don't advance more
+    if(*fen) fen++;
   }
 
   // should be at the end of the string now
-  ASSERT(*fen == '\0');
+  ASSERT(!*fen);
 
 
   board->hashkey = generate_hashkeys(board);
 
+  // set the values of the board material up before returning
+  update_material(board);
   return true;
 }
 
+/**
+ * Reset and clear everything off of the board
+ */
 void reset_board(Board_t *board) {
   int32_t ind = 0;
 
@@ -210,12 +346,16 @@ void reset_board(Board_t *board) {
   for(ind = 0; ind < STANDARD_BOARD_SIZE; ++ind)
     board->pieces[SQ120(ind)] = EMPTY;
 
-  for(ind = 0; ind < 3; ++ind) {
+  for(ind = 0; ind < 2; ++ind) {
     board->big_pieces[ind] = 0;
     board->maj_pieces[ind] = 0;
     board->min_pieces[ind] = 0;
+    board->material[ind] = 0;
     board->pawns[ind] = (uint64_t)0;
   }
+
+  // special case not handled by above loop
+  board->pawns[BOTH] = (uint64_t)0;
 
   for(ind = 0; ind < 13; ++ind)
     board->piece_num[ind] = 0;
@@ -232,4 +372,41 @@ void reset_board(Board_t *board) {
 
   board->hashkey = (uint64_t)0;
 
+}
+
+/**
+ * Print the current board struct state in a readable
+ * to humans way.
+ */
+void print_board(const Board_t *board) {
+  int32_t sq, file, rank, piece;
+
+
+  printf("\nGame Board:\n\n");
+
+  for(rank = RANK_8; rank >= RANK_1; --rank) {
+    printf("%d  ", rank + 1);
+    for(file = FILE_A; file <= FILE_H; ++file) {
+      sq = CONVERT_COORDS(file, rank);
+      piece = board->pieces[sq];
+      printf("%3c", PIECE_CHAR[piece]);
+    }
+    printf("\n");
+  }
+
+  printf("\n   ");
+  for(file = FILE_A; file <= FILE_H; ++file)
+    printf("%3c", 'a' + file);
+
+  printf("\n");
+
+  printf("side to move: %c\n", SIDE_CHAR[board->side]);
+  printf("turn: %d\n", board->hist_ply);
+  printf("en passant square: %d\n", board->passant);
+  printf("castling opportunities: %c %c %c %c\n",
+          board->castle_permission & WKCAS ? 'K' : '-',
+          board->castle_permission & WQCAS ? 'Q' : '-',
+          board->castle_permission & BKCAS ? 'k' : '-',
+          board->castle_permission & BQCAS ? 'q' : '-');
+  printf("position hashcode: %llX\n", board->hashkey);
 }
