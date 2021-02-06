@@ -22,6 +22,8 @@ static const int32_t BIT_TABLE[64] = {
 /**
  * Function that returns the index of the LSB in the bitboard that is set
  * to 1, while setting said index to 0
+ * This is some more bit manipulation magic that I can't be bothered to
+ * properly explain; hopefully the code is straightfoward enough?
  */
 int32_t pop_bit(uint64_t *board_ptr) {
   uint64_t bit = *board_ptr ^ (*board_ptr - 1);
@@ -63,7 +65,7 @@ void print_bboard(const uint64_t board) {
   for(rank = RANK_8; rank >= RANK_1; --rank) {
     for(file = FILE_A; file <= FILE_H; ++file) {
       sq = CONVERT_COORDS(file, rank); // engine coords
-      sq64 = ENGINE_TO_REGULAR[sq]; // convert to standard coords
+      sq64 = SQ64(sq);
 
       // if we shift to the corresponding index and bitwise AND
       // it and get a 1, there is a piece there.

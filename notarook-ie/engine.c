@@ -5,6 +5,7 @@
  */
 
 #include "constants.h"
+#include "functions.h"
 
 /**
  * The function that starts it all.

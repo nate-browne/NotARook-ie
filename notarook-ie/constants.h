@@ -14,10 +14,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 #include <stdio.h>
 
-#include "functions.h"
 #include "enums.h"
 #include "macros.h"
 
@@ -54,6 +54,8 @@ exit(1);}
 
 #define NAME "NotARook-ie v1.0.0"
 
+#define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
 // number in half-moves
 // this is a safe assumption; I don't think games can be 1024 full turns
 #define MAX_GAME_MOVES 2048
@@ -61,18 +63,20 @@ exit(1);}
 #define BOARD_SQ_NUM 120
 #define STANDARD_BOARD_SIZE 64
 
+// why this value in particular? no freaking idea.
+// it just worked so... ¯\_(ツ)_/¯
 #define MAGIC_BIT_NUM 0x783A9B23
 
 // Struct used to store moves so that we can undo moves later (hence the name)
-// for definitions of each member of the struct, see the board representation
-// note: statuses are for before the move was played
+// For definitions of each member of the struct, see the board representation
+// Note: statuses are for before the move was played
 typedef struct Undo {
 
   int32_t move_played;
   int32_t castle_permission;
   int32_t passant;
   uint8_t move_counter;
-  uint64_t pos_key;
+  uint64_t hashkey;
 
 } Undo_t;
 
@@ -94,7 +98,7 @@ typedef struct Board {
 
   int32_t castle_permission; // can we castle now?
 
-  uint64_t pos_key; // unique key generated for each position generated
+  uint64_t hashkey; // unique key generated for each position generated
 
   int32_t piece_num[13]; // 13 instead of 12 cause of EMPTY at pos 0 in the PIECES enum
   int32_t big_pieces[3]; // anything that isn't a pawn
@@ -117,5 +121,16 @@ extern int32_t ENGINE_TO_REGULAR[BOARD_SQ_NUM];
 // goes from [0, 64) to [0, 120)
 // in other words, convert a regular chess board to the engine
 extern int32_t REGULAR_TO_ENGINE[STANDARD_BOARD_SIZE];
+
+// masks for setting and clearing bitboards
+extern uint64_t SET_MASK[STANDARD_BOARD_SIZE];
+extern uint64_t CLEAR_MASK[STANDARD_BOARD_SIZE];
+
+// need to index by piece as well as by the square
+extern uint64_t PIECE_KEYS[13][BOARD_SQ_NUM];
+
+// only hashing if it's white's turn, so just need one
+extern uint64_t SIDE_KEY;
+extern uint64_t CASTLE_KEYS[16];
 
 #endif

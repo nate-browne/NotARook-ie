@@ -8,13 +8,24 @@
 #define FUNCTIONS_H
 
 #include <stdint.h>
+#include <stdbool.h>
+
+#include "constants.h"
 
 /* init.c */
 extern void init_all(void);
+extern uint64_t RAND_64(void);
 
 /* bboard.c */
 extern void print_bboard(const uint64_t);
 extern int32_t pop_bit(uint64_t *);
 extern int32_t count_bits(uint64_t);
+
+/* hashkey.c */
+extern uint64_t generate_hashkeys(const Board_t *);
+
+/* board.c */
+extern void reset_board(Board_t *);
+extern bool parse_FEN(char *, Board_t *);
 
 #endif

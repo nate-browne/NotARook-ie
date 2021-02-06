@@ -1,3 +1,8 @@
+/**
+ * File defining all of the enums so that they're more easily found instead of
+ * burying them in constants.h
+ */
+
 #ifndef ENUMS_H
 #define ENUMS_H
 
@@ -15,6 +20,8 @@ enum RANKS { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RAN
 enum COLORS { WHITE, BLACK, BOTH };
 
 /* next up are the board squares */
+/* Note that OFFBOARD isn't strictly necessary (it's the same as NO_SQ) */
+/* the purpose of it though is that it helps later with handling special moves */
 enum BOARD_SQUARES {
   A1 = 21, B1, C1, D1, E1, F1, G1, H1,
   A2 = 31, B2, C2, D2, E2, F2, G2, H2,
@@ -23,7 +30,7 @@ enum BOARD_SQUARES {
   A5 = 61, B5, C5, D5, E5, F5, G5, H5,
   A6 = 71, B6, C6, D6, E6, F6, G6, H6,
   A7 = 81, B7, C7, D7, E7, F7, G7, H7,
-  A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
+  A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ, OFFBOARD
 };
 
 /* for castling purposes */
