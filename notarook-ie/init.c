@@ -37,14 +37,14 @@ uint64_t RAND_64(void) {
  * Function to initialize the files and ranks arrays
  */
 static void init_files_ranks_arrays(void) {
-  int32_t index, file, rank, sq, sq64;
-  index = 0, file = FILE_A, rank = RANK_1, sq = A1, sq64 = 0;
+  int32_t index, file, rank, sq;
+  index = 0, file = FILE_A, rank = RANK_1, sq = A1;
 
   for( ; index < BOARD_SQ_NUM; ++index)
     FILES_BOARD[index] = RANKS_BOARD[index] = OFFBOARD;
 
-  for( ; rank <= RANK_8; ++rank) {
-    for( ; file <= FILE_H; ++file) {
+  for(rank = RANK_1; rank <= RANK_8; ++rank) {
+    for(file = FILE_A; file <= FILE_H; ++file) {
       sq = CONVERT_COORDS(file, rank);
       FILES_BOARD[sq] = file;
       RANKS_BOARD[sq] = rank;

@@ -5,7 +5,8 @@ GCC      = gcc
 RM       = rm
 
 HEADERS  = constants.h functions.h macros.h enums.h
-SRCS     = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c
+SRCS     = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
+           printer.c
 OBJS     = $(SRCS:.c=.o)
 
 UNAME := $(shell uname)
@@ -36,7 +37,7 @@ debug: $(EXE)
 	$(DEBUGGER) $(EXE)
 
 memcheck: $(EXE)
-	$(LEAKER) $(EXE)
+	$(LEAKER) ./$(EXE)
 
 clean:
 	@echo "Cleaning up"
