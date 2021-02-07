@@ -193,10 +193,10 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
 
       // check on croissant move
       if(sq + 9 == board->passant) {
-        add_capture_move(board, MOVE(sq, sq + 9, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(board, MOVE(sq, sq + 9, EMPTY, EMPTY, MFLAGEP), list);
       }
       if(sq + 11 == board->passant) {
-        add_capture_move(board, MOVE(sq, sq + 11, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(board, MOVE(sq, sq + 11, EMPTY, EMPTY, MFLAGEP), list);
       }
     }
 
@@ -207,7 +207,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & WKCAS) {
       if(board->pieces[F1] == EMPTY && board->pieces[G1] == EMPTY) {
         if(!square_attacked(E1, BLACK, board) && !square_attacked(F1, BLACK, board)) {
-          printf("WKCA MoveGen\n");
+          add_quiet_move(board, MOVE(E1, G1, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -216,7 +216,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & WQCAS) {
       if(board->pieces[D1] == EMPTY && board->pieces[C1] == EMPTY && board->pieces[B1] == EMPTY) {
         if(!square_attacked(E1, BLACK, board) && !square_attacked(D1, BLACK, board)) {
-          printf("WQCA MoveGen\n");
+          add_quiet_move(board, MOVE(E1, C1, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -244,10 +244,10 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
 
       // check on croissant move
       if(sq - 9 == board->passant) {
-        add_capture_move(board, MOVE(sq, sq - 9, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(board, MOVE(sq, sq - 9, EMPTY, EMPTY, MFLAGEP), list);
       }
       if(sq - 11 == board->passant) {
-        add_capture_move(board, MOVE(sq, sq - 11, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(board, MOVE(sq, sq - 11, EMPTY, EMPTY, MFLAGEP), list);
       }
     }
 
@@ -258,7 +258,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & BKCAS) {
       if(board->pieces[F8] == EMPTY && board->pieces[G8] == EMPTY) {
         if(!square_attacked(E8, WHITE, board) && !square_attacked(F8, WHITE, board)) {
-          printf("BKCA MoveGen\n");
+          add_quiet_move(board, MOVE(E8, G8, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -267,7 +267,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & BQCAS) {
       if(board->pieces[D8] == EMPTY && board->pieces[C8] == EMPTY && board->pieces[B8] == EMPTY) {
         if(!square_attacked(E8, WHITE, board) && !square_attacked(D8, WHITE, board)) {
-          printf("BQCA MoveGen\n");
+          add_quiet_move(board, MOVE(E8, C8, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -284,7 +284,6 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
       sq = board->piece_list[piece][piece_num];
 
       ASSERT(square_on_board(sq));
-      printf("Piece:%c on %s\n", PIECE_CHAR[piece], print_square(sq));
 
       for(index = 0; index < NUM_DIR[piece]; ++index) {
         dir = PIECE_DIR[piece][index];
@@ -293,11 +292,11 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
         while(!SQOFFBOARD(temp_sq)) {
           if(board->pieces[temp_sq] != EMPTY) {
             if(PIECE_COL[board->pieces[temp_sq]] == (side ^ 1)) {
-              printf("\t\tCapture on %s\n", print_square(temp_sq));
+              add_capture_move(board, MOVE(sq, temp_sq, board->pieces[temp_sq], EMPTY, 0), list);
             }
             break;
           }
-          printf("\t\tNormal on %s\n", print_square(temp_sq));
+          add_quiet_move(board, MOVE(sq, temp_sq, EMPTY, EMPTY, 0), list);
           temp_sq += dir; // increment the temp square by the direction to go to the next
                           // square
         }
@@ -316,7 +315,6 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     for(piece_num = 0; piece_num < board->piece_num[piece]; ++piece_num) {
       sq = board->piece_list[piece][piece_num];
       ASSERT(square_on_board(sq));
-      printf("Piece:%c on %s\n", PIECE_CHAR[piece], print_square(sq));
 
       for(index = 0; index < NUM_DIR[piece]; ++index) {
         dir = PIECE_DIR[piece][index];
@@ -328,11 +326,11 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
           // little bit of bit magic where WHITE ^ 1 == BLACK and vice versa
           if(board->pieces[temp_sq] != EMPTY) {
             if(PIECE_COL[board->pieces[temp_sq]] == (side ^ 1)) {
-              printf("\t\tCapture on %s\n", print_square(temp_sq));
+              add_capture_move(board, MOVE(sq, temp_sq, board->pieces[temp_sq], EMPTY, 0), list);
             }
             continue;
           }
-          printf("\t\tNormal on %s\n", print_square(temp_sq));
+          add_quiet_move(board, MOVE(sq, temp_sq, EMPTY, EMPTY, 0), list);
         } else {
           continue;
         }

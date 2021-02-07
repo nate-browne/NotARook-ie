@@ -17,5 +17,10 @@ int main(int argc, char * argv[]) {
   Board_t board;
   MoveList_t list;
 
+  parse_FEN(TRICKY_FEN, &board);
+  generate_all_moves(&board, &list);
+
+  print_movelist(&list);
+
   return EXIT_SUCCESS;
 }
