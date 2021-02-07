@@ -51,3 +51,18 @@ char * print_move(const int32_t move) {
 
   return ret_mv_str;
 }
+
+/**
+ * Prints the contents of the movelist in a readable way
+ */
+void print_movelist(const MoveList_t * list) {
+  printf("MoveList:\n");
+
+  for(int32_t index = 0; index < list->count; ++index) {
+    int32_t move = list->moves[index].move;
+    int32_t score = list->moves[index].score;
+
+    printf("Move: %d %s (score: %d)\n", index + 1, print_move(move), score);
+  }
+  printf("MoveList Total %d Moves:\n\n", list->count);
+}

@@ -37,5 +37,16 @@ extern bool square_attacked(const int32_t, const int32_t, const Board_t *);
 /* printer.c */
 extern char * print_square(const int32_t);
 extern char * print_move(const int32_t);
+extern void print_movelist(const MoveList_t *);
+
+/* movegen.c */
+extern void generate_all_moves(const Board_t *, MoveList_t *);
+
+/* validation.c */
+extern bool square_on_board(const int32_t);
+extern bool side_valid(const int32_t);
+extern bool file_rank_valid(const int32_t);
+extern bool piece_valid_empty(const int32_t);
+extern bool piece_valid(const int32_t);
 
 #endif

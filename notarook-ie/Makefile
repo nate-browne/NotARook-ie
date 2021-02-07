@@ -6,7 +6,7 @@ RM       = rm
 
 HEADERS  = constants.h functions.h macros.h enums.h
 SRCS     = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
-           printer.c
+           printer.c movegen.c validation.c
 OBJS     = $(SRCS:.c=.o)
 
 UNAME := $(shell uname)

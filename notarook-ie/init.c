@@ -57,7 +57,7 @@ static void init_files_ranks_arrays(void) {
  */
 static void init_hashkeys(void) {
   for(int32_t ind = 0; ind < 13; ++ind) {
-    for(int32_t dex = 0; dex < 120; ++dex) {
+    for(int32_t dex = 0; dex < BOARD_SQ_NUM; ++dex) {
       PIECE_KEYS[ind][dex] = RAND_64();
     }
   }
@@ -98,9 +98,9 @@ static void init_120_to_64(void) {
 
   // initialize our placement arrays to impossible values, just to start out
   for(int32_t index = 0; index < BOARD_SQ_NUM; ++index)
-    ENGINE_TO_REGULAR[index] = 65;
+    ENGINE_TO_REGULAR[index] = STANDARD_BOARD_SIZE + 1;
 
-  memset(REGULAR_TO_ENGINE, 120, STANDARD_BOARD_SIZE);
+  memset(REGULAR_TO_ENGINE, BOARD_SQ_NUM, STANDARD_BOARD_SIZE);
 
   // for each square in the actual board
   // fill in the number coordinates for mapping back and forth

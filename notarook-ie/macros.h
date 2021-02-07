@@ -38,4 +38,8 @@
 #define CAPTURED(m) (((m) >> 14) & 0xF)
 #define PROMOTED(m) (((m) >> 20) & 0xF)
 
+/* macros for generating moves and interacting with the board */
+#define MOVE(f, t, ca, pro, fl) ((f) | ((t) << 7) | ((ca) << 14) | ((pro) << 20) | (fl))
+#define SQOFFBOARD(sq) (FILES_BOARD[sq] == OFFBOARD)
+
 #endif

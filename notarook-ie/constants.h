@@ -61,6 +61,9 @@ exit(1);}
 // this is a safe assumption; I don't think games can be 1024 full turns
 #define MAX_GAME_MOVES 2048
 
+// max number of moves that we expect there to be in any given position
+#define MAX_POSITION_MOVES 256
+
 #define BOARD_SQ_NUM 120
 #define STANDARD_BOARD_SIZE 64
 
@@ -74,7 +77,7 @@ exit(1);}
 // Note: statuses are for before the move was played
 typedef struct Undo {
 
-  int32_t move_played;
+  uint32_t move_played;
   int32_t castle_permission;
   int32_t passant;
   uint8_t move_counter;
@@ -114,6 +117,13 @@ typedef struct Move {
   uint32_t move; // the move played
   int32_t score; // the score associated with that move
 } Move_t;
+
+// struct for holding a list of the above move struct
+typedef struct MoveList {
+
+  Move_t moves[MAX_POSITION_MOVES];
+  int32_t count;
+} MoveList_t;
 
 // our board representation
 typedef struct Board {
