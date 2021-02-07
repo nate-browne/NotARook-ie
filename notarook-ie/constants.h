@@ -180,10 +180,10 @@ extern uint64_t SIDE_KEY;
 extern uint64_t CASTLE_KEYS[16];
 
 // used when printing the board in board.c
-extern const char PIECE_CHAR[];
-extern const char SIDE_CHAR[];
-extern const char RANK_CHAR[];
-extern const char FILE_CHAR[];
+extern const char *PIECE_CHAR;
+extern const char *SIDE_CHAR;
+extern const char *RANK_CHAR;
+extern const char *FILE_CHAR;
 
 // used to answer question "what rank/file is <square> on?"
 extern int32_t FILES_BOARD[BOARD_SQ_NUM];
@@ -197,6 +197,7 @@ extern bool PIECE_KNIGHT[13];
 extern bool PIECE_KING[13];
 extern bool PIECE_ROOK_QUEEN[13];
 extern bool PIECE_BISHOP_QUEEN[13];
+extern bool PIECE_SLIDES[13];
 
 // used for keeping track of values and colors of board pieces
 extern int32_t PIECE_VAL[13];

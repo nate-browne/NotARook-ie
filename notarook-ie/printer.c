@@ -64,5 +64,5 @@ void print_movelist(const MoveList_t * list) {
 
     printf("Move: %d %s (score: %d)\n", index + 1, print_move(move), score);
   }
-  printf("MoveList Total %d Moves:\n\n", list->count);
+  printf("MoveList Total %d Moves\n\n", list->count);
 }

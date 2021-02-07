@@ -5,10 +5,10 @@
 
 #include "constants.h"
 
-const char PIECE_CHAR[] = ".PNBRQKpnbrqk";
-const char SIDE_CHAR[] = "wb-";
-const char RANK_CHAR[] = "12345678";
-const char FILE_CHAR[] = "abcdefgh";
+const char *PIECE_CHAR = ".PNBRQKpnbrqk";
+const char *SIDE_CHAR = "wb-";
+const char *RANK_CHAR = "12345678";
+const char *FILE_CHAR = "abcdefgh";
 
 bool PIECE_BIG[13] = {false, false, true, true, true, true, true, false, true, true, true, true, true};
 bool PIECE_MAJ[13] = {false, false, false, false, true, true, true, false, false, false, true, true, true};
@@ -25,3 +25,4 @@ bool PIECE_KNIGHT[13] = {false, false, true, false, false, false, false, false, 
 bool PIECE_KING[13] = {false, false, false, false, false, false, true, false, false, false, false, false, true};
 bool PIECE_ROOK_QUEEN[13] = {false, false, false, false, true, true, false, false, false, false, true, true, false};
 bool PIECE_BISHOP_QUEEN[13] = {false, false, false, true, false, true, false, false, false, true, false, true, false};
+bool PIECE_SLIDES[13] = {false, false, false, true, true, true, false, false, false, true, true, true, false};
