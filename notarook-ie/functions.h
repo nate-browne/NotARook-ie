@@ -53,4 +53,7 @@ extern bool piece_valid(const int32_t);
 bool make_move(Board_t *, int32_t);
 void take_move(Board_t *);
 
+/* perft.c */
+extern uint64_t perft_test(int32_t, Board_t *);
+
 #endif

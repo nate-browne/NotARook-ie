@@ -1,13 +1,17 @@
-C_FLAGS  = -c -g -std=c99 -pedantic -Wall -D__EXTENSIONS__
-LD_FLAGS = -g -Wall
-EXE      = notarookie
-GCC      = gcc
-RM       = rm
+C_FLAGS   = -c -g -std=c99 -pedantic -Wall -D__EXTENSIONS__
+LD_FLAGS  = -g -Wall
+EXE       = notarookie
+TEST      = stresstest
+GCC       = gcc
+RM        = rm
 
-HEADERS  = constants.h functions.h macros.h enums.h
-SRCS     = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
+HEADERS   = constants.h functions.h macros.h enums.h
+SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
            printer.c movegen.c validation.c makemove.c perft.c
-OBJS     = $(SRCS:.c=.o)
+TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \
+           printer.c movegen.c validation.c makemove.c perft.c
+OBJS      = $(SRCS:.c=.o)
+TEST_OBJS = $(TEST_SRCS:.c=.o)
 
 UNAME := $(shell uname)
 ifeq ($(UNAME),Linux)
@@ -31,7 +35,15 @@ $(EXE): $(OBJS)
 	@echo ""
 	@echo "Compilation successful!"
 
+$(TEST): $(TEST_OBJS)
+	@echo "Linking all object modules..."
+	$(GCC) -o $(TEST) $(LD_FLAGS) $(TEST_OBJS)
+	@echo ""
+	@echo "Compilation successful!"
+
 $(OBJS): $(HEADERS)
+
+$(TEST_OBJS): $(HEADERS)
 
 debug: $(EXE)
 	$(DEBUGGER) $(EXE)
@@ -41,7 +53,7 @@ memcheck: $(EXE)
 
 clean:
 	@echo "Cleaning up"
-	$(RM) -f *.o $(EXE) .DS_Store
+	$(RM) -f *.o $(EXE) $(TEST) .DS_Store
 	@echo ""
 	@echo "Clean."
 

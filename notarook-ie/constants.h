@@ -32,7 +32,7 @@
  * that no matter what OS runs this code, the size will be the same.
  */
 
-#define DEBUG
+//#define DEBUG
 
 // kind of messy, but this whole mess allows us to throw in
 // assert debug statements without mass commenting them out later
