@@ -273,7 +273,7 @@ bool parse_FEN(char *fen, Board_t *board) {
   ++fen;
 
   // verify that castling was validly parsed
-  ASSERT(board->castle_permission >= 0 && board->castle_permission <= 15);
+  ASSERT(board->castle_permission >= 0 && board->castle_permission <= 0xF);
 
   // en passant square
   if(*fen != '-') {

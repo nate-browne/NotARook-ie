@@ -42,4 +42,10 @@
 #define MOVE(f, t, ca, pro, fl) ((f) | ((t) << 7) | ((ca) << 14) | ((pro) << 20) | (fl))
 #define SQOFFBOARD(sq) (FILES_BOARD[sq] == OFFBOARD)
 
+/* macros for hashing values into the position key */
+#define HASH_PIECE(piece, sq) (board->hashkey ^= (PIECE_KEYS[(piece)][(sq)]))
+#define HASH_CAS (board->hashkey ^= (CASTLE_KEYS[(board->castle_permission)]))
+#define HASH_SIDE (board->hashkey ^= SIDE_KEY)
+#define HASH_PAS (board->hashkey ^= (PIECE_KEYS[EMPTY][board->passant]))
+
 #endif

@@ -7,32 +7,32 @@
 
 // the 0s give us a way to disambiguate
 // between white and black
-static int32_t LOOP_SLIDE_PIECE[8] = {
+static const int32_t LOOP_SLIDE_PIECE[8] = {
   wB, wR, wQ, 0, bB, bR, bQ, 0
 };
 
 // the 0s give us a way to disambiguate
 // between white and black
-static int32_t LOOP_NON_SLIDE_PIECE[6] = {
+static const int32_t LOOP_NON_SLIDE_PIECE[6] = {
   wN, wK, 0, bN, bK, 0
 };
 
 // black to move -> 4, white to move -> 0
 // helps us out with the above array to condense the
 // code and not end up with the same mess as the pawns
-static int32_t LOOP_SLIDE_INDEX[2] = {0, 4};
+static const int32_t LOOP_SLIDE_INDEX[2] = {0, 4};
 
 // same reasoning as above array
-static int32_t LOOP_NON_SLIDE_INDEX[2] = {0, 3};
+static const int32_t LOOP_NON_SLIDE_INDEX[2] = {0, 3};
 
 // indexing by piece
-static int32_t NUM_DIR[13] = {
+static const int32_t NUM_DIR[13] = {
   0,0,8,4,4,8,8,0,8,4,4,8,8
 };
 
 // the directions on the coordinate system each piece can move
 // maps to the above NUM_DIR
-static int32_t PIECE_DIR[13][8] = {
+static const int32_t PIECE_DIR[13][8] = {
   {0,0,0,0,0,0,0,0},
   {0,0,0,0,0,0,0,0},
   {-8,-19,-21,-12,8,19,21,12},

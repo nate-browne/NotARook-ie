@@ -49,4 +49,8 @@ extern bool file_rank_valid(const int32_t);
 extern bool piece_valid_empty(const int32_t);
 extern bool piece_valid(const int32_t);
 
+/* makemove.c */
+bool make_move(Board_t *, int32_t);
+void take_move(Board_t *);
+
 #endif

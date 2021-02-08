@@ -80,7 +80,7 @@ typedef struct Undo {
   uint32_t move_played;
   int32_t castle_permission;
   int32_t passant;
-  uint8_t move_counter;
+  int32_t move_counter;
   uint64_t hashkey;
 
 } Undo_t;
@@ -135,7 +135,7 @@ typedef struct Board {
 
   bool side; // which side is supposed to move next (0 white, 1 black)
   int32_t passant; // set if an en passant square is available
-  uint8_t move_counter; // check out the 50 rule move for chess
+  int32_t move_counter; // check out the 50 rule move for chess
                         // for us, this is one hundo cause we count half moves
   int32_t ply; // number of half moves into the current search
   int32_t hist_ply; // in the total game, number of half moves made
@@ -198,6 +198,7 @@ extern bool PIECE_KING[13];
 extern bool PIECE_ROOK_QUEEN[13];
 extern bool PIECE_BISHOP_QUEEN[13];
 extern bool PIECE_SLIDES[13];
+extern bool PIECE_PAWN[13];
 
 // used for keeping track of values and colors of board pieces
 extern int32_t PIECE_VAL[13];
