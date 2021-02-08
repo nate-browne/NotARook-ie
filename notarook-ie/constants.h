@@ -32,7 +32,7 @@
  * that no matter what OS runs this code, the size will be the same.
  */
 
-//#define DEBUG
+#define DEBUG
 
 // kind of messy, but this whole mess allows us to throw in
 // assert debug statements without mass commenting them out later
@@ -44,11 +44,11 @@
 #else
 #define ASSERT(n) \
 if(!(n)) { \
-printf("%s - Failed!!", #n); \
+printf("%s - \033[91mFAILED!!\033[0m", #n); \
 printf(" on %s ", __DATE__); \
 printf("at %s ", __TIME__); \
 printf("in file %s ", __FILE__); \
-printf("at line %d\n", __LINE__); \
+printf("on line %d\n", __LINE__); \
 exit(1);}
 #endif
 

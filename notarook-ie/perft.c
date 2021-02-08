@@ -38,15 +38,17 @@ static void perft(int32_t depth, Board_t *board, uint64_t *count) {
 
 /**
  * This function is the wrapper function for the above perft testing func.
+ * If being run from the stresstest program, don't run the print statements here
  */
-uint64_t perft_test(int32_t depth, Board_t *board) {
+uint64_t perft_test(int32_t depth, Board_t *board, bool stress) {
 
   // always good to sanity check
   check_board(board);
 
-  print_board(board);
-
-  printf("\nStarting perft test to depth: %d\n", depth);
+  if(!stress) {
+    print_board(board);
+    printf("\nStarting perft test to depth: %d\n", depth);
+  }
 
   uint64_t total = 0;
 
@@ -64,10 +66,10 @@ uint64_t perft_test(int32_t depth, Board_t *board) {
     total += leaves;
     take_move(board);
 
-    printf("move %d (%s): %lld possible positions\n", move_num + 1, print_move(move), leaves);
+    if(!stress) printf("move %d (%s): %lld possible positions\n", move_num + 1, print_move(move), leaves);
   }
 
-  printf("\nTest complete: %lld leaf nodes visited.\n", total);
+  if(!stress) printf("\nTest complete: %lld leaf nodes visited.\n", total);
 
   return total;
 }

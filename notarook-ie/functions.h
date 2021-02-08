@@ -54,6 +54,6 @@ bool make_move(Board_t *, int32_t);
 void take_move(Board_t *);
 
 /* perft.c */
-extern uint64_t perft_test(int32_t, Board_t *);
+extern uint64_t perft_test(int32_t, Board_t *, bool);
 
 #endif

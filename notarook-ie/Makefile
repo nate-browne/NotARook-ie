@@ -1,5 +1,7 @@
-C_FLAGS   = -c -g -std=c99 -pedantic -Wall -D__EXTENSIONS__
-LD_FLAGS  = -g -Wall
+C_FLAGS   = -c -std=c99 -pedantic -Wall -D__EXTENSIONS__
+OPT       = -O3
+D_FLAG    = -g
+LD_FLAGS  = -Wall
 EXE       = notarookie
 TEST      = stresstest
 GCC       = gcc
@@ -24,20 +26,23 @@ ifeq ($(UNAME),Darwin)
 endif
 endif
 
+# NOTE: In the below makefile targets, replace $(D_FLAG) with $(OPT)
+# to enable optimizations and turn off debugging info
+
 .c.o:
 	@echo "Compiling each C source file separately..."
-	$(GCC) $(C_FLAGS) $<
+	$(GCC) $(C_FLAGS) $(D_FLAG) $<
 	@echo ""
 
 $(EXE): $(OBJS)
 	@echo "Linking all object modules..."
-	$(GCC) -o $(EXE) $(LD_FLAGS) $(OBJS)
+	$(GCC) -o $(EXE) $(LD_FLAGS) $(D_FLAG) $(OBJS)
 	@echo ""
 	@echo "Compilation successful!"
 
 $(TEST): $(TEST_OBJS)
 	@echo "Linking all object modules..."
-	$(GCC) -o $(TEST) $(LD_FLAGS) $(TEST_OBJS)
+	$(GCC) -o $(TEST) $(LD_FLAGS) $(D_FLAG) $(TEST_OBJS)
 	@echo ""
 	@echo "Compilation successful!"
 

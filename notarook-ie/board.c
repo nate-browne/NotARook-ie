@@ -323,7 +323,7 @@ bool parse_FEN(char *fen, Board_t *board) {
   }
 
   // should be at the end of the string now
-  ASSERT(!*fen);
+  ASSERT(!*fen || *fen == ' ');
 
 
   board->hashkey = generate_hashkeys(board);
