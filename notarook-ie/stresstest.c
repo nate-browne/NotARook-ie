@@ -21,7 +21,7 @@ static uint64_t grab_answer_value(char *rest, int32_t depth) {
     int32_t num_val = val - '0';
 
     if(num_val == depth) {
-      res = strtoll(rest + 3, NULL, 10);
+      res = strtoull(rest + 3, NULL, 10);
       break;
     }
     rest = strtok(NULL, ";");
