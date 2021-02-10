@@ -36,7 +36,7 @@
 
 // kind of messy, but this whole mess allows us to throw in
 // assert debug statements without mass commenting them out later
-// just comment out line 10
+// just comment out line 35
 // to be clear, I took this from a book and didn't come up with this macro
 // myself
 #ifndef DEBUG
