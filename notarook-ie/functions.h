@@ -38,6 +38,7 @@ extern bool square_attacked(const int32_t, const int32_t, const Board_t *);
 extern char * print_square(const int32_t);
 extern char * print_move(const int32_t);
 extern void print_movelist(const MoveList_t *);
+extern int32_t parse_move(char *, Board_t *);
 
 /* movegen.c */
 extern void generate_all_moves(const Board_t *, MoveList_t *);

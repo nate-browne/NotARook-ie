@@ -111,6 +111,9 @@ typedef struct Undo {
 #define MFLAGCAP 0x7C000 // capture (of any kind)
 #define MFLAGPR 0xF00000 // promotion
 
+// for alpha beta evaluation
+#define NOMOVE 0
+
 
 // Struct for representing a move
 typedef struct Move {

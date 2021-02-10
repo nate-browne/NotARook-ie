@@ -53,6 +53,59 @@ char * print_move(const int32_t move) {
 }
 
 /**
+ * Parses a move in algebraic notation (e.g. g7g8q for pawn promotion to queen)
+ * from standard in
+ *
+ * Could this have been written better? yes. Do I care? no
+ */
+int32_t parse_move(char *str, Board_t *board) {
+
+  // error check
+  // yes, this assumes the formatting is very specific but ¯\_(ツ)_/¯
+  if(str[1] > '8' || str[1] < '1') return NOMOVE;
+  if(str[3] > '8' || str[3] < '1') return NOMOVE;
+  if(str[0] > 'h' || str[0] < 'a') return NOMOVE;
+  if(str[2] > 'h' || str[2] < 'a') return NOMOVE;
+
+  int32_t from = CONVERT_COORDS(str[0] - 'a', str[1] - '1');
+  int32_t to = CONVERT_COORDS(str[2] - 'a', str[3] - '1');
+
+  ASSERT(square_on_board(from) && square_on_board(to));
+
+  MoveList_t list;
+  generate_all_moves(board, &list);
+  int32_t move = NOMOVE, promotion_piece = EMPTY;
+
+  for(int32_t ind = 0; ind < list.count; ++ind) {
+    move = list.moves[ind].move;
+
+    // if the move matches our generated moves, check for
+    // promotion or just return
+    if(FROMSQ(move) == from && TOSQ(move) == to) {
+      promotion_piece = PROMOTED(move);
+      if(promotion_piece != EMPTY) {
+        // rook promotion
+        if(IsRQ(promotion_piece) && !IsBQ(promotion_piece) && str[4] == 'r') {
+          return move;
+        // bishop promotion
+        } else if(!IsRQ(promotion_piece) && IsBQ(promotion_piece) && str[4] == 'b') {
+          return move;
+        // queen promotion
+        } else if(IsRQ(promotion_piece) && IsBQ(promotion_piece) && str[4] == 'q') {
+          return move;
+        // knight promotion
+        } else if(IsKn(promotion_piece) && str[4] == 'n') {
+          return move;
+        }
+        continue;
+      }
+      return move;
+    }
+  }
+  return NOMOVE;
+}
+
+/**
  * Prints the contents of the movelist in a readable way
  */
 void print_movelist(const MoveList_t * list) {
