@@ -1,3 +1,9 @@
+########################################################################
+# This inner makefile actually does the work of the compilation.
+# See line 47 for the only reason this makefile should be edited (probably).
+########################################################################
+
+# STEP 1: Create variables used
 C_FLAGS   = -c -std=c99 -pedantic -Wall -D__EXTENSIONS__
 OPT       = -O3
 D_FLAG    = -g
@@ -7,14 +13,8 @@ TEST      = stresstest
 GCC       = gcc
 RM        = rm
 
-HEADERS   = constants.h functions.h macros.h enums.h
-SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
-           printer.c movegen.c validation.c makemove.c perft.c
-TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \
-           printer.c movegen.c validation.c makemove.c perft.c
-OBJS      = $(SRCS:.c=.o)
-TEST_OBJS = $(TEST_SRCS:.c=.o)
-
+# This section determines which tools should be used for debugging
+# memory checking, depending on the system. Windows users, I'm sorry.
 UNAME := $(shell uname)
 ifeq ($(UNAME),Linux)
 	DEBUGGER=gdb
@@ -26,42 +26,91 @@ ifeq ($(UNAME),Darwin)
 endif
 endif
 
+# These are the C header files used.
+HEADERS   = constants.h functions.h macros.h enums.h
+
+# These are the C source files for the engine executable
+SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
+            printer.c movegen.c validation.c makemove.c perft.c
+
+# These are the C source files for the perft testing executable
+TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \
+            printer.c movegen.c validation.c makemove.c perft.c
+
+# Generic variable for converting the engine source files into object files
+OBJS      = $(SRCS:.c=.o)
+
+# Generic variable for converting the perft test source files into object files
+TEST_OBJS = $(TEST_SRCS:.c=.o)
+
+
 # NOTE: In the below makefile targets, replace $(D_FLAG) with $(OPT)
 # to enable optimizations and turn off debugging info
 
+# Generic (hidden) target for compiling C files into object files
+# Used by the OBJS and TEST_OBJS targets below
 .c.o:
 	@echo "Compiling each C source file separately..."
 	$(GCC) $(C_FLAGS) $(D_FLAG) $<
 	@echo ""
 
+# Target for creating the engine exectuable
+# First compiles all object files, then links them together,
+# moves the exectuable to the bin directory, and echos the results out.
 $(EXE): $(OBJS)
-	@echo "Linking all object modules..."
+	@echo "Creating executable..."
 	$(GCC) -o $(EXE) $(LD_FLAGS) $(D_FLAG) $(OBJS)
+	@mv $(EXE) ../bin
 	@echo ""
 	@echo "Compilation successful!"
 
+# Target for creating the perft testing exectuable
+# First compiles all object files, then links them together,
+# moves the exectuable to the bin directory, and echos the results out.
 $(TEST): $(TEST_OBJS)
-	@echo "Linking all object modules..."
+	@echo "Creating executable..."
 	$(GCC) -o $(TEST) $(LD_FLAGS) $(D_FLAG) $(TEST_OBJS)
+	@mv $(TEST) ../bin
 	@echo ""
 	@echo "Compilation successful!"
 
-$(OBJS): $(HEADERS)
+# Target for compiling the engine source files
+# First creates the bin directory (see `start` target below)
+# then uses the generic .c.o target above to compile each C
+# file one by one
+$(OBJS): start $(HEADERS)
 
-$(TEST_OBJS): $(HEADERS)
+# Target for compiling the perft testing source files
+# First creates the bin directory (see `start` target below)
+# then uses the generic .c.o target above to compile each C
+# file one by one
+$(TEST_OBJS): start $(HEADERS)
 
+# Target that creates the bin directory (if it doesn't already exist)
+start:
+	@[ -d ../bin ] || mkdir ../bin
+
+# Target to run the debug tool on the engine executable
+# Compiles the engine first
 debug: $(EXE)
-	$(DEBUGGER) $(EXE)
+	$(DEBUGGER) ../bin/$(EXE)
 
+# Target to run the memory safety tool on the engine executable
+# Compiles the engine first
 memcheck: $(EXE)
-	$(LEAKER) ./$(EXE)
+	$(LEAKER) ../bin/$(EXE)
 
+# Target to reset the directories. Removes the bin directory
+# (and everything in it) and removes any other lingering,
+# unnecessary files
 clean:
 	@echo "Cleaning up"
-	$(RM) -f *.o $(EXE) $(TEST) .DS_Store
+	$(RM) -rf ../bin *.o .DS_Store
 	@echo ""
 	@echo "Clean."
 
+# Recompile the engine from scratch
+# First removes everything via the `clean` target, then recompiles
 new:
 	make clean
 	make
