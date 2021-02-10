@@ -51,7 +51,7 @@ static const int32_t PIECE_DIR[13][8] = {
 /**
  * Moves not involving captures
  */
-static void add_quiet_move(const Board_t *board, int32_t move, MoveList_t *list) {
+static void add_quiet_move(int32_t move, MoveList_t *list) {
   list->moves[list->count].move = move;
   list->moves[list->count].score = 0;
   list->count++;
@@ -60,7 +60,7 @@ static void add_quiet_move(const Board_t *board, int32_t move, MoveList_t *list)
 /**
  * ...you can guess what this does
  */
-static void add_capture_move(const Board_t *board, int32_t move, MoveList_t *list) {
+static void add_capture_move(int32_t move, MoveList_t *list) {
   list->moves[list->count].move = move;
   list->moves[list->count].score = 0;
   list->count++;
@@ -69,7 +69,7 @@ static void add_capture_move(const Board_t *board, int32_t move, MoveList_t *lis
 /**
  * this one too
  */ 
-static void add_enpassant_move(const Board_t *board, int32_t move, MoveList_t *list) {
+static void add_enpassant_move(int32_t move, MoveList_t *list) {
   list->moves[list->count].move = move;
   list->moves[list->count].score = 0;
   list->count++;
@@ -78,7 +78,7 @@ static void add_enpassant_move(const Board_t *board, int32_t move, MoveList_t *l
 /**
  * ...I mean it's self explanatory no?
  */
-static void add_white_pawn_capture(const Board_t *board, const int32_t from, const int32_t to, const int32_t cap, MoveList_t *list) {
+static void add_white_pawn_capture(const int32_t from, const int32_t to, const int32_t cap, MoveList_t *list) {
 
   ASSERT(piece_valid_empty(cap));
   ASSERT(square_on_board(from));
@@ -86,19 +86,19 @@ static void add_white_pawn_capture(const Board_t *board, const int32_t from, con
 
   // this means we're promoting the pawn
   if(RANKS_BOARD[from] == RANK_7) {
-    add_capture_move(board, MOVE(from,to,cap,wQ,0), list);
-    add_capture_move(board, MOVE(from,to,cap,wR,0), list);
-    add_capture_move(board, MOVE(from,to,cap,wB,0), list);
-    add_capture_move(board, MOVE(from,to,cap,wN,0), list);
+    add_capture_move(MOVE(from,to,cap,wQ,0), list);
+    add_capture_move(MOVE(from,to,cap,wR,0), list);
+    add_capture_move(MOVE(from,to,cap,wB,0), list);
+    add_capture_move(MOVE(from,to,cap,wN,0), list);
   } else {
-    add_capture_move(board, MOVE(from,to,cap,EMPTY,0), list);
+    add_capture_move(MOVE(from,to,cap,EMPTY,0), list);
   }
 }
 
 /**
  * ...I mean it's self explanatory no?
  */
-static void add_black_pawn_capture(const Board_t *board, const int32_t from, const int32_t to, const int32_t cap, MoveList_t *list) {
+static void add_black_pawn_capture(const int32_t from, const int32_t to, const int32_t cap, MoveList_t *list) {
 
   ASSERT(piece_valid_empty(cap));
   ASSERT(square_on_board(from));
@@ -106,50 +106,50 @@ static void add_black_pawn_capture(const Board_t *board, const int32_t from, con
 
   // this means we're promoting the pawn
   if(RANKS_BOARD[from] == RANK_2) {
-    add_capture_move(board, MOVE(from,to,cap,bQ,0), list);
-    add_capture_move(board, MOVE(from,to,cap,bR,0), list);
-    add_capture_move(board, MOVE(from,to,cap,bB,0), list);
-    add_capture_move(board, MOVE(from,to,cap,bN,0), list);
+    add_capture_move(MOVE(from,to,cap,bQ,0), list);
+    add_capture_move(MOVE(from,to,cap,bR,0), list);
+    add_capture_move(MOVE(from,to,cap,bB,0), list);
+    add_capture_move(MOVE(from,to,cap,bN,0), list);
   } else {
-    add_capture_move(board, MOVE(from,to,cap,EMPTY,0), list);
+    add_capture_move(MOVE(from,to,cap,EMPTY,0), list);
   }
 }
 
 /**
  * I should stop adding headers to these functions...
  */
-static void add_white_pawn_move(const Board_t *board, const int32_t from, const int32_t to, MoveList_t *list) {
+static void add_white_pawn_move(const int32_t from, const int32_t to, MoveList_t *list) {
 
   ASSERT(square_on_board(from));
   ASSERT(square_on_board(to));
 
   // this means we're promoting the pawn
   if(RANKS_BOARD[from] == RANK_7) {
-    add_capture_move(board, MOVE(from,to,EMPTY,wQ,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,wR,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,wB,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,wN,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,wQ,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,wR,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,wB,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,wN,0), list);
   } else {
-    add_capture_move(board, MOVE(from,to,EMPTY,EMPTY,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,EMPTY,0), list);
   }
 }
 
 /**
  * I should stop adding headers to these functions...
  */
-static void add_black_pawn_move(const Board_t *board, const int32_t from, const int32_t to, MoveList_t *list) {
+static void add_black_pawn_move(const int32_t from, const int32_t to, MoveList_t *list) {
 
   ASSERT(square_on_board(from));
   ASSERT(square_on_board(to));
 
   // this means we're promoting the pawn
   if(RANKS_BOARD[from] == RANK_2) {
-    add_capture_move(board, MOVE(from,to,EMPTY,bQ,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,bR,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,bB,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,bN,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,bQ,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,bR,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,bB,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,bN,0), list);
   } else {
-    add_capture_move(board, MOVE(from,to,EMPTY,EMPTY,0), list);
+    add_capture_move(MOVE(from,to,EMPTY,EMPTY,0), list);
   }
 }
 
@@ -177,26 +177,26 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
 
       // in our representation, forward for white is + 10 coordinate points
       if(board->pieces[sq + 10] == EMPTY) {
-        add_white_pawn_move(board, sq, sq + 10, list);
+        add_white_pawn_move(sq, sq + 10, list);
         if(RANKS_BOARD[sq] == RANK_2 && board->pieces[sq + 20] == EMPTY) {
-          add_quiet_move(board, MOVE(sq, sq + 20, EMPTY, EMPTY, MFLAGPS), list);
+          add_quiet_move(MOVE(sq, sq + 20, EMPTY, EMPTY, MFLAGPS), list);
         }
       }
 
       // checking for white's pawn captures
       if(!SQOFFBOARD(sq + 9) && PIECE_COL[board->pieces[sq + 9]] == BLACK) {
-        add_white_pawn_capture(board, sq, sq + 9, board->pieces[sq + 9], list);
+        add_white_pawn_capture(sq, sq + 9, board->pieces[sq + 9], list);
       }
       if(!SQOFFBOARD(sq + 11) && PIECE_COL[board->pieces[sq + 11]] == BLACK) {
-        add_white_pawn_capture(board, sq, sq + 11, board->pieces[sq + 11], list);
+        add_white_pawn_capture(sq, sq + 11, board->pieces[sq + 11], list);
       }
 
       // check on croissant move
       if(sq + 9 == board->passant) {
-        add_enpassant_move(board, MOVE(sq, sq + 9, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(MOVE(sq, sq + 9, EMPTY, EMPTY, MFLAGEP), list);
       }
       if(sq + 11 == board->passant) {
-        add_enpassant_move(board, MOVE(sq, sq + 11, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(MOVE(sq, sq + 11, EMPTY, EMPTY, MFLAGEP), list);
       }
     }
 
@@ -207,7 +207,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & WKCAS) {
       if(board->pieces[F1] == EMPTY && board->pieces[G1] == EMPTY) {
         if(!square_attacked(E1, BLACK, board) && !square_attacked(F1, BLACK, board)) {
-          add_quiet_move(board, MOVE(E1, G1, EMPTY, EMPTY, MFLAGCAS), list);
+          add_quiet_move(MOVE(E1, G1, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -216,7 +216,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & WQCAS) {
       if(board->pieces[D1] == EMPTY && board->pieces[C1] == EMPTY && board->pieces[B1] == EMPTY) {
         if(!square_attacked(E1, BLACK, board) && !square_attacked(D1, BLACK, board)) {
-          add_quiet_move(board, MOVE(E1, C1, EMPTY, EMPTY, MFLAGCAS), list);
+          add_quiet_move(MOVE(E1, C1, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -228,26 +228,26 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
 
       // in our representation, forward for black is - 10 coordinate points
       if(board->pieces[sq - 10] == EMPTY) {
-        add_black_pawn_move(board, sq, sq - 10, list);
+        add_black_pawn_move(sq, sq - 10, list);
         if(RANKS_BOARD[sq] == RANK_7 && board->pieces[sq - 20] == EMPTY) {
-          add_quiet_move(board, MOVE(sq, sq - 20, EMPTY, EMPTY, MFLAGPS), list);
+          add_quiet_move(MOVE(sq, sq - 20, EMPTY, EMPTY, MFLAGPS), list);
         }
       }
 
       // checking for blacks's pawn captures
       if(!SQOFFBOARD(sq - 9) && PIECE_COL[board->pieces[sq - 9]] == WHITE) {
-        add_black_pawn_capture(board, sq, sq - 9, board->pieces[sq - 9], list);
+        add_black_pawn_capture(sq, sq - 9, board->pieces[sq - 9], list);
       }
       if(!SQOFFBOARD(sq - 11) && PIECE_COL[board->pieces[sq - 11]] == WHITE) {
-        add_black_pawn_capture(board, sq, sq - 11, board->pieces[sq - 11], list);
+        add_black_pawn_capture(sq, sq - 11, board->pieces[sq - 11], list);
       }
 
       // check on croissant move
       if(sq - 9 == board->passant) {
-        add_enpassant_move(board, MOVE(sq, sq - 9, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(MOVE(sq, sq - 9, EMPTY, EMPTY, MFLAGEP), list);
       }
       if(sq - 11 == board->passant) {
-        add_enpassant_move(board, MOVE(sq, sq - 11, EMPTY, EMPTY, MFLAGEP), list);
+        add_enpassant_move(MOVE(sq, sq - 11, EMPTY, EMPTY, MFLAGEP), list);
       }
     }
 
@@ -258,7 +258,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & BKCAS) {
       if(board->pieces[F8] == EMPTY && board->pieces[G8] == EMPTY) {
         if(!square_attacked(E8, WHITE, board) && !square_attacked(F8, WHITE, board)) {
-          add_quiet_move(board, MOVE(E8, G8, EMPTY, EMPTY, MFLAGCAS), list);
+          add_quiet_move(MOVE(E8, G8, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -267,7 +267,7 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
     if(board->castle_permission & BQCAS) {
       if(board->pieces[D8] == EMPTY && board->pieces[C8] == EMPTY && board->pieces[B8] == EMPTY) {
         if(!square_attacked(E8, WHITE, board) && !square_attacked(D8, WHITE, board)) {
-          add_quiet_move(board, MOVE(E8, C8, EMPTY, EMPTY, MFLAGCAS), list);
+          add_quiet_move(MOVE(E8, C8, EMPTY, EMPTY, MFLAGCAS), list);
         }
       }
     }
@@ -292,11 +292,11 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
         while(!SQOFFBOARD(temp_sq)) {
           if(board->pieces[temp_sq] != EMPTY) {
             if(PIECE_COL[board->pieces[temp_sq]] == (side ^ 1)) {
-              add_capture_move(board, MOVE(sq, temp_sq, board->pieces[temp_sq], EMPTY, 0), list);
+              add_capture_move(MOVE(sq, temp_sq, board->pieces[temp_sq], EMPTY, 0), list);
             }
             break;
           }
-          add_quiet_move(board, MOVE(sq, temp_sq, EMPTY, EMPTY, 0), list);
+          add_quiet_move(MOVE(sq, temp_sq, EMPTY, EMPTY, 0), list);
           temp_sq += dir; // increment the temp square by the direction to go to the next
                           // square
         }
@@ -326,11 +326,11 @@ void generate_all_moves(const Board_t *board, MoveList_t *list) {
           // little bit of bit magic where WHITE ^ 1 == BLACK and vice versa
           if(board->pieces[temp_sq] != EMPTY) {
             if(PIECE_COL[board->pieces[temp_sq]] == (side ^ 1)) {
-              add_capture_move(board, MOVE(sq, temp_sq, board->pieces[temp_sq], EMPTY, 0), list);
+              add_capture_move(MOVE(sq, temp_sq, board->pieces[temp_sq], EMPTY, 0), list);
             }
             continue;
           }
-          add_quiet_move(board, MOVE(sq, temp_sq, EMPTY, EMPTY, 0), list);
+          add_quiet_move(MOVE(sq, temp_sq, EMPTY, EMPTY, 0), list);
         } else {
           continue;
         }

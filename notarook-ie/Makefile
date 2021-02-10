@@ -4,10 +4,12 @@
 ########################################################################
 
 # STEP 1: Create variables used
-C_FLAGS   = -c -std=c99 -pedantic -Wall -D__EXTENSIONS__
+# why so many warnings flags? because it's good practice to be warning and error free
+# the -Werror flag turns any compiler warnings into errors
+C_FLAGS   = -c -std=c99 -pedantic -Wall -Wextra -Werror -D__EXTENSIONS__
 OPT       = -O3
 D_FLAG    = -g
-LD_FLAGS  = -Wall
+LD_FLAGS  = -Wall -Wextra -Werror
 EXE       = notarookie
 TEST      = stresstest
 GCC       = gcc
