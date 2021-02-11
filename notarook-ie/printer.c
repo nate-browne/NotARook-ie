@@ -23,7 +23,7 @@ char * print_square(const int32_t sqr) {
 /**
  * Returns a string for printing out a move
  */
-char * print_move(const int32_t move) {
+char * print_move(const uint32_t move) {
 
   static char ret_mv_str[6];
 
@@ -58,7 +58,7 @@ char * print_move(const int32_t move) {
  *
  * Could this have been written better? yes. Do I care? no
  */
-int32_t parse_move(char *str, Board_t *board) {
+uint32_t parse_move(char *str, Board_t *board) {
 
   // error check
   // yes, this assumes the formatting is very specific but ¯\_(ツ)_/¯
@@ -74,7 +74,7 @@ int32_t parse_move(char *str, Board_t *board) {
 
   MoveList_t list;
   generate_all_moves(board, &list);
-  int32_t move = NOMOVE, promotion_piece = EMPTY;
+  uint32_t move = NOMOVE, promotion_piece = EMPTY;
 
   for(int32_t ind = 0; ind < list.count; ++ind) {
     move = list.moves[ind].move;

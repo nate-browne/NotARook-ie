@@ -162,7 +162,7 @@ void take_move(Board_t *board) {
   board->ply--;
 
   // grab the move before our illegal move
-  int32_t move = board->history[board->hist_ply].move_played;
+  uint32_t move = board->history[board->hist_ply].move_played;
   int32_t from = FROMSQ(move);
   int32_t to = TOSQ(move);
 
@@ -238,7 +238,7 @@ void take_move(Board_t *board) {
  * Returns false if the side that made the move is in
  * check afterwards
  */
-bool make_move(Board_t *board, int32_t move) {
+bool make_move(Board_t *board, uint32_t move) {
 
   check_board(board);
 
