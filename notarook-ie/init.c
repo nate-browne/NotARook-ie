@@ -25,7 +25,7 @@ int32_t RANKS_BOARD[BOARD_SQ_NUM];
 /**
  * Function to generate a random 64 bit unsigned integer
  */
-uint64_t RAND_64(void) {
+static uint64_t RAND_64(void) {
   uint64_t ret = rand();
   ret |= ((uint64_t)rand() << 15);
   ret |= ((uint64_t)rand() << 30);

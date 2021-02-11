@@ -14,7 +14,6 @@
 
 /* init.c */
 extern void init_all(void);
-extern uint64_t RAND_64(void);
 
 /* bboard.c */
 extern void print_bboard(const uint64_t);
