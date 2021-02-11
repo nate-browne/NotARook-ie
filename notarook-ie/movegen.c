@@ -51,7 +51,7 @@ static const int32_t PIECE_DIR[13][8] = {
 /**
  * Moves not involving captures
  */
-static void add_quiet_move(int32_t move, MoveList_t *list) {
+static void add_quiet_move(uint32_t move, MoveList_t *list) {
   list->moves[list->count].move = move;
   list->moves[list->count].score = 0;
   list->count++;
@@ -60,7 +60,7 @@ static void add_quiet_move(int32_t move, MoveList_t *list) {
 /**
  * ...you can guess what this does
  */
-static void add_capture_move(int32_t move, MoveList_t *list) {
+static void add_capture_move(uint32_t move, MoveList_t *list) {
   list->moves[list->count].move = move;
   list->moves[list->count].score = 0;
   list->count++;
@@ -69,7 +69,7 @@ static void add_capture_move(int32_t move, MoveList_t *list) {
 /**
  * this one too
  */ 
-static void add_enpassant_move(int32_t move, MoveList_t *list) {
+static void add_enpassant_move(uint32_t move, MoveList_t *list) {
   list->moves[list->count].move = move;
   list->moves[list->count].score = 0;
   list->count++;
