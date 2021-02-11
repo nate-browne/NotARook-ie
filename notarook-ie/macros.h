@@ -48,4 +48,7 @@
 #define HASH_SIDE (board->hashkey ^= SIDE_KEY)
 #define HASH_PAS (board->hashkey ^= (PIECE_KEYS[EMPTY][board->passant]))
 
+/* macro for using the mirror array in evaluate.c */
+#define MIRROR64(sq) (MIRROR_64[(sq)])
+
 #endif

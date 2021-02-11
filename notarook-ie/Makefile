@@ -1,13 +1,13 @@
 ########################################################################
 # This inner makefile actually does the work of the compilation.
-# See line 49 for the only reason this makefile should be edited (probably).
+# See line 50 for the only reason this makefile should be edited (probably).
 ########################################################################
 
 # STEP 1: Create variables used
 # why so many warnings flags? because it's good practice to be warning and error free
 # the -Werror flag turns any compiler warnings into errors
-C_FLAGS   = -c -std=c99 -pedantic -Wall -Wextra -Werror -D__EXTENSIONS__
-OPT       = -O3
+C_FLAGS   = -c -std=c99 -pedantic -Wall -Wextra -D__EXTENSIONS__
+OPT       = -O3 -Werror
 D_FLAG    = -g
 LD_FLAGS  = -Wall -Wextra -Werror
 EXE       = notarookie
@@ -33,7 +33,8 @@ HEADERS   = constants.h functions.h macros.h enums.h
 
 # These are the C source files for the engine executable
 SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
-            printer.c movegen.c validation.c makemove.c perft.c search.c util.c
+            printer.c movegen.c validation.c makemove.c perft.c search.c util.c \
+	    hashset.c evaluate.c
 
 # These are the C source files for the perft testing executable
 TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \

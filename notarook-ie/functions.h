@@ -51,16 +51,26 @@ extern bool piece_valid_empty(const int32_t);
 extern bool piece_valid(const int32_t);
 
 /* makemove.c */
-bool make_move(Board_t *, uint32_t);
-void take_move(Board_t *);
+extern bool make_move(Board_t *, uint32_t);
+extern void take_move(Board_t *);
+extern bool move_exists(Board_t *, const uint32_t);
 
 /* perft.c */
 extern uint64_t perft_test(int32_t, Board_t *, bool);
 
 /* search.c */
-extern void search_position(Board_t *);
+extern void search_position(Board_t *, SearchInfo_t *);
 
 /* util.c */
 extern long get_time_millis(void);
+
+/* hashset.c */
+extern void init_hashset(PVTable_t *);
+extern void store_move(Board_t *, const uint32_t);
+extern uint32_t find_move(const Board_t *);
+extern int32_t get_pv_line(const int32_t, Board_t *);
+
+/* evaluate.c */
+extern int32_t eval_position(const Board_t *);
 
 #endif

@@ -154,6 +154,23 @@ static void add_black_pawn_move(const int32_t from, const int32_t to, MoveList_t
 }
 
 /**
+ * Function to check if a given moves exists for the given
+ * board position
+ */
+bool move_exists(Board_t *board, const uint32_t move) {
+  MoveList_t list;
+  generate_all_moves(board, &list);
+
+  for(int32_t index = 0; index < list.count; ++index) {
+    if(!make_move(board, list.moves[index].move)) continue;
+
+    take_move(board);
+    if(list.moves[index].move == move) return true;
+  }
+  return false;
+}
+
+/**
  * Generate all moves for a given board position
  */
 void generate_all_moves(const Board_t *board, MoveList_t *list) {

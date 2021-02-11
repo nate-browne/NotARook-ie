@@ -67,10 +67,17 @@ exit(1);}
 #define BOARD_SQ_NUM 120
 #define STANDARD_BOARD_SIZE 64
 
+// max search depth to use
+#define MAX_DEPTH 64
+
 // why this value in particular? no freaking idea.
 // it just worked so... ¯\_(ツ)_/¯
 // you can find more about it here: https://www.chessprogramming.org/Looking_for_Magics
 #define MAGIC_BIT_NUM 0x783A9B23
+
+// initial size of our hashset
+// should be ~2MB
+#define HASHSET_SIZE 0x10000000000
 
 // Struct used to store moves so that we can undo moves later (hence the name)
 // For definitions of each member of the struct, see the board representation
@@ -128,6 +135,37 @@ typedef struct MoveList {
   int32_t count;
 } MoveList_t;
 
+// Entries to our hashset are of this type
+// hold the hashkey for that position as well as the move
+// These are entries that are better than alpha when alpha-beta searching
+typedef struct PVEntry {
+  uint64_t hashkey;
+  uint32_t move;
+} PVEntry_t;
+
+// Definition of our hashset
+// Contains an array of entries as well as how many entries we have
+typedef struct PVTable {
+  PVEntry_t *table;
+  unsigned long entries;
+} PVTable_t;
+
+// struct for holding relevant search tree info
+typedef struct SearchInfo {
+  long starttime;
+  long stoptime;
+  int32_t depth;
+  int32_t max_depth;
+  int32_t max_time;
+  int32_t moves_to_go;
+
+  long nodes; // count of nodes visited
+
+  bool quit; // this is to end the program
+  bool stopped; // this is to stop the search
+  bool infinite; // no time control, search as much as possible
+} SearchInfo_t;
+
 // our board representation
 typedef struct Board {
 
@@ -159,6 +197,20 @@ typedef struct Board {
   // 13 instead of 12 cause of EMPTY at pos 0 in the PIECES enum
   // used to speed up move gen and the search stage
   int32_t piece_list[13][10];
+
+  // instance of our hashset
+  PVTable_t pvt;
+
+  // array of moves stored for a best line
+  uint32_t pv_array[MAX_DEPTH];
+
+  // both of the following arrays are for storing non-captures
+
+  // increment the piece types number if a move beats alpha
+  uint32_t search_history[13][BOARD_SQ_NUM];
+
+  // two moves that most recently caused a beta cutoff
+  uint32_t search_killers[2][MAX_DEPTH];
 
 } Board_t;
 

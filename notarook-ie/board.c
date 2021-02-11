@@ -372,6 +372,7 @@ void reset_board(Board_t *board) {
 
   board->hashkey = (uint64_t)0;
 
+  init_hashset(&board->pvt);
 }
 
 /**

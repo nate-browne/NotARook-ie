@@ -31,9 +31,20 @@ int main(void) {
       take_move(&board);
     } else if(*input == 'p') {
       perft_test(4, &board, false);
+    } else if(*input == 'r') {
+      int32_t max = get_pv_line(4, &board);
+      printf("principal variation line of %d moves: ", max);
+      for(int ind = 0; ind < max; ++ind) {
+        move = board.pv_array[ind];
+        printf(" %s", print_move(move));
+      }
+      printf("\n");
     } else {
       move = parse_move(input, &board);
-      if(move) make_move(&board, move);
+      if(move) {
+        store_move(&board, move);
+        make_move(&board, move);
+      }
     }
 
     move = NOMOVE;
