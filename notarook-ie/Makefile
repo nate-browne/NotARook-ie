@@ -1,6 +1,6 @@
 ########################################################################
 # This inner makefile actually does the work of the compilation.
-# See line 47 for the only reason this makefile should be edited (probably).
+# See line 49 for the only reason this makefile should be edited (probably).
 ########################################################################
 
 # STEP 1: Create variables used
@@ -33,7 +33,7 @@ HEADERS   = constants.h functions.h macros.h enums.h
 
 # These are the C source files for the engine executable
 SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
-            printer.c movegen.c validation.c makemove.c perft.c
+            printer.c movegen.c validation.c makemove.c perft.c search.c util.c
 
 # These are the C source files for the perft testing executable
 TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \

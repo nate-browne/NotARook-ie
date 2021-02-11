@@ -57,4 +57,10 @@ void take_move(Board_t *);
 /* perft.c */
 extern uint64_t perft_test(int32_t, Board_t *, bool);
 
+/* search.c */
+extern void search_position(Board_t *);
+
+/* util.c */
+extern long get_time_millis(void);
+
 #endif
