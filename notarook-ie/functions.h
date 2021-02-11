@@ -66,6 +66,7 @@ extern long get_time_millis(void);
 
 /* hashset.c */
 extern void init_hashset(PVTable_t *);
+extern void clear_hashset(PVTable_t *);
 extern void store_move(Board_t *, const uint32_t);
 extern uint32_t find_move(const Board_t *);
 extern int32_t get_pv_line(const int32_t, Board_t *);

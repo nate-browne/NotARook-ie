@@ -14,10 +14,12 @@ int main(void) {
   init_all();
 
   Board_t board;
+  board.pvt.table = NULL;
+  SearchInfo_t info;
   char input[6];
   int32_t move = NOMOVE;
 
-  parse_FEN(START_FEN, &board);
+  parse_FEN(MIN3, &board);
 
   while(true) {
     print_board(&board);
@@ -31,14 +33,9 @@ int main(void) {
       take_move(&board);
     } else if(*input == 'p') {
       perft_test(4, &board, false);
-    } else if(*input == 'r') {
-      int32_t max = get_pv_line(4, &board);
-      printf("principal variation line of %d moves: ", max);
-      for(int ind = 0; ind < max; ++ind) {
-        move = board.pv_array[ind];
-        printf(" %s", print_move(move));
-      }
-      printf("\n");
+    } else if(*input == 's') {
+      info.depth = 4;
+      search_position(&board, &info);
     } else {
       move = parse_move(input, &board);
       if(move) {

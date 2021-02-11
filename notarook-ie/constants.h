@@ -56,6 +56,8 @@ exit(1);}
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
+#define MIN3 "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w  - -"
+
 
 // number in half-moves
 // this is a safe assumption; I don't think games can be 1024 full turns
@@ -76,8 +78,7 @@ exit(1);}
 #define MAGIC_BIT_NUM 0x783A9B23
 
 // initial size of our hashset
-// should be ~2MB
-#define HASHSET_SIZE 0x10000000000
+#define HASHSET_SIZE 0x10000000
 
 // Struct used to store moves so that we can undo moves later (hence the name)
 // For definitions of each member of the struct, see the board representation
@@ -120,6 +121,8 @@ typedef struct Undo {
 
 // for alpha beta evaluation
 #define NOMOVE 0
+#define MATE 29000
+#define INFINITY 40000
 
 
 // Struct for representing a move
@@ -164,6 +167,10 @@ typedef struct SearchInfo {
   bool quit; // this is to end the program
   bool stopped; // this is to stop the search
   bool infinite; // no time control, search as much as possible
+
+  // indicators for seeing how good the searching is
+  float fail_high;
+  float fail_high_first; // found best move first
 } SearchInfo_t;
 
 // our board representation

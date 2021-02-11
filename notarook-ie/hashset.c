@@ -19,12 +19,13 @@ int32_t get_pv_line(const int32_t depth, Board_t *board) {
   uint32_t move = find_move(board);
   int32_t count = 0; // number of moves we're putting into the array
 
-  while(move && count < depth) {
+  while(move != NOMOVE && count < depth) {
     ASSERT(count < MAX_DEPTH);
 
     if(move_exists(board, move)) {
       make_move(board, move);
-      board->pv_array[count++] = move;
+      board->pv_array[count] = move;
+      ++count;
     } else {
       break; // illegal move
     }
