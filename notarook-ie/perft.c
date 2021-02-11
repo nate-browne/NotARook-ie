@@ -55,7 +55,7 @@ uint64_t perft_test(int32_t depth, Board_t *board, bool stress) {
   MoveList_t list;
   generate_all_moves(board, &list);
 
-  long start = get_time_millis();
+  int32_t start = get_time_millis();
   for(int32_t move_num = 0; move_num < list.count; ++move_num) {
 
     int32_t move = list.moves[move_num].move;
@@ -70,8 +70,8 @@ uint64_t perft_test(int32_t depth, Board_t *board, bool stress) {
     if(!stress) printf("move %d (%s): %lld possible positions\n", move_num + 1, print_move(move), leaves);
   }
 
-  long end = get_time_millis();
-  if(!stress) printf("\nTest complete. %lld leaf nodes visited. Time elapsed: %ld ms\n", total, end - start);
+  int32_t end = get_time_millis();
+  if(!stress) printf("\nTest complete. %lld leaf nodes visited. Time elapsed: %d ms\n", total, end - start);
 
   return total;
 }

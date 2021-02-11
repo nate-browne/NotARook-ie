@@ -11,9 +11,11 @@
  */
 static void check_up(SearchInfo_t *info) {
   // we've run out of time
-  if(info->max_time == true && get_time_millis() > info->stoptime) {
+  if(info->timeset && get_time_millis() > info->stoptime) {
     info->stopped = true;
   }
+
+  read_input(info);
 }
 
 /**
@@ -76,7 +78,6 @@ static void clear_for_search(SearchInfo_t *info, Board_t *board) {
   clear_hashset(&board->pvt);
   board->ply = 0;
 
-  info->starttime = get_time_millis();
   info->stopped = false;
   info->nodes = 0;
   info->fail_high = info->fail_high_first = 0.0;
@@ -270,7 +271,7 @@ void search_position(Board_t *board, SearchInfo_t *info) {
 
     // next, get the best move
     best_move = board->pv_array[0];
-    printf("info score cp %d depth %d nodes %ld time %ld ",
+    printf("info score cp %d depth %d nodes %ld time %d ",
       best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
 
     pv_moves = get_pv_line(curr_depth, board);
@@ -279,7 +280,6 @@ void search_position(Board_t *board, SearchInfo_t *info) {
       printf(" %s", print_move(board->pv_array[idx]));
     }
     printf("\n");
-    printf("Ordering:%.2f\n", (info->fail_high_first / info->fail_high));
   }
 
   printf("bestmove %s\n", print_move(best_move));

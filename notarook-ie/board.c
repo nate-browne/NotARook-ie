@@ -322,10 +322,6 @@ bool parse_FEN(char *fen, Board_t *board) {
     if(*fen) fen++;
   }
 
-  // should be at the end of the string now
-  ASSERT(!*fen || *fen == ' ');
-
-
   board->hashkey = generate_hashkeys(board);
 
   // set the values of the board material up before returning

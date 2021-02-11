@@ -81,6 +81,9 @@ exit(1);}
 // initial size of our hashset
 #define HASHSET_SIZE 0x10000000
 
+// size of buffer used for UCI loop. should be plenty large
+#define INPUT_BUFFER_SIZE 2400
+
 // Struct used to store moves so that we can undo moves later (hence the name)
 // For definitions of each member of the struct, see the board representation
 // Note: statuses are for before the move was played
@@ -156,18 +159,16 @@ typedef struct PVTable {
 
 // struct for holding relevant search tree info
 typedef struct SearchInfo {
-  long starttime;
-  long stoptime;
+  int32_t starttime;
+  int32_t stoptime;
   int32_t depth;
-  int32_t max_depth;
-  int32_t max_time;
+  bool timeset;
   int32_t moves_to_go;
 
   long nodes; // count of nodes visited
 
   bool quit; // this is to end the program
   bool stopped; // this is to stop the search
-  bool infinite; // no time control, search as much as possible
 
   // indicators for seeing how good the searching is
   float fail_high;

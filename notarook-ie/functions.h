@@ -63,7 +63,8 @@ extern uint64_t perft_test(int32_t, Board_t *, bool);
 extern void search_position(Board_t *, SearchInfo_t *);
 
 /* util.c */
-extern long get_time_millis(void);
+extern int32_t get_time_millis(void);
+extern void read_input(SearchInfo_t *info);
 
 /* hashset.c */
 extern void init_hashset(PVTable_t *);
@@ -74,5 +75,8 @@ extern int32_t get_pv_line(const int32_t, Board_t *);
 
 /* evaluate.c */
 extern int32_t eval_position(const Board_t *);
+
+/* uci.c */
+extern void UCI_loop(void);
 
 #endif
