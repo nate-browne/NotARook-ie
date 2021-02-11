@@ -36,6 +36,8 @@ int main(void) {
       perft_test(4, &board, false);
     } else if(*input == 's') {
       info.depth = 6;
+      info.starttime = get_time_millis();
+      info.stoptime = get_time_millis() + 200000;
       search_position(&board, &info);
     } else {
       move = parse_move(input, &board);

@@ -9,7 +9,11 @@
  * Called every so often to check if the time is up or the GUI
  * has sent an interrupt
  */
-static void check_up() {
+static void check_up(SearchInfo_t *info) {
+  // we've run out of time
+  if(info->max_time == true && get_time_millis() > info->stoptime) {
+    info->stopped = true;
+  }
 }
 
 /**
@@ -86,6 +90,10 @@ static void clear_for_search(SearchInfo_t *info, Board_t *board) {
 static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInfo_t *info) {
 
   check_board(board);
+
+  // check every 2048 nodes to see if we've run out of time
+  if(!(info->nodes & 2047)) check_up(info);
+
   info->nodes++;
 
   // if we have a draw by repetition or by the 50 move rule
@@ -109,7 +117,6 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
   int32_t old_alpha = alpha;
   uint32_t best_move = NOMOVE;
   score = -INFINITY;
-  uint32_t pv_move = find_move(board);
 
   for(idx = 0; idx < list.count; ++idx) {
     pick_next_move(idx, &list);
@@ -118,6 +125,8 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
     ++legal;
     score = -quiescence(-beta, -alpha, board, info);
     take_move(board);
+
+    if(info->stopped) return 0;
 
     // we found a good move
     if(score > alpha) {
@@ -148,10 +157,11 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
 
   check_board(board);
 
-  // evaluate the position if depth == 0 and return that
-  if(!depth) {
-    return quiescence(alpha, beta, board, info);
-  }
+  // use quiescence to evaluate depth 0 to avoid the horizon effect
+  if(!depth) return quiescence(alpha, beta, board, info);
+
+  // check every 2048 nodes to see if we've run out of time
+  if(!(info->nodes & 2047)) check_up(info);
 
   info->nodes++;
 
@@ -192,6 +202,8 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
     // bounds are flipped cause we're looking from the opposite perspective
     score = -alpha_beta_search(-beta, -alpha, depth - 1, board, info, true);
     take_move(board);
+
+    if(info->stopped) return 0;
 
     if(score > alpha) {
       if(score >= beta) {
@@ -250,21 +262,25 @@ void search_position(Board_t *board, SearchInfo_t *info) {
     // first, find the best move
     best_score = alpha_beta_search(-INFINITY, INFINITY, curr_depth, board, info, true);
 
+    if(info->stopped) break;
+
 
     // get (and print out) the pv line for the depth
     pv_moves = get_pv_line(curr_depth, board);
 
     // next, get the best move
     best_move = board->pv_array[0];
-    fprintf(stderr, "Depth: %d score: %d move: %s, nodes: %ld ",
-      curr_depth, best_score, print_move(best_move), info->nodes);
+    printf("info score cp %d depth %d nodes %ld time %ld ",
+      best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
 
     pv_moves = get_pv_line(curr_depth, board);
-    fprintf(stderr, "pv: ");
+    printf("pv");
     for(int32_t idx = 0; idx < pv_moves; ++idx) {
-      fprintf(stderr, " %s", print_move(board->pv_array[idx]));
+      printf(" %s", print_move(board->pv_array[idx]));
     }
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Ordering:%.2f\n", (info->fail_high_first / info->fail_high));
+    printf("\n");
+    printf("Ordering:%.2f\n", (info->fail_high_first / info->fail_high));
   }
+
+  printf("bestmove %s\n", print_move(best_move));
 }
