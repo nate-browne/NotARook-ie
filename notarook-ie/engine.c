@@ -7,8 +7,6 @@
 #include "constants.h"
 #include "functions.h"
 
-#define TEMPFEN "n1n5/PPPk4/8/8/8/8/4Kppp/5N1N w - - 0 1"
-
 /**
  * The function that starts it all.
  */
@@ -19,7 +17,7 @@ int main(void) {
   char input[6];
   int32_t move = NOMOVE;
 
-  parse_FEN(TEMPFEN, &board);
+  parse_FEN(START_FEN, &board);
 
   while(true) {
     print_board(&board);
@@ -31,6 +29,8 @@ int main(void) {
 
     if(*input == 't') {
       take_move(&board);
+    } else if(*input == 'p') {
+      perft_test(4, &board, false);
     } else {
       move = parse_move(input, &board);
       if(move) make_move(&board, move);
