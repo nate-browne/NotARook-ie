@@ -15,11 +15,12 @@ int main(void) {
 
   Board_t board;
   board.pvt.table = NULL;
+  init_hashset(&board.pvt);
   SearchInfo_t info;
   char input[6];
   int32_t move = NOMOVE;
 
-  parse_FEN(MIN3, &board);
+  parse_FEN(MIN1, &board);
 
   while(true) {
     print_board(&board);
@@ -34,7 +35,7 @@ int main(void) {
     } else if(*input == 'p') {
       perft_test(4, &board, false);
     } else if(*input == 's') {
-      info.depth = 4;
+      info.depth = 6;
       search_position(&board, &info);
     } else {
       move = parse_move(input, &board);
@@ -48,5 +49,6 @@ int main(void) {
     fflush(stdin);
   }
 
+  free(board.pvt.table);
   return EXIT_SUCCESS;
 }

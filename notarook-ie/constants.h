@@ -32,7 +32,7 @@
  * that no matter what OS runs this code, the size will be the same.
  */
 
-#define DEBUG
+//#define DEBUG
 
 // kind of messy, but this whole mess allows us to throw in
 // assert debug statements without mass commenting them out later
@@ -57,6 +57,7 @@ exit(1);}
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 #define MIN3 "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w  - -"
+#define MIN1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
 
 // number in half-moves

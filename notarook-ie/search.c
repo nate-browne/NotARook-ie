@@ -13,6 +13,29 @@ static void check_up() {
 }
 
 /**
+ * Swaps out the move we're looking at to find the better score at that point
+ */
+static void pick_next_move(int32_t move_num, MoveList_t *list) {
+  Move_t temp;
+  int32_t best_score = 0;
+  int32_t index;
+  int32_t best_num = move_num;
+
+  // find the best move
+  for(index = move_num; index < list->count; ++index) {
+    if(list->moves[index].score > best_score) {
+      best_score = list->moves[index].score;
+      best_num = index;
+    }
+  }
+
+  // swap out the move at our index for the best move
+  temp = list->moves[move_num];
+  list->moves[move_num] = list->moves[best_num];
+  list->moves[best_num] = temp;
+}
+
+/**
  * Detects if a given board position is a repeat
  */
 static bool is_repetition(const Board_t *board) {
@@ -61,7 +84,61 @@ static void clear_for_search(SearchInfo_t *info, Board_t *board) {
  * Check the chess programming wiki for more about this
  */
 static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInfo_t *info) {
-  return 0;
+
+  check_board(board);
+  info->nodes++;
+
+  // if we have a draw by repetition or by the 50 move rule
+  if(is_repetition(board) || board->move_counter >= 100) return 0;
+
+  // we've reached the deepest we will search in our board
+  if(board->ply > MAX_DEPTH - 1) return eval_position(board);
+
+  int32_t score = eval_position(board);
+
+  // if by doing nothing we have a better position, just return
+  if(score >= beta) return beta;
+
+  if(score > alpha) alpha = score;
+
+  // this next bit is basically just alpha-beta search again
+  MoveList_t list;
+  generate_all_captures(board, &list);
+  int32_t idx;
+  int32_t legal = 0;
+  int32_t old_alpha = alpha;
+  uint32_t best_move = NOMOVE;
+  score = -INFINITY;
+  uint32_t pv_move = find_move(board);
+
+  for(idx = 0; idx < list.count; ++idx) {
+    pick_next_move(idx, &list);
+    if(!make_move(board, list.moves[idx].move)) continue;
+
+    ++legal;
+    score = -quiescence(-beta, -alpha, board, info);
+    take_move(board);
+
+    // we found a good move
+    if(score > alpha) {
+      if(score >= beta) {
+        if(legal == 1) info->fail_high_first++;
+
+        info->fail_high++;
+        return beta; // beta cutoff
+      }
+      alpha = score;
+      best_move = list.moves[idx].move;
+    }
+  }
+
+  // this means our best move now is better than our previous, so
+  // put it as part of the best line
+  if(alpha != old_alpha) {
+    store_move(board, best_move);
+  }
+
+  return alpha;
 }
 
 /**
@@ -73,21 +150,16 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
 
   // evaluate the position if depth == 0 and return that
   if(!depth) {
-    info->nodes++;
-    return eval_position(board);
+    return quiescence(alpha, beta, board, info);
   }
 
   info->nodes++;
 
   // if we have a draw by repetition or by the 50 move rule
-  if(is_repetition(board) || board->move_counter >= 100) {
-    return 0;
-  }
+  if(is_repetition(board) || board->move_counter >= 100) return 0;
 
   // we've reached the deepest we will search in our board
-  if(board->ply > MAX_DEPTH - 1) {
-    return eval_position(board);
-  }
+  if(board->ply > MAX_DEPTH - 1) return eval_position(board);
 
   MoveList_t list;
   generate_all_moves(board, &list);
@@ -97,8 +169,21 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
   int32_t old_alpha = alpha;
   uint32_t best_move = NOMOVE;
   int32_t score = -INFINITY;
+  uint32_t pv_move = find_move(board);
+
+  // we're still in the main line, so search that main line move first
+  if(pv_move != NOMOVE) {
+    for(idx = 0; idx < list.count; ++idx) {
+      if(list.moves[idx].move == pv_move) {
+        list.moves[idx].score = 2000000;
+        break;
+      }
+    }
+  }
 
   for(idx = 0; idx < list.count; ++idx) {
+
+    pick_next_move(idx, &list);
     if(!make_move(board, list.moves[idx].move)) continue;
 
     ++legal;
@@ -113,11 +198,22 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
         if(legal == 1) info->fail_high_first++;
 
         info->fail_high++;
+
+        // non capture moves that cause beta cutoffs are killers
+        if(!(list.moves[idx].move & MFLAGCAP)) {
+          board->search_killers[1][board->ply] = board->search_killers[0][board->ply];
+          board->search_killers[0][board->ply] = list.moves[idx].move;
+        }
         return beta; // beta cutoff
       }
 
       alpha = score;
       best_move = list.moves[idx].move;
+
+      // non capture moves that beat alpha are history improvers
+      if(!(list.moves[idx].move & MFLAGCAP)) {
+        board->search_history[board->pieces[FROMSQ(best_move)]][TOSQ(best_move)] += depth;
+      }
     }
   }
 
@@ -163,6 +259,7 @@ void search_position(Board_t *board, SearchInfo_t *info) {
     fprintf(stderr, "Depth: %d score: %d move: %s, nodes: %ld ",
       curr_depth, best_score, print_move(best_move), info->nodes);
 
+    pv_moves = get_pv_line(curr_depth, board);
     fprintf(stderr, "pv: ");
     for(int32_t idx = 0; idx < pv_moves; ++idx) {
       fprintf(stderr, " %s", print_move(board->pv_array[idx]));
@@ -171,4 +268,3 @@ void search_position(Board_t *board, SearchInfo_t *info) {
     fprintf(stderr, "Ordering:%.2f\n", (info->fail_high_first / info->fail_high));
   }
 }
-

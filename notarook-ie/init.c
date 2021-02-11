@@ -4,6 +4,7 @@
  * board setup and initialization.
  */
 
+#include "functions.h"
 #include "constants.h"
 
 // these are initially declared in constants.h
@@ -123,4 +124,5 @@ void init_all(void) {
   init_bit_masks();
   init_hashkeys();
   init_files_ranks_arrays();
+  init_MVV_LVA();
 }

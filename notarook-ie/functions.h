@@ -42,6 +42,8 @@ extern uint32_t parse_move(char *, Board_t *);
 
 /* movegen.c */
 extern void generate_all_moves(const Board_t *, MoveList_t *);
+extern void generate_all_captures(const Board_t *, MoveList_t *);
+extern void init_MVV_LVA(void);
 
 /* validation.c */
 extern bool square_on_board(const int32_t);
