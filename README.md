@@ -41,23 +41,22 @@ Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to se
 5. Set up the game
     * First, type `new` to initialize the board
     * Type `nopost` to hide the engine's thought process from you
-    * You can now set the depth (how far ahead you want the engine to think), the time (how many seconds you want the engine to be able to think), or both to limit the engine's output time. If neither are set, the engine will calculate till depth 64 (however long that may take [could be a while!])
+    * You can now set the depth (how far ahead you want the engine to think), the time (how many seconds you want the engine to be able to think), or both to limit the engine's output time. If neither are set, the engine will calculate till depth 64, however long that may take (could be a while!)
         * depth is set with `depth x` where `x` is an integer
         * time is set with `time x` where `x` is an integer in seconds
         * you can type `view` to see the current settings
-    * To play the white pieces, type a move. To play black, type `go` to tell the engine to play a move
+    * To play the white pieces, type a move. To play black, type `go` to tell the engine to play a move first, then play your move.
         * moves are entered in long algebraic notation:
             * "1. d4" is written as "d2d4"
             * "O-O" is written as "e1g1" (for white)
             * captures are written by just moving the piece to the square
             * promotion is written as "e7e8q" (for promotion to queen)
-        * After playing your move, you _must_ type `go` to have the engine play it's move.
+        * The engine will automatically respond to your move
     * You can print the current board state with `print`
 
-**WARNING**: The engine in console mode is somewhat difficult to read since it displays everything in text on screen. It may help to have a board open (either physically or on chess.com/lichess.org) as well, but make sure that you _turn off_ engine evaluation on those online tools so that you're not cheating :)
+**WARNING**: The engine in console mode is somewhat difficult to read since it displays everything in text on screen. It may help to have a board open (either physically or on chess.com/lichess.org) as well to make the move you see for better readability, but make sure that you _turn off_ engine evaluation on those online tools so that you're not cheating :)
 
 ### Acknowledgements
-Shoutout to [Bluefever software](https://www.youtube.com/user/BlueFeverSoft) for providing a basic guide to the steps for implementing this engine over on YouTube. It really
-helped keep me from floundering around trying to guess on what to do next.
+Shoutout to [Bluefever software](https://www.youtube.com/user/BlueFeverSoft) for providing a basic guide to the steps for implementing a chess engine over on YouTube. It really helped keep me from floundering around trying to guess on what task to do next.
 
 Shoutout to [@sccontre](http://github.com/sccontre) for giving me the name for this engine.
