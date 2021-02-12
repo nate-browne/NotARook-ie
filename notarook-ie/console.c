@@ -38,6 +38,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
   int32_t depth = MAX_DEPTH, movetime = 0;
   enum COLORS engine_side = BLACK;
   uint32_t move = NOMOVE;
+  bool res;
 
   char in[XBOARD_BUFFER_SIZE], cmd[XBOARD_BUFFER_SIZE];
 
@@ -47,8 +48,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
 
     fflush(stdout);
 
-    bool result = check_result(board);
-    if(board->side == engine_side && !result) {
+    if(board->side == engine_side && !(res = check_result(board))) {
       info->starttime = get_time_millis();
       info->depth = depth;
 
@@ -58,7 +58,11 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
       }
 
       search_position(board, info);
-    } else if(result) {
+    }
+
+    // check if the game is over now after the engine moves
+    if(res) {
+      print_board(board);
       printf("gg! Type `new` to set up a new game or `quit` to quit.\n");
     }
 
@@ -154,7 +158,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     // if cmd is none of these, assume it is a move
     move = parse_move(in, board);
     if(move == NOMOVE) {
-      printf("Unknown command: %s\n", in);
+      printf("Unknown command/illegal move: %s\n", in);
       continue;
     }
 
