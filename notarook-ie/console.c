@@ -36,7 +36,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
   setvbuf(stdout, NULL, _IONBF, 0);
 
   int32_t depth = MAX_DEPTH, movetime = 0;
-  int32_t engine_side = BLACK;
+  enum COLORS engine_side = BLACK;
   uint32_t move = NOMOVE;
 
   char in[XBOARD_BUFFER_SIZE], cmd[XBOARD_BUFFER_SIZE];

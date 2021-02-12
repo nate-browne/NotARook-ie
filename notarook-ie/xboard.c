@@ -123,7 +123,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
 
   int32_t depth = -1, movestogo[2] = {30, 30}, movetime = -1;
   int32_t time = -1, incr = 0;
-  int32_t engine_side = BOTH;
+  enum COLORS engine_side = BOTH;
   int32_t time_left;
   int32_t sec;
   int32_t mps; // moves per session

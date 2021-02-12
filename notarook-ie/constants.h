@@ -191,7 +191,7 @@ typedef struct Board {
 
   int32_t kings_sq[2]; // tels what square the king is on
 
-  bool side; // which side is supposed to move next (0 white, 1 black)
+  enum COLORS side; // which side is supposed to move next
   int32_t passant; // set if an en passant square is available
   int32_t move_counter; // check out the 50 rule move for chess
                         // for us, this is one hundo cause we count half moves
