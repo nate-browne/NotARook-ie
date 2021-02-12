@@ -81,8 +81,11 @@ exit(1);}
 // initial size of our hashset
 #define HASHSET_SIZE 0x10000000
 
-// size of buffer used for UCI loop. should be plenty large
-#define INPUT_BUFFER_SIZE 2400
+// size of buffer used for UCI loop.
+#define UCI_BUFFER_SIZE 2400
+
+// size of buffer used for XBoard loop.
+#define XBOARD_BUFFER_SIZE 80
 
 // Struct used to store moves so that we can undo moves later (hence the name)
 // For definitions of each member of the struct, see the board representation
@@ -163,6 +166,8 @@ typedef struct SearchInfo {
   int32_t stoptime;
   int32_t depth;
   bool timeset;
+  enum MODES game_mode; // which interface we're interacting with
+  bool post_thinking; // if we're thinking out loud or not
   int32_t moves_to_go;
 
   long nodes; // count of nodes visited

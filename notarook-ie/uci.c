@@ -1,6 +1,8 @@
 /**
  * This file contains functions pertaining to interacting with GUIs
- * via the UCI protocol
+ * via the UCI protocol. This protocol is stateless; e.g. it turns our engine
+ * into a position solver by always telling the engine how to set up the board
+ * instead of keeping track of what has happened.
  */
 
 #include "functions.h"
@@ -134,28 +136,24 @@ static void print_init_info(void) {
 /**
  * Loop for interacting with the GUI via the UCI protocol
  */
-void UCI_loop(void) {
+void UCI_loop(Board_t *board, SearchInfo_t *info) {
 
   // first, turn off buffering for stdin and stdout
   setvbuf(stdin, NULL, _IONBF, 0);
   setvbuf(stdout, NULL, _IONBF, 0);
+  info->game_mode = UCIMODE;
 
   // create the input buffer and let the GUI know we're ready to do battle
-  char buf[INPUT_BUFFER_SIZE];
+  char buf[UCI_BUFFER_SIZE];
   print_init_info();
-
-  Board_t board;
-  SearchInfo_t info;
-  board.pvt.table = NULL;
-  init_hashset(&board.pvt);
 
   // main loop
   while(true) {
     // reset the input buffer and clear stdout
-    memset(buf, '\0', INPUT_BUFFER_SIZE);
+    memset(buf, '\0', UCI_BUFFER_SIZE);
     fflush(stdout);
 
-    if(!fgets(buf, INPUT_BUFFER_SIZE, stdin)) continue;
+    if(!fgets(buf, UCI_BUFFER_SIZE, stdin)) continue;
 
     if(*buf == '\n') continue;
 
@@ -164,22 +162,19 @@ void UCI_loop(void) {
       printf("readyok\n");
       continue;
     } else if(!strncmp(buf, "position", strlen("position"))) {
-      parse_position(buf, &board);
+      parse_position(buf, board);
     } else if(!strncmp(buf, "ucinewgame", strlen("ucinewgame"))) {
-      parse_position("position startpos\n", &board);
+      parse_position("position startpos\n", board);
     } else if(!strncmp(buf, "go", strlen("go"))) {
-      parse_go(buf, &info, &board);
+      parse_go(buf, info, board);
     } else if(!strncmp(buf, "quit", strlen("quit"))) {
-      info.quit = true;
+      info->quit = true;
       break;
     } else if(!strncmp(buf, "uci", strlen("uci"))) {
       print_init_info();
     }
 
     // check for quit if it was sent inside of when we said "go"
-    if(info.quit) break;
+    if(info->quit) break;
   }
-
-  free(board.pvt.table);
-  board.pvt.table = NULL;
 }

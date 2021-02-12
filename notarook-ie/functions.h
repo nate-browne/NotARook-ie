@@ -77,6 +77,13 @@ extern int32_t get_pv_line(const int32_t, Board_t *);
 extern int32_t eval_position(const Board_t *);
 
 /* uci.c */
-extern void UCI_loop(void);
+extern void UCI_loop(Board_t *, SearchInfo_t *);
+
+/* xboard.c */
+extern void XBoard_loop(Board_t *, SearchInfo_t *);
+extern bool check_result(Board_t *);
+
+/* console.c */
+extern void console_loop(Board_t *, SearchInfo_t *);
 
 #endif

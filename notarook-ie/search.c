@@ -98,7 +98,7 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
   info->nodes++;
 
   // if we have a draw by repetition or by the 50 move rule
-  if(is_repetition(board) || board->move_counter >= 100) return 0;
+  if((is_repetition(board) || board->move_counter >= 100) && board->ply) return 0;
 
   // we've reached the deepest we will search in our board
   if(board->ply > MAX_DEPTH - 1) return eval_position(board);
@@ -167,7 +167,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
   info->nodes++;
 
   // if we have a draw by repetition or by the 50 move rule
-  if(is_repetition(board) || board->move_counter >= 100) return 0;
+  if((is_repetition(board) || board->move_counter >= 100) && board->ply) return 0;
 
   // we've reached the deepest we will search in our board
   if(board->ply > MAX_DEPTH - 1) return eval_position(board);
@@ -271,16 +271,34 @@ void search_position(Board_t *board, SearchInfo_t *info) {
 
     // next, get the best move
     best_move = board->pv_array[0];
-    printf("info score cp %d depth %d nodes %ld time %d ",
-      best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
 
-    pv_moves = get_pv_line(curr_depth, board);
-    printf("pv");
-    for(int32_t idx = 0; idx < pv_moves; ++idx) {
-      printf(" %s", print_move(board->pv_array[idx]));
+    // print based on the mode
+    if(info->game_mode == UCIMODE) {
+      printf("info score cp %d depth %d nodes %ld time %d ",
+        best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
+    } else if(info->game_mode == XBOARDMODE && info->post_thinking) {
+      printf("%d %d %d %ld ", curr_depth, best_score, (get_time_millis() - info->starttime) / 10, info->nodes);
+    } else if(info->post_thinking) {
+      printf("score:%d depth:%d nodes:%ld time:%d(ms) ", best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
     }
-    printf("\n");
+
+    if(info->game_mode == UCIMODE || info->post_thinking) {
+      pv_moves = get_pv_line(curr_depth, board);
+      printf("pv");
+      for(int32_t idx = 0; idx < pv_moves; ++idx) {
+        printf(" %s", print_move(board->pv_array[idx]));
+      }
+      printf("\n");
+    }
   }
 
-  printf("bestmove %s\n", print_move(best_move));
+  if(info->game_mode == UCIMODE) {
+    printf("bestmove %s\n", print_move(best_move));
+  } else if(info->game_mode == XBOARDMODE) {
+    printf("move %s\n", print_move(best_move));
+  } else {
+    printf("\n\n***!! NotARook-ie makes move %s !!***\n\n", print_move(best_move));
+    make_move(board, best_move);
+    print_board(board);
+  }
 }

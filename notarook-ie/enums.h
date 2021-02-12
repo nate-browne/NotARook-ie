@@ -19,6 +19,9 @@ enum RANKS { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RAN
 /* Next enum is for the colors */
 enum COLORS { WHITE, BLACK, BOTH };
 
+/* Next enum is for modes supported by the engine */
+enum MODES { UCIMODE, XBOARDMODE, CONSOLEMODE };
+
 /* next up are the board squares */
 /* Note that OFFBOARD isn't strictly necessary (it's the same as NO_SQ) */
 /* the purpose of it though is that it helps later with handling special moves */

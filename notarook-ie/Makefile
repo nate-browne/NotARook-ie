@@ -34,7 +34,7 @@ HEADERS   = constants.h functions.h macros.h enums.h
 # These are the C source files for the engine executable
 SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
             printer.c movegen.c validation.c makemove.c perft.c search.c util.c \
-	    hashset.c evaluate.c uci.c
+	    hashset.c evaluate.c uci.c xboard.c console.c
 
 # These are the C source files for the perft testing executable
 TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \

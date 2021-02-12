@@ -14,3 +14,7 @@ are accounted for and the engine doesn't just try to move a piece off of the boa
 ### Setup and Usage
 
 *Instructions coming soon!*
+
+### Acknowledgements
+Shoutout to Bluefever software for providing a basic guide to the steps for implementing this engine. It really
+helped keep me from floundering around trying to guess on what to do next.
