@@ -292,11 +292,18 @@ void search_position(Board_t *board, SearchInfo_t *info) {
     }
   }
 
+  // UCI protocol dictates that all we do is print our best move
   if(info->game_mode == UCIMODE) {
     printf("bestmove %s\n", print_move(best_move));
+
+  // for xboard protocol, we need to print the move (for the GUI to play)
+  // as well as play it ourselves
   } else if(info->game_mode == XBOARDMODE) {
     printf("move %s\n", print_move(best_move));
     make_move(board, best_move);
+
+  // for console, we print the move very visibly and play it, then print
+  // the board for the user to see
   } else {
     printf("\n\n***!! NotARook-ie makes move %s !!***\n\n", print_move(best_move));
     make_move(board, best_move);

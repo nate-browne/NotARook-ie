@@ -32,7 +32,7 @@
 #define IsKn(p) (PIECE_KNIGHT[(p)])
 #define IsKi(p) (PIECE_KING[(p)])
 
-/* macros for interacting with the move struct */
+/* macros for interacting with an individual move */
 #define FROMSQ(m) ((m) & 0x7F)
 #define TOSQ(m) (((m) >> 7) & 0x7F)
 #define CAPTURED(m) (((m) >> 14) & 0xF)

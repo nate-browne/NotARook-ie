@@ -18,7 +18,7 @@ static void print_help(void) {
   printf("time x - set thinking time to x seconds (depth still applies if set)\n");
   printf("view - show current depth and movetime settings\n");
   printf("** note ** - to reset time and depth, set to 0\n");
-  printf("enter moves using b7b8q notation\n\n\n");
+  printf("enter moves using UCI notation\n\n\n");
 }
 
 /**
@@ -35,7 +35,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
   setvbuf(stdin, NULL, _IONBF, 0);
   setvbuf(stdout, NULL, _IONBF, 0);
 
-  int32_t depth = MAX_DEPTH, movetime = 3000;
+  int32_t depth = MAX_DEPTH, movetime = 0;
   int32_t engine_side = BLACK;
   uint32_t move = NOMOVE;
 
@@ -47,7 +47,8 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
 
     fflush(stdout);
 
-    if(board->side == engine_side && !check_result(board)) {
+    bool result = check_result(board);
+    if(board->side == engine_side && !result) {
       info->starttime = get_time_millis();
       info->depth = depth;
 
@@ -57,6 +58,8 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
       }
 
       search_position(board, info);
+    } else if(result) {
+      printf("gg! Type `new` to set up a new game or `quit` to quit.\n");
     }
 
     printf("\nNotARook-ie> ");

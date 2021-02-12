@@ -82,23 +82,13 @@ exit(1);}
 #define HASHSET_SIZE 0x10000000
 
 // size of buffer used for UCI loop.
+// UCI protocol requires that all moves played in total are transmitted
+// every single turn, hence the larger buffer size than xboard
 #define UCI_BUFFER_SIZE 2400
 
 // size of buffer used for XBoard loop.
+// also used in the console loop
 #define XBOARD_BUFFER_SIZE 80
-
-// Struct used to store moves so that we can undo moves later (hence the name)
-// For definitions of each member of the struct, see the board representation
-// Note: statuses are for before the move was played
-typedef struct Undo {
-
-  uint32_t move_played;
-  int32_t castle_permission;
-  int32_t passant;
-  int32_t move_counter;
-  uint64_t hashkey;
-
-} Undo_t;
 
 /**
  *                        MOVE REPRESENTATION
@@ -121,7 +111,7 @@ typedef struct Undo {
 
 // not macros, but useful flags for the above idea
 #define MFLAGEP 0x40000 // en passant
-#define MFLAGPS 0x80000 // pawn start
+#define MFLAGPS 0x80000 // pawn start (a.k.a. pawn pushed forward 2 spaces)
 #define MFLAGCAS 0x1000000 // castle
 #define MFLAGCAP 0x7C000 // capture (of any kind)
 #define MFLAGPR 0xF00000 // promotion
@@ -130,6 +120,19 @@ typedef struct Undo {
 #define NOMOVE 0
 #define MATE 29000
 #define INFINITY 40000
+
+// Struct used to store moves so that we can undo moves later (hence the name)
+// For definitions of each member of the struct, see the board representation
+// Note: statuses are for before the move was played
+typedef struct Undo {
+
+  uint32_t move_played;
+  int32_t castle_permission;
+  int32_t passant;
+  int32_t move_counter;
+  uint64_t hashkey;
+
+} Undo_t;
 
 
 // Struct for representing a move
