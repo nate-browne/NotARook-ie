@@ -248,26 +248,30 @@ bool parse_FEN(char *fen, Board_t *board) {
   fen += 2;
 
   // castling info
-  for(ind = 0; ind < 4; ++ind) {
-    if(*fen == ' ') break;
-    
-    // OR in each value depending on who can castle when and which side
-    switch(*fen) {
-      case 'K':
-        board->castle_permission |= WKCAS;
-        break;
-      case 'Q':
-        board->castle_permission |= WQCAS;
-        break;
-      case 'k':
-        board->castle_permission |= BKCAS;
-        break;
-      case 'q':
-        board->castle_permission |= BQCAS;
-        break;
-      default:
-        break;
+  if(*fen != '-') {
+    for(ind = 0; ind < 4; ++ind) {
+      if(*fen == ' ') break;
+      
+      // OR in each value depending on who can castle when and which side
+      switch(*fen) {
+        case 'K':
+          board->castle_permission |= WKCAS;
+          break;
+        case 'Q':
+          board->castle_permission |= WQCAS;
+          break;
+        case 'k':
+          board->castle_permission |= BKCAS;
+          break;
+        case 'q':
+          board->castle_permission |= BQCAS;
+          break;
+        default:
+          break;
+      }
+      ++fen;
     }
+  } else {
     ++fen;
   }
   ++fen;
