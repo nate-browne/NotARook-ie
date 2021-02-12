@@ -5,3 +5,4 @@ notarookie
 stresstest
 bin/
 bin/*
+*.debug

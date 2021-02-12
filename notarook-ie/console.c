@@ -83,6 +83,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     // engine posts thought process
     if(!strncmp(cmd, "post", strlen("post"))) {
       info->post_thinking = true;
+      printf("ok, engine will post thinking output.\n");
       continue;
     }
 
@@ -95,12 +96,14 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     // don't post thought process
     if(!strncmp(cmd, "nopost", strlen("nopost"))) {
       info->post_thinking = false;
+      printf("ok, engine won't post thinking output\n");
       continue;
     }
 
     // no thinking for computer
     if(!strncmp(cmd, "force", strlen("force"))) {
       engine_side = BOTH;
+      printf("ok, engine is playing against itself.\n");
       continue;
     }
 
@@ -109,7 +112,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
       if(depth == MAX_DEPTH) printf("depth not set ");
       else printf("depth %d ", depth);
 
-      if(movetime != 0) printf(" movetime :%ds\n", movetime / 1000);
+      if(movetime != 0) printf(" movetime %ds\n", movetime / 1000);
       else printf(" movetime not set\n");
 
       continue;
@@ -119,6 +122,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     if(!strncmp(cmd, "depth", strlen("depth"))) {
       sscanf(in, "depth %d", &depth);
       if(!depth) depth = MAX_DEPTH;
+      printf("ok, setting engine depth to %d\n", depth);
       continue;
     }
 
@@ -126,6 +130,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     if(!strncmp(cmd, "time", strlen("time"))) {
       sscanf(in, "time %d", &movetime);
       movetime *= 1000; // convert to ms
+      printf("ok, setting move time to %dms\n", movetime);
       continue;
     }
 
@@ -133,6 +138,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     if(!strncmp(cmd, "new", strlen("new"))) {
       engine_side = BLACK;
       parse_FEN(START_FEN, board);
+      printf("ok, setting up a new game.\n");
       continue;
     }
 

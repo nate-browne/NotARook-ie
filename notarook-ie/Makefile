@@ -108,7 +108,7 @@ memcheck: $(EXE)
 # unnecessary files
 clean:
 	@echo "Cleaning up"
-	$(RM) -rf ../bin *.o .DS_Store
+	$(RM) -rf ../bin *.o .DS_Store ../*.debug
 	@echo ""
 	@echo "Clean."
 

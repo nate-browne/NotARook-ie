@@ -98,7 +98,7 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
   info->nodes++;
 
   // if we have a draw by repetition or by the 50 move rule
-  if((is_repetition(board) || board->move_counter >= 100) && board->ply) return 0;
+  if(is_repetition(board) || board->move_counter >= 100) return 0;
 
   // we've reached the deepest we will search in our board
   if(board->ply > MAX_DEPTH - 1) return eval_position(board);
@@ -296,6 +296,7 @@ void search_position(Board_t *board, SearchInfo_t *info) {
     printf("bestmove %s\n", print_move(best_move));
   } else if(info->game_mode == XBOARDMODE) {
     printf("move %s\n", print_move(best_move));
+    make_move(board, best_move);
   } else {
     printf("\n\n***!! NotARook-ie makes move %s !!***\n\n", print_move(best_move));
     make_move(board, best_move);

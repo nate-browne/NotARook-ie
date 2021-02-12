@@ -102,6 +102,11 @@ bool check_result(Board_t *board) {
   }
 }
 
+static void print_options(void) {
+  printf("feature ping=1 setboard=1 nps=0 san=0 colors=0 usermove=1 sigint=0 sigterm=0 post=1 nopost=1\n");
+  printf("feature done=1\n");
+}
+
 /**
  * Main loop for interacting with GUIs via the XBoard/Winboard protocol
  * Implementation is inspired by the forum post where the inventor of the protocol
@@ -123,7 +128,6 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
   int32_t sec;
   int32_t mps; // moves per session
   uint32_t move = NOMOVE;
-  int32_t i, score;
 
   char in[XBOARD_BUFFER_SIZE], cmd[XBOARD_BUFFER_SIZE];
 
@@ -146,7 +150,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
         info->depth = MAX_DEPTH;
       }
 
-      printf("time:%d start:%d stop:%d depth:%d timeset:%d\n movestogo:%d mps: %d\n",
+      printf("time:%d start:%d stop:%d depth:%d timeset:%d movestogo:%d mps: %d\n",
         time, info->starttime, info->stoptime, info->depth, info->timeset, movestogo[board->side], mps);
       search_position(board, info);
 
@@ -164,48 +168,55 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
     fflush(stdout);
     if(!fgets(in, XBOARD_BUFFER_SIZE, stdin)) continue;
 
+    // replace the newline with a null
+    in[strcspn(in, "\n")] = '\0';
+
     sscanf(in, "%s", cmd);
 
-    if(!strncmp(cmd, "quit", strlen("quit"))) {
+    if(!strcmp(cmd, "quit")) {
+      info->quit = true;
       break;
     }
 
     // no thonking allowed
-    if(!strncmp(cmd, "force", strlen("force"))) {
+    if(!strcmp(cmd, "force")) {
       engine_side = BOTH;
+      printf("ok, engine is playing against itself.\n");
       continue;
     }
 
     // print out the features supported by this engine
     // check the docs to see what kinds of features we could support later
-    if(!strncmp(cmd, "protover", strlen("protover"))) {
-      printf("feature ping=1 setboard=1 colors=0 usermove=1\n");
-      printf("feature done=1\n");
+    if(!strcmp(cmd, "protover")) {
+      print_options();
       continue;
     }
 
     // set the search depth
-    if(!strncmp(cmd, "sd", strlen("sd"))) {
+    if(!strcmp(cmd, "sd")) {
       sscanf(in, "sd %d", &depth);
+      printf("ok, setting engine depth to %d\n", depth);
       continue;
     }
 
     // set the max move time for one move
-    if(!strncmp(cmd, "st", strlen("st"))) {
+    if(!strcmp(cmd, "st")) {
       sscanf(in, "st %d", &movetime);
+      printf("ok, setting move time to %dms\n", movetime);
       continue;
     }
 
-    // time control command
-    if(!strncmp(cmd, "time", strlen("time"))) {
+    // time control command for engine
+    if(!strcmp(cmd, "time")) {
       sscanf(in, "time %d", &time);
       time *= 10;
+      printf("ok, setting time for engine to %dms\n", time);
       continue;
     }
 
     // level command
     // sets up everything to go
-    if(!strncmp(cmd, "level", strlen("level"))) {
+    if(!strcmp(cmd, "level")) {
       sec = 0;
       movetime = -1;
       if(sscanf(in, "level %d %d %d", &mps, &time_left, &incr) != 3) {
@@ -215,40 +226,57 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
       time_left += sec * 1000;
       movestogo[0] = movestogo[1] = (mps) ? mps : 30;
       time = -1;
+      printf("ok, parsed level setup command.\n");
       continue;
     }
 
     // ping pong
     // print out the value we are "ping"-ed
-    if(!strncmp(cmd, "ping", strlen("ping"))) {
+    if(!strcmp(cmd, "ping")) {
       printf("pong%s\n", in + 4);
       continue;
     }
 
     // new game
     // set engine to black, reset the depth, reset the board
-    if(!strncmp(cmd, "new", strlen("new"))) {
+    if(!strcmp(cmd, "new")) {
       engine_side = BLACK;
       parse_FEN(START_FEN, board);
       depth = -1;
+      printf("ok, resetting depth and starting a new game\n");
       continue;
     }
 
     // command to set up the board with a provided FEN
-    if(!strncmp(cmd, "setboard", strlen("setboard"))) {
+    if(!strcmp(cmd, "setboard")) {
       engine_side = BOTH;
       parse_FEN(in + 9, board);
+      printf("Ok, setting board to FEN pattern %s\n", in + 9);
       continue;
     }
 
     // tell the engine that it is time to go
-    if(!strncmp(cmd, "go", strlen("go"))) {
+    if(!strcmp(cmd, "go")) {
       engine_side = board->side;
       continue;
     }
 
+    // engine posts thought process
+    if(!strcmp(cmd, "post")) {
+      info->post_thinking = true;
+      printf("ok, engine will post thinking output.\n");
+      continue;
+    }
+
+    // don't post thought process
+    if(!strcmp(cmd, "nopost")) {
+      info->post_thinking = false;
+      printf("ok, engine won't post thinking output\n");
+      continue;
+    }
+
     // user made a move, so play it on our board
-    if(!strncmp(cmd, "usermove", strlen("usermove"))) {
+    if(!strcmp(cmd, "usermove")) {
       movestogo[board->side]--;
       move = parse_move(in + 9, board);
       if(move == NOMOVE) continue;

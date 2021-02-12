@@ -21,6 +21,9 @@ int main(void) {
   board.pvt.table = NULL;
   init_hashset(&board.pvt);
 
+  setvbuf(stdin, NULL, _IONBF, 0);
+  setvbuf(stdout, NULL, _IONBF, 0);
+
   printf(WELCOME_STR, NAME);
 
   char line[BUFSIZ];
