@@ -12,7 +12,7 @@ rows, and each side of the board has one buffer row. This is to ensure that when
 are accounted for and the engine doesn't just try to move a piece off of the board.
 
 Next steps are to implement an openings book, as well as refine the evaluation functions to make the engine stronger. As of
-version 1.0.0, some interesting behavior you may see is that the engine only castles if it is able to use the rook in a future
+version 1.0.1, some interesting behavior you may see is that the engine only castles if it is able to use the rook in a future
 threat quickly instead of castling for king safety, as well as the engine has a tendency to (due to not having an openings book)
 play into gambits that you may offer it.
 
@@ -23,7 +23,7 @@ Here are the steps:
 1. Download xboard or winboard
     * on macOS, type `brew install xboard`
     * On linux, check out [the xboard download page](https://www.gnu.org/software/xboard/#download).
-    * For windows, [check here](https://www.gnu.org/software/xboard/#tag-A1). Fair warning that this engine may or may not run well on windows (haven't tested it).
+    * For windows, [check here](https://www.gnu.org/software/xboard/#tag-A1). Fair warning that this engine may or may not run well (or at all, really) on windows (haven't tested it).
 2. Clone the repo
 3. Type `make` to build the program.
 4. To play against the engine, run `xboard -cp -fcp bin/notarookie`.
