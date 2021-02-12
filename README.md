@@ -4,8 +4,8 @@
 I started playing chess recently, so why not keep my skills in C up to date by writing a chess engine?
 
 ### Overview
-This engine uses [alpha-beta pruning implemented with negamax](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) for move selection. It's compatible with
-xboard using the xboard protocol or other GUIs that use the <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html" target="_blank" style="text-decoration:none;">UCI protocol</a> for chess. It can also be played in command line mode.
+This engine uses [alpha-beta pruning implemented with negamax](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) for move selection as well as [IDDFS](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search) to speed things up and to provide a decently good move if the algorithm is interrupted before it can calculate the best possible move.
+This engine compatible with xboard using the xboard protocol or other GUIs that use the <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html" target="_blank" style="text-decoration:none;">UCI protocol</a> for chess. It can also be played in command line mode.
 
 The engine uses the same board representation as the <a href="https://www.chessprogramming.org/Cray-1" target="_blank" style="text-decoration:none;">Cray-1 supercomputer</a> where the board is 120 squares. The top and bottom have two buffer
 rows, and each side of the board has one buffer row. This is to ensure that when calculating all possible moves, null moves
