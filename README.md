@@ -31,8 +31,9 @@ Here are the steps:
     * This will start the engine with you playing the white pieces.
 5. To have the engine play itself, run `xboard -mm -fcp bin/notarookie -fd "$(pwd)" -scp bin/notarookie -sd "$(pwd)"` then type `<CTRL>-t` to start engine mode.
 
-#### Arena Chess setup (UCI protocol)
-Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to set up the engine to run in arena chess.
+#### Arena/PyChess (UCI protocol setup)
+Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to set up the engine to run in Arena chess.
+For PyChess, you can [download here](https://pychess.github.io/download/).
 
 #### Command line setup
 1. Clone the repo
