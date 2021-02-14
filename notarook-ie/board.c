@@ -100,6 +100,49 @@ void check_board(const Board_t * board) {
 }
 
 /**
+ * Mirrors the board so that we can check ourselves when evaluating
+ */
+void mirror_board(Board_t *board) {
+  int32_t temp_pieces_array[STANDARD_BOARD_SIZE];
+  int32_t temp_side = board->side ^ 1;
+
+  int32_t swap_piece[13] = {EMPTY, bP, bN, bB, bR, bQ, bK, wP, wN, wB, wR, wQ, wK};
+  int32_t temp_castle_perm = 0;
+  int32_t temp_passant = NO_SQ;
+
+  int32_t sq, tp;
+
+  if(board->castle_permission & WKCAS) temp_castle_perm |= BKCAS;
+  if(board->castle_permission & WQCAS) temp_castle_perm |= BQCAS;
+
+  if(board->castle_permission & BKCAS) temp_castle_perm |= WKCAS;
+  if(board->castle_permission & BQCAS) temp_castle_perm |= WQCAS;
+
+  if(board->passant != NO_SQ) temp_passant = SQ120(MIRROR64(SQ64(board->passant)));
+
+  for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
+    temp_pieces_array[sq] = board->pieces[SQ120(MIRROR64(sq))];
+  }
+
+  reset_board(board);
+
+  for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
+    tp = swap_piece[temp_pieces_array[sq]];
+    board->pieces[SQ120(sq)] = tp;
+  }
+
+  board->side = temp_side;
+  board->castle_permission = temp_castle_perm;
+  board->passant = temp_passant;
+
+  board->hashkey = generate_hashkeys(board);
+
+  update_material(board);
+
+  check_board(board);
+}
+
+/**
  * Updates the values of the arrays for the material on the board
  */
 void update_material(Board_t *board) {

@@ -29,6 +29,7 @@ extern bool parse_FEN(char *, Board_t *);
 extern void print_board(const Board_t *);
 extern void update_material(Board_t *);
 extern void check_board(const Board_t *);
+extern void mirror_board(Board_t *);
 
 /* attack.c */
 extern bool square_attacked(const int32_t, const int32_t, const Board_t *);

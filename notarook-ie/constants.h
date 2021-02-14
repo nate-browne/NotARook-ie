@@ -282,4 +282,14 @@ extern const int ROOK_DIRS[4];
 extern const int BISHOP_DIRS[4];
 extern const int KING_DIRS[8];
 
+// bitmasks for evaluating passed pawn positions
+extern uint64_t FILE_BB_MASK[8];
+extern uint64_t RANK_BB_MASK[8];
+extern uint64_t BLACK_PASSED_MASK[STANDARD_BOARD_SIZE];
+extern uint64_t WHITE_PASSED_MASK[STANDARD_BOARD_SIZE];
+extern uint64_t ISOLATED_MASK[STANDARD_BOARD_SIZE];
+
+// used to create the mirror board for evaluation checking
+extern const int32_t MIRROR_64[STANDARD_BOARD_SIZE];
+
 #endif

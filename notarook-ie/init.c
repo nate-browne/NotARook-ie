@@ -21,6 +21,90 @@ uint64_t CASTLE_KEYS[16];
 int32_t FILES_BOARD[BOARD_SQ_NUM];
 int32_t RANKS_BOARD[BOARD_SQ_NUM];
 
+uint64_t FILE_BB_MASK[8];
+uint64_t RANK_BB_MASK[8];
+
+uint64_t BLACK_PASSED_MASK[STANDARD_BOARD_SIZE];
+uint64_t WHITE_PASSED_MASK[STANDARD_BOARD_SIZE];
+uint64_t ISOLATED_MASK[STANDARD_BOARD_SIZE];
+
+/**
+ * Initializes the bitboard masks for pawn evaluation
+ */
+static void init_eval_masks(void) {
+  int32_t sq, tsq, rank, file;
+
+  // zero out the passed pawn/isolated pawn masks
+  for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
+    ISOLATED_MASK[sq] = 0;
+    WHITE_PASSED_MASK[sq] = 0;
+    BLACK_PASSED_MASK[sq] = 0;
+  }
+
+  // initialize them
+  for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
+    tsq = sq + 8;
+    while(tsq < STANDARD_BOARD_SIZE) {
+      WHITE_PASSED_MASK[sq] |= (1 << tsq);
+      tsq += 8;
+    }
+
+    tsq = sq - 8;
+    while(tsq >= 0) {
+      BLACK_PASSED_MASK[sq] |= (1 << tsq);
+      tsq -= 8;
+    }
+
+    if(FILES_BOARD[SQ120(sq)] > FILE_A) {
+      ISOLATED_MASK[sq] |= FILE_BB_MASK[FILES_BOARD[SQ120(sq)] - 1];
+
+      tsq = sq + 7;
+      while(tsq < 64) {
+        WHITE_PASSED_MASK[sq] |= (1 << tsq);
+        tsq += 8;
+      }
+
+      tsq = sq - 9;
+      while(tsq >= 0) {
+        BLACK_PASSED_MASK[sq] |= (1 << tsq);
+        tsq -= 8;
+      }
+    }
+
+    if(FILES_BOARD[SQ120(sq)] < FILE_H) {
+      ISOLATED_MASK[sq] |= FILE_BB_MASK[FILES_BOARD[SQ120(sq)] + 1];
+
+      tsq = sq + 9;
+      while(tsq < 64) {
+        WHITE_PASSED_MASK[sq] |= (1 << tsq);
+        tsq += 8;
+      }
+
+      tsq = sq - 7;
+      while(tsq >= 0) {
+        BLACK_PASSED_MASK[sq] |= (1 << tsq);
+        tsq -= 8;
+      }
+    }
+  }
+
+  // clear out everything
+  for(sq = 0; sq < 8; ++sq) {
+    FILE_BB_MASK[sq] = 0;
+    RANK_BB_MASK[sq] = 0;
+  }
+
+  // set the bits accordingly for the file and bit masks
+  // going square by square
+  for(rank = RANK_8; rank >= RANK_1; --rank) {
+    for(file = FILE_A; file <= FILE_H; ++file) {
+      sq = rank * 8 + file;
+      FILE_BB_MASK[file] |= (1 << sq);
+      RANK_BB_MASK[rank] |= (1 << sq);
+    }
+  }
+}
+
 
 /**
  * Function to generate a random 64 bit unsigned integer
@@ -124,5 +208,6 @@ void init_all(void) {
   init_bit_masks();
   init_hashkeys();
   init_files_ranks_arrays();
+  init_eval_masks();
   init_MVV_LVA();
 }
