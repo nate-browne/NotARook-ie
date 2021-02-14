@@ -18,6 +18,7 @@ int main(void) {
 
   Board_t board;
   SearchInfo_t info;
+  info.quit = false;
   board.pvt.table = NULL;
   init_hashset(&board.pvt);
 
