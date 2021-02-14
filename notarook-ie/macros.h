@@ -52,7 +52,7 @@
 #define MIRROR64(sq) (MIRROR_64[(sq)])
 
 /* macro used to define an endgame for our engine */
-/* no queens, 4 pawns each, few knights/rooks/bishops */
-#define ENDGAME_MAT (2 * PIECE_VAL[wR] + 4 * PIECE_VAL[wN] + 8 * PIECE_VAL[wP])
+/* only from the perspective of white */
+#define ENDGAME_MAT (1 * PIECE_VAL[wR] + 2 * PIECE_VAL[wN] + 2 * PIECE_VAL[wP])
 
 #endif

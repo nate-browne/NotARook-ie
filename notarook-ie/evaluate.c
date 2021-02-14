@@ -51,14 +51,14 @@ static const int32_t ROOK_TABLE[STANDARD_BOARD_SIZE] = {
 
 // evaluation table for king in the end game
 static const int32_t KING_E[STANDARD_BOARD_SIZE] = {
- -50 , -20 , 0 , 0 , 0 , 0 , -20 , -50 ,
- -20, 0 , 20 , 20 , 20 , 20 , 0 , -20 ,
- 0 , 20 , 40 , 40 , 40 , 40 , 20 , 0 ,
- 0 , 20 , 40 , 50 , 50 , 40 , 20 , 0 ,
- 0 , 20 , 40 , 50 , 50 , 40 , 20 , 0 ,
- 0 , 20 , 40 , 40 , 40 , 40 , 20 , 0 ,
- -20 , 0 , 20 , 20 , 20 , 20 , 0 , -20 ,
- -50 , -20 , 0 , 0 , 0 , 0 , -20 , -50 
+ -50 , -10 , 0 , 0 , 0 , 0 , -10 , -50 ,
+ -10, 0 , 10 , 10 , 10 , 10 , 0 , -10 ,
+ 0 , 10 , 15 , 15 , 15 , 15 , 10 , 0 ,
+ 0 , 10 , 15 , 20 , 20 , 15 , 10 , 0 ,
+ 0 , 10 , 15 , 20 , 20 , 15 , 10 , 0 ,
+ 0 , 10 , 15 , 15 , 15 , 15 , 10 , 0 ,
+ -10, 0 , 10 , 10 , 10 , 10 , 0 , -10 ,
+ -50 , -10 , 0 , 0 , 0 , 0 , -10 , -50 ,
 };
 
 // evaluation table for kings in the opening
@@ -94,6 +94,9 @@ static const int32_t queen_open_file = 5;
 
 // give a smaller bonus for putting a rook on a semiopen file
 static const int32_t queen_semiopen_file = 3;
+
+// give a decently large bonus for keeping both bishops
+static const int32_t bishop_pair = 30;
 
 /**
  * This function figures out whether or not the game is a draw by material
@@ -154,7 +157,7 @@ int32_t eval_position(const Board_t * board) {
   int32_t score = board->material[WHITE] - board->material[BLACK];
 
   // if our position is drawn purely by material, return so
-  if(material_draw(board)) return 0;
+  if(!board->piece_num[wP] && !board->piece_num[bP] && material_draw(board)) return 0;
 
   // white pawns first
   piece = wP;
@@ -297,7 +300,7 @@ int32_t eval_position(const Board_t * board) {
   square = board->piece_list[piece][WHITE];
 
   // check if we should use the endgame table or the normal table
-  if(!board->piece_num[bQ] || (board->material[BLACK] < ENDGAME_MAT)) {
+  if(board->material[BLACK] <= ENDGAME_MAT) {
     score += KING_E[SQ64(square)];
   } else {
     score += KING_O[SQ64(square)];
@@ -307,11 +310,15 @@ int32_t eval_position(const Board_t * board) {
   square = board->piece_list[piece][BLACK];
 
   // check if we should use the endgame table or the normal table
-  if(!board->piece_num[wQ] || (board->material[WHITE] < ENDGAME_MAT)) {
+  if(board->material[WHITE] <= ENDGAME_MAT) {
     score -= KING_E[MIRROR64(SQ64(square))];
   } else {
     score -= KING_O[MIRROR64(SQ64(square))];
   }
+
+  // check for bishop pairs
+  if(board->piece_num[wB] >= 2) score += bishop_pair;
+  if(board->piece_num[bB] >= 2) score -= bishop_pair;
 
   return (board->side == WHITE) ? score : -score;
 }
