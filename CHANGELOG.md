@@ -1,5 +1,10 @@
 This project adheres to [semantic versioning](https://semver.org/).
 
+# 1.2.1 (2021-02-14)
+***
+### Release Highlights [build](https://github.com/nate-browne/NotARook-ie/tree/ba30689db25fb2a4a3b8adb059fe3ed33c234bb3)
+* Fixed bug in `engine.c` regarding the `quit` variable to avoid undefined behavior.
+
 # 1.2.0 (2021-02-14)
 ***
 ### Release Highlights [build](https://github.com/nate-browne/NotARook-ie/tree/cb1d0d9c71bc9a9aec28fdfbef4c3e9ede5cc565)
