@@ -25,7 +25,7 @@ Here are the steps:
 3. Type `make` to build the program.
 4. To play against the engine, run `xboard -cp -fcp bin/notarookie`.
     * This will start the engine with you playing the white pieces.
-5. To have the engine play itself, run `xboard -mm -fcp bin/notarookie -fd "$(pwd)" -scp bin/notarookie -sd "$(pwd)"` then type `<CTRL>-t` to start engine mode.
+5. To have the engine play itself, run `xboard -mm -fcp bin/notarookie -fd "$(pwd)" -scp bin/notarookie -sd "$(pwd)"`. The engine will begin to play itself.
 
 #### Arena/PyChess (UCI protocol setup)
 Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to set up the engine to run in Arena chess.
