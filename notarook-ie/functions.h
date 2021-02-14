@@ -56,6 +56,8 @@ extern bool piece_valid(const int32_t);
 extern bool make_move(Board_t *, uint32_t);
 extern void take_move(Board_t *);
 extern bool move_exists(Board_t *, const uint32_t);
+extern void make_null_move(Board_t *);
+extern void take_null_move(Board_t *);
 
 /* perft.c */
 extern uint64_t perft_test(int32_t, Board_t *, bool);

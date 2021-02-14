@@ -152,6 +152,55 @@ static void move_piece(const int32_t from, const int32_t to, Board_t *board) {
 
 
 /**
+ * Function to make a null move (e.g. not to move)
+ * This function is used for null move pruning
+ */
+void make_null_move(Board_t *board) {
+  check_board(board);
+
+  ASSERT(!square_attacked(board->kings_sq[board->side], board->side ^ 1, board));
+
+  board->ply++;
+  board->history[board->hist_ply].hashkey = board->hashkey;
+
+  if(board->passant != NO_SQ) HASH_PAS;
+
+  board->history[board->hist_ply].move_played = NOMOVE;
+  board->history[board->hist_ply].move_counter = board->move_counter;
+  board->history[board->hist_ply].passant = board->passant;
+  board->history[board->hist_ply].castle_permission = board->castle_permission;
+
+  board->passant = NO_SQ;
+  board->move_counter++;
+  board->side ^= 1;
+  board->hist_ply++;
+  HASH_SIDE;
+
+  check_board(board);
+}
+
+/**
+ * Function to take back a null move
+ * This function is used for null move pruning
+ */
+void take_null_move(Board_t *board) {
+  check_board(board);
+
+  board->hist_ply--;
+  board->ply--;
+
+  if(board->passant != NO_SQ) HASH_PAS;
+
+  board->castle_permission = board->history[board->hist_ply].castle_permission;
+  board->move_counter = board->history[board->hist_ply].move_counter;
+  board->passant = board->history[board->hist_ply].passant;
+  board->hashkey = board->history[board->hist_ply].hashkey;
+  board->side ^= 1;
+
+  check_board(board);
+}
+
+/**
  * Function to undo a move made by the below function
  */
 void take_move(Board_t *board) {

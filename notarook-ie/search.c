@@ -153,6 +153,8 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
 
 /**
  * Performs alpha beta tree search and pruning to find the best move
+ * For more information on null move pruning (the reason null_allowed is here),
+ * check out this link: https://web.archive.org/web/20071031095933/http://www.brucemo.com:80/compchess/programming/nullmove.htm
  */
 static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Board_t *board, SearchInfo_t *info, bool null_allowed) {
 
@@ -177,6 +179,24 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
   bool in_check = square_attacked(board->kings_sq[board->side], board->side ^ 1, board);
   if(in_check) ++depth;
 
+  int32_t score = -INFINITY;
+
+  // explaining each condition in order, we don't do recursive null moves (hence the param)
+  // if we're in check, we can't do nothing (obviously)
+  // make sure we have made at least one move in the search
+  // avoid zugzwang positions by checking how many big pieces we have (king is a big piece)
+  // make sure the engine depth is deep enough to make these (lack of) moves worth it
+  if(null_allowed && !in_check && board->ply && (board->big_pieces[board->side] >= 2) && depth >= 4) {
+    make_null_move(board);
+    score = -alpha_beta_search(-beta, -beta + 1, depth - 4, board, info, false);
+    take_null_move(board);
+    if(info->stopped) return 0;
+
+    // if our opponent's best move is greater than or equal to beta, this means that
+    // our position is too stronk for them
+    if(score >= beta) return beta;
+  }
+
   MoveList_t list;
   generate_all_moves(board, &list);
 
@@ -184,7 +204,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
   int32_t idx = 0;
   int32_t old_alpha = alpha;
   uint32_t best_move = NOMOVE;
-  int32_t score = -INFINITY;
+  score = -INFINITY;
   uint32_t pv_move = find_move(board);
 
   // we're still in the main line, so search that main line move first
