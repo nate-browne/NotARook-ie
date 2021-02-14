@@ -297,7 +297,7 @@ int32_t eval_position(const Board_t * board) {
 
   // handle kings
   piece = wK;
-  square = board->piece_list[piece][WHITE];
+  square = board->piece_list[piece][0];
 
   // check if we should use the endgame table or the normal table
   if(board->material[BLACK] <= ENDGAME_MAT) {
@@ -307,7 +307,7 @@ int32_t eval_position(const Board_t * board) {
   }
 
   piece = bK;
-  square = board->piece_list[piece][BLACK];
+  square = board->piece_list[piece][0];
 
   // check if we should use the endgame table or the normal table
   if(board->material[WHITE] <= ENDGAME_MAT) {

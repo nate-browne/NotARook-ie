@@ -110,7 +110,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
     // no thinking for computer
     if(!strncmp(cmd, "force", strlen("force"))) {
       engine_side = BOTH;
-      printf("ok, engine is playing against itself.\n");
+      printf("ok, engine will not think.\n");
       continue;
     }
 

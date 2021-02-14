@@ -53,6 +53,6 @@
 
 /* macro used to define an endgame for our engine */
 /* only from the perspective of white */
-#define ENDGAME_MAT (1 * PIECE_VAL[wR] + 2 * PIECE_VAL[wN] + 2 * PIECE_VAL[wP])
+#define ENDGAME_MAT (1 * PIECE_VAL[wR] + 2 * PIECE_VAL[wN] + 2 * PIECE_VAL[wP] + PIECE_VAL[wK])
 
 #endif

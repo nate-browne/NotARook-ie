@@ -181,7 +181,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
     // no thonking allowed
     if(!strcmp(cmd, "force")) {
       engine_side = BOTH;
-      printf("ok, engine is playing against itself.\n");
+      printf("ok, engine will not think.\n");
       continue;
     }
 
