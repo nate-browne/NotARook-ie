@@ -11,11 +11,7 @@ The engine uses the same board representation as the <a href="https://www.chessp
 rows, and each side of the board has one buffer row. This is to ensure that when calculating all possible moves, null moves
 are accounted for and the engine doesn't just try to move a piece off of the board.
 
-Next steps are to implement an openings book, as well as refine the evaluation functions to make the engine stronger. As of
-version 1.0.1, some interesting behavior you may see is that the engine only castles if it is able to use the rook in a future
-threat quickly instead of castling for king safety, as well as the engine has a tendency to (due to not having an openings book)
-play into gambits that you may offer it. Another improvement for command line mode in the future is to enable support for algebraic notation
-instead of playing moves in pure algebraic coordinate notation (e.g. you can type e4 instead of e2e4 or Bf3 instead of f1d3).
+See the [issues tab](https://github.com/nate-browne/NotARook-ie/issues) to see what kinds of improvements are on the way in the future.
 
 ### Setup and Usage
 
