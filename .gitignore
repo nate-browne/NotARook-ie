@@ -6,3 +6,5 @@ stresstest
 bin/
 bin/*
 *.debug
+engine/*
+engine
