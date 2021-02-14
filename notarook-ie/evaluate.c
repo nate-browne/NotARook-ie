@@ -144,8 +144,6 @@ static bool material_draw(const Board_t *board) {
  * This function takes in a position on the board
  * and returns the evaluation of the position in
  * 100s of a pawn from the point of view of the side to move
- *
- * Pretty basic for now, but I'll improve on this eventually
  */
 int32_t eval_position(const Board_t * board) {
 
