@@ -171,6 +171,11 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
 
   // we've reached the deepest we will search in our board
   if(board->ply > MAX_DEPTH - 1) return eval_position(board);
+ 
+  // add in some checks (hah) for if we're being checked at all
+  // increase the depth because maybe there's a way out
+  bool in_check = square_attacked(board->kings_sq[board->side], board->side ^ 1, board);
+  if(in_check) ++depth;
 
   MoveList_t list;
   generate_all_moves(board, &list);
@@ -231,7 +236,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
   }
 
   if(!legal) {
-    if(square_attacked(board->kings_sq[board->side], board->side ^ 1, board)) {
+    if(in_check) {
       return -MATE + board->ply; // the ply gives us how many positions till mate
     } else {
       return 0; // stalemate
