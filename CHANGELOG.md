@@ -2,7 +2,7 @@ This project adheres to [semantic versioning](https://semver.org/).
 
 # 1.2.2 (2021-02-14)
 ***
-### Release Highlights [build]()
+### Release Highlights [build](https://github.com/nate-browne/NotARook-ie/tree/e7613768bf4f2d25c1ee1f530ce961f571fefe84)
 * Fixed segfault in `evaluate.c` caused from adding king evaluation.
 * Updated engine's response to the `force` command.
 
