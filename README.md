@@ -19,13 +19,15 @@ See the [issues tab](https://github.com/nate-browne/NotARook-ie/issues) to see w
 Here are the steps:
 1. Download xboard or winboard
     * on macOS, type `brew install xboard`
+        * After installing on macOS, open the program (`xboard &`) then open the sound options (Engine -> Sound) and change the sound program to `afplay`
+        * Next, go to Engine -> Time Control and under the incremental tab set "Initial time" to 10 min and set "Increment or max (sec/move)" to 5 seconds to set up a 10 + 5 game
     * On linux, check out [the xboard download page](https://www.gnu.org/software/xboard/#download).
     * For windows, [check here](https://www.gnu.org/software/xboard/#tag-A1). Fair warning that this engine may or may not run well (or at all, really) on windows (haven't tested it).
 2. Clone the repo
 3. Type `make` to build the program.
 4. To play against the engine, run `xboard -cp -fcp bin/notarookie &`.
     * This will start the engine with you playing the white pieces.
-5. To have the engine play itself, run `xboard -mm -fcp bin/notarookie -fd "$(pwd)" -scp bin/notarookie -sd "$(pwd)" &`. The engine will begin to play itself.
+5. To have the engine play itself, run `xboard -mm -fcp bin/notarookie -fd "$(pwd)" -scp bin/notarookie -sd "$(pwd)" &`.
 
 #### Arena/PyChess (UCI protocol setup)
 Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to set up the engine to run in Arena chess.
