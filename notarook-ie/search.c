@@ -299,12 +299,12 @@ void search_position(Board_t *board, SearchInfo_t *info) {
 
     // print based on the mode
     if(info->game_mode == UCIMODE) {
-      printf("info score cp %d depth %d nodes %ld time %d ",
+      printf("info score cp %d depth %d nodes %ld time %lu ",
         best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
     } else if(info->game_mode == XBOARDMODE && info->post_thinking) {
-      printf("%d %d %d %ld ", curr_depth, best_score, (get_time_millis() - info->starttime) / 10, info->nodes);
+      printf("%d %d %lu %ld ", curr_depth, best_score, (get_time_millis() - info->starttime) / 10, info->nodes);
     } else if(info->post_thinking) {
-      printf("score:%d depth:%d nodes:%ld time:%d(ms) ", best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
+      printf("score:%d depth:%d nodes:%ld time:%lu(ms) ", best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
     }
 
     if(info->game_mode == UCIMODE || info->post_thinking) {

@@ -66,7 +66,7 @@ extern uint64_t perft_test(int32_t, Board_t *, bool);
 extern void search_position(Board_t *, SearchInfo_t *);
 
 /* util.c */
-extern int32_t get_time_millis(void);
+extern unsigned long get_time_millis(void);
 extern void read_input(SearchInfo_t *info);
 
 /* hashset.c */

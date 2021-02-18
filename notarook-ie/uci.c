@@ -74,7 +74,7 @@ static void parse_go(char *line, SearchInfo_t *info, Board_t *board) {
     info->depth = depth;
   }
 
-  printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
+  printf("time:%d start:%lu stop:%lu depth:%d timeset:%d\n",
     time, info->starttime, info->stoptime, info->depth, info->timeset);
   search_position(board, info);
 }

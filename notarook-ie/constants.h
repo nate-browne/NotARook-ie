@@ -52,7 +52,7 @@ printf("on line %d\n", __LINE__); \
 exit(1);}
 #endif
 
-#define NAME "NotARook-ie v1.2.1"
+#define NAME "NotARook-ie v1.2.2"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
@@ -165,8 +165,8 @@ typedef struct PVTable {
 
 // struct for holding relevant search tree info
 typedef struct SearchInfo {
-  int32_t starttime;
-  int32_t stoptime;
+  unsigned long starttime;
+  unsigned long stoptime;
   int32_t depth;
   bool timeset;
   enum MODES game_mode; // which interface we're interacting with

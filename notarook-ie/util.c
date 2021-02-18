@@ -19,7 +19,7 @@
 /**
  * Returns the current time solely in milliseconds
  */
-int32_t get_time_millis(void) {
+unsigned long get_time_millis(void) {
 
 #ifdef WIN32
 

@@ -150,7 +150,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
         info->depth = MAX_DEPTH;
       }
 
-      printf("time:%d start:%d stop:%d depth:%d timeset:%d movestogo:%d mps: %d\n",
+      printf("time:%d start:%lu stop:%lu depth:%d timeset:%d movestogo:%d mps: %d\n",
         time, info->starttime, info->stoptime, info->depth, info->timeset, movestogo[board->side], mps);
       search_position(board, info);
 
