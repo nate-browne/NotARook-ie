@@ -106,16 +106,150 @@ uint32_t parse_move(char *str, Board_t *board) {
 }
 
 /**
- * Prints the contents of the movelist in a readable way
+ * Prints a given move in the standard algebraic notation. Used in console.c
  */
-void print_movelist(const MoveList_t * list) {
-  printf("MoveList:\n");
+char * print_algebraic_move(const uint32_t move, Board_t *board) {
 
-  for(int32_t index = 0; index < list->count; ++index) {
-    int32_t move = list->moves[index].move;
-    int32_t score = list->moves[index].score;
+  static char move_algebraic_str[15];
+  char tmp[10];
+  memset(tmp, '\0', sizeof(tmp));
 
-    printf("Move: %d %s (score: %d)\n", index + 1, print_move(move), score);
+  char piece, prom = 'Q';
+  bool capture = false;
+
+  bool in_check = false;
+
+  int32_t ff = FILES_BOARD[FROMSQ(move)];
+  int32_t rf = RANKS_BOARD[FROMSQ(move)];
+  int32_t ft = FILES_BOARD[TOSQ(move)];
+  int32_t rt = RANKS_BOARD[TOSQ(move)];
+
+  // handle castles as a special case
+  snprintf(tmp, sizeof(tmp), "%c%c%c%c", ('a' + ff), ('1' + rf), ('a' + ft), ('1' + rt));
+
+  // short castles
+  if(!strncmp(tmp, "e1g1", strlen("e1g1")) || !strncmp(tmp, "e8g8", strlen("e8g8"))) {
+    return "O-O";
+  // long castles
+  } else if(!strncmp(tmp, "e1c1", strlen("e1c1")) || !strncmp(tmp, "e8c8", strlen("e8c8"))) {
+    return "O-O-O";
   }
-  printf("MoveList Total %d Moves\n\n", list->count);
+
+
+  int32_t promoted = PROMOTED(move);
+
+  enum PIECES pce = board->pieces[FROMSQ(move)];
+
+  // get the piece type
+  switch(pce) {
+    case wN:
+    case bN:
+      piece = 'N';
+      break;
+    case wR:
+    case bR:
+      piece = 'R';
+      break;
+    case wB:
+    case bB:
+      piece = 'B';
+      break;
+    case wQ:
+    case bQ:
+      piece = 'Q';
+      break;
+    case wK:
+    case bK:
+      piece = 'K';
+      break;
+    default: // this means it's a pawn
+      piece = '\0';
+      break;
+  }
+
+  // figure out if capture
+  if(move & MFLAGCAP) capture = true;
+
+  // handle all pawn cases
+  if(piece == '\0') {
+    if(promoted) {
+      if(IsKn(promoted)) {
+        prom = 'N';
+      } else if(IsRQ(promoted) && !IsBQ(promoted)) {
+        prom = 'R';
+      } else if(!IsRQ(promoted) && IsBQ(promoted)) {
+        prom = 'B';
+      }
+      make_move(board, move);
+      in_check = square_attacked(board->kings_sq[board->side], board->side ^ 1, board);
+      if(in_check && check_result(board)) {
+        if(capture) {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c=%c#", (ff + 'a'), (ft + 'a'), (rt + '1'), prom);
+        } else {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c=%c#", (ft + 'a'), (rt + '1'), prom);
+        }
+      } else if(in_check) {
+        if(capture) {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c=%c+", (ff + 'a'), (ft + 'a'), (rt + '1'), prom);
+        } else {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c=%c+", (ft + 'a'), (rt + '1'), prom);
+        }
+      } else {
+        if(capture) {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c=%c", (ff + 'a'), (ft + 'a'), (rt + '1'), prom);
+        } else {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c=%c", (ft + 'a'), (rt + '1'), prom);
+        }
+      }
+      take_move(board);
+    } else {
+      make_move(board, move);
+      in_check = square_attacked(board->kings_sq[board->side], board->side ^ 1, board);
+      if(in_check && check_result(board)) {
+        if(capture) {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c#", (ff + 'a'), (ft + 'a'), (rt + '1'));
+        } else {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c#", (ft + 'a'), (rt + '1'));
+        }
+      } else if(in_check) {
+        if(capture) {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c+", (ff + 'a'), (ft + 'a'), (rt + '1'));
+        } else {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c+", (ft + 'a'), (rt + '1'));
+        }
+      } else {
+        if(capture) {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c", (ff + 'a'), (ft + 'a'), (rt + '1'));
+        } else {
+          snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c", (ft + 'a'), (rt + '1'));
+        }
+      }
+      take_move(board);
+    }
+    return move_algebraic_str;
+  }
+
+  make_move(board, move);
+  in_check = square_attacked(board->kings_sq[board->side], board->side ^ 1, board);
+  if(in_check && check_result(board)) {
+    if(capture) {
+      snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c#", piece, (ft + 'a'), (rt + '1'));
+    } else {
+      snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c%c#", piece, (ft + 'a'), (rt + '1'));
+    }
+  } else if(in_check) {
+    if(capture) {
+      snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c+", piece, (ft + 'a'), (rt + '1'));
+    } else {
+      snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c%c+", piece, (ft + 'a'), (rt + '1'));
+    }
+  } else {
+    if(capture) {
+      snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%cx%c%c", piece, (ft + 'a'), (rt + '1'));
+    } else {
+      snprintf(move_algebraic_str, sizeof(move_algebraic_str), "%c%c%c", piece, (ft + 'a'), (rt + '1'));
+    }
+  }
+  take_move(board);
+  return move_algebraic_str;
 }

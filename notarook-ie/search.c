@@ -330,7 +330,7 @@ void search_position(Board_t *board, SearchInfo_t *info) {
   // for console, we print the move very visibly and play it, then print
   // the board for the user to see
   } else {
-    printf("\n\n***!! NotARook-ie makes move %s !!***\n\n", print_move(best_move));
+    printf("\n\n***!! NotARook-ie makes move %s !!***\n\n", print_algebraic_move(best_move, board));
     make_move(board, best_move);
     print_board(board);
   }
