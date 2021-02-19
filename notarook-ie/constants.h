@@ -70,6 +70,15 @@ exit(1);}
 #define BOARD_SQ_NUM 120
 #define STANDARD_BOARD_SIZE 64
 
+// max number of moves for a given position in the book
+// this is a huge overestimation (that's on purpose)
+#define MAX_BOOK_MOVES 40
+
+// define minimum wait time for the engine
+// this is used in search.c when we find a book move to make it so that
+// the engine appears to be "thinking" instead of just immediately playing theory
+#define MIN_WAIT_TIME 1
+
 // max search depth to use
 #define MAX_DEPTH 64
 
@@ -230,6 +239,20 @@ typedef struct Board {
   uint32_t search_killers[2][MAX_DEPTH];
 
 } Board_t;
+
+// struct for the entries from the openings book
+typedef struct PolybookEntry {
+  uint64_t key; // hashkey for the entry
+  uint16_t move; // the move to play, in polybook format
+  uint16_t weight; // scoring of the move
+  uint32_t learn;
+} PolybookEntry_t;
+
+// struct representing a book
+typedef struct Polybook {
+  PolybookEntry_t *entries; // the entries of the book
+  long num_entries; // number of entries
+} Polybook_t;
 
 
 // goes from [0, 120) to [0, 64)

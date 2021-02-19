@@ -5,6 +5,12 @@
 #include "functions.h"
 #include "constants.h"
 
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 /**
  * Called every so often to check if the time is up or the GUI
  * has sent an interrupt
@@ -275,7 +281,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
  * Due to the idea of principle variation, this is more efficient than
  * directly searching a deep depth.
  */
-void search_position(Board_t *board, SearchInfo_t *info) {
+void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Polybook_t book) {
   uint32_t best_move = NOMOVE;
   int32_t best_score = -INFINITY;
   int32_t curr_depth = 0;
@@ -283,37 +289,52 @@ void search_position(Board_t *board, SearchInfo_t *info) {
 
   clear_for_search(info, board);
 
-  // iterative deepening begins
-  for(curr_depth = 1; curr_depth <= info->depth; ++curr_depth) {
-    // first, find the best move
-    best_score = alpha_beta_search(-INFINITY, INFINITY, curr_depth, board, info, true);
+  // use the openings book
+  if(use_book) {
+    printf("Looking for position in opening book...\n");
+    best_move = get_book_move(board, book);
+  }
 
-    if(info->stopped) break;
+  if(best_move != NOMOVE) {
+    int32_t wait_time = MIN_WAIT_TIME + ((rand() % (3 - 1 + 1)) + 1);
+    printf("Found position in openings book. Skipping search, waiting for %ds, then playing...\n", wait_time);
+    sleep(wait_time);
+  }
+
+  if(best_move == NOMOVE) {
+    printf("Didn't find a book move, searching...\n");
+    // iterative deepening begins
+    for(curr_depth = 1; curr_depth <= info->depth; ++curr_depth) {
+      // first, find the best move
+      best_score = alpha_beta_search(-INFINITY, INFINITY, curr_depth, board, info, true);
+
+      if(info->stopped) break;
 
 
-    // get (and print out) the pv line for the depth
-    pv_moves = get_pv_line(curr_depth, board);
-
-    // next, get the best move
-    best_move = board->pv_array[0];
-
-    // print based on the mode
-    if(info->game_mode == UCIMODE) {
-      printf("info score cp %d depth %d nodes %ld time %lu ",
-        best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
-    } else if(info->game_mode == XBOARDMODE && info->post_thinking) {
-      printf("%d %d %lu %ld ", curr_depth, best_score, (get_time_millis() - info->starttime) / 10, info->nodes);
-    } else if(info->post_thinking) {
-      printf("score:%d depth:%d nodes:%ld time:%lu(ms) ", best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
-    }
-
-    if(info->game_mode == UCIMODE || info->post_thinking) {
+      // get (and print out) the pv line for the depth
       pv_moves = get_pv_line(curr_depth, board);
-      printf("pv");
-      for(int32_t idx = 0; idx < pv_moves; ++idx) {
-        printf(" %s", print_move(board->pv_array[idx]));
+
+      // next, get the best move
+      best_move = board->pv_array[0];
+
+      // print based on the mode
+      if(info->game_mode == UCIMODE) {
+        printf("info score cp %d depth %d nodes %ld time %lu ",
+          best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
+      } else if(info->game_mode == XBOARDMODE && info->post_thinking) {
+        printf("%d %d %lu %ld ", curr_depth, best_score, (get_time_millis() - info->starttime) / 10, info->nodes);
+      } else if(info->post_thinking) {
+        printf("score:%d depth:%d nodes:%ld time:%lu(ms) ", best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
       }
-      printf("\n");
+
+      if(info->game_mode == UCIMODE || info->post_thinking) {
+        pv_moves = get_pv_line(curr_depth, board);
+        printf("pv");
+        for(int32_t idx = 0; idx < pv_moves; ++idx) {
+          printf(" %s", print_move(board->pv_array[idx]));
+        }
+        printf("\n");
+      }
     }
   }
 

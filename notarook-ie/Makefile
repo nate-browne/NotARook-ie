@@ -29,12 +29,12 @@ endif
 endif
 
 # These are the C header files used.
-HEADERS   = constants.h functions.h macros.h enums.h
+HEADERS   = constants.h functions.h macros.h enums.h polykeys.h
 
 # These are the C source files for the engine executable
 SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
             printer.c movegen.c validation.c makemove.c perft.c search.c util.c \
-	    hashset.c evaluate.c uci.c xboard.c console.c
+	    hashset.c evaluate.c uci.c xboard.c console.c polybook.c polykeys.c
 
 # These are the C source files for the perft testing executable
 TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \

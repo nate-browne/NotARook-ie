@@ -25,7 +25,7 @@ static void print_help(void) {
  * Loop for interacting with the engine via command line.
  * Protocol is based off of xboard, but without the GUI
  */
-void console_loop(Board_t *board, SearchInfo_t *info) {
+void console_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using_book) {
   printf("Booting up %s console mode...\n", NAME);
   printf("Type \"help\" for commands\n\n");
 
@@ -57,7 +57,7 @@ void console_loop(Board_t *board, SearchInfo_t *info) {
         info->stoptime = info->starttime + movetime;
       }
 
-      search_position(board, info);
+      search_position(board, info, using_book, book);
     }
 
     // check if the game is over now after the engine moves

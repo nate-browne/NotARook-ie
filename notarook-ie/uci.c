@@ -15,7 +15,7 @@
  * processes is honestly quite annoying as far as keeping track of what
  * section is for what.
  */
-static void parse_go(char *line, SearchInfo_t *info, Board_t *board) {
+static void parse_go(char *line, SearchInfo_t *info, Board_t *board, bool using_book, Polybook_t book) {
 
   // using these initial values to efficiently check if we parsed stuff
   int32_t depth = -1, movestogo = 30, movetime = -1;
@@ -76,7 +76,7 @@ static void parse_go(char *line, SearchInfo_t *info, Board_t *board) {
 
   printf("time:%d start:%lu stop:%lu depth:%d timeset:%d\n",
     time, info->starttime, info->stoptime, info->depth, info->timeset);
-  search_position(board, info);
+  search_position(board, info, using_book, book);
 }
 
 /**
@@ -130,13 +130,14 @@ static void parse_position(char *line, Board_t *board) {
 static void print_init_info(void) {
   printf("id name %s\n", NAME);
   printf("id author npcompletenate\n");
+  printf("option name Book type check default true\n");
   printf("uciok\n");
 }
 
 /**
  * Loop for interacting with the GUI via the UCI protocol
  */
-void UCI_loop(Board_t *board, SearchInfo_t *info) {
+void UCI_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using_book) {
 
   // first, turn off buffering for stdin and stdout
   setvbuf(stdin, NULL, _IONBF, 0);
@@ -166,12 +167,21 @@ void UCI_loop(Board_t *board, SearchInfo_t *info) {
     } else if(!strncmp(buf, "ucinewgame", strlen("ucinewgame"))) {
       parse_position("position startpos\n", board);
     } else if(!strncmp(buf, "go", strlen("go"))) {
-      parse_go(buf, info, board);
+      parse_go(buf, info, board, using_book, book);
     } else if(!strncmp(buf, "quit", strlen("quit"))) {
       info->quit = true;
       break;
     } else if(!strncmp(buf, "uci", strlen("uci"))) {
       print_init_info();
+      break;
+    } else if(!strncmp(buf, "setoption name Book value ", 26)) {
+      char *ptr = NULL;
+      ptr = strstr(buf, "true");
+      if(ptr) {
+        using_book = true;
+      } else {
+        using_book = false;
+      }
     }
 
     // check for quit if it was sent inside of when we said "go"

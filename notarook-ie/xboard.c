@@ -112,7 +112,7 @@ static void print_options(void) {
  * Implementation is inspired by the forum post where the inventor of the protocol
  * wrote a driver for use.
  */
-void XBoard_loop(Board_t *board, SearchInfo_t *info) {
+void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using_book) {
 
   // first, turn off buffering for stdin and stdout
   setvbuf(stdin, NULL, _IONBF, 0);
@@ -152,7 +152,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info) {
 
       printf("time:%d start:%lu stop:%lu depth:%d timeset:%d movestogo:%d mps: %d\n",
         time, info->starttime, info->stoptime, info->depth, info->timeset, movestogo[board->side], mps);
-      search_position(board, info);
+      search_position(board, info, using_book, book);
 
       if(mps) {
         movestogo[board->side ^ 1]--;

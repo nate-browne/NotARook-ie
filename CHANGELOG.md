@@ -1,11 +1,15 @@
 This project adheres to [semantic versioning](https://semver.org/).
+# 2.0.0 (2021-02-18)
+***
+### Release Highlights
+* Engine now comes with and can use Polyglot opening books.
+README instructions are updated and a bunch of books come bundled with the program.
 
 # 1.3.0 (2021-02-18)
 ***
 ### Release Highlights
 * Added ability for engine to print moves in standard algebraic notation
 when playing in console mode.
-
 
 # 1.2.2 (2021-02-14)
 ***

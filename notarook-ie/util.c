@@ -17,6 +17,30 @@
 #include "constants.h"
 
 /**
+ * Function for swapping the endianness of an unsigned short
+ * Required cause polybook format is big endian, for some reason.
+ */
+uint16_t endian_swap_u16(uint16_t x) {
+  return (x >> 8) | (x << 8);
+}
+
+/**
+ * You can guess what this does
+ * Required cause polybook format is big endian, for some reason.
+ */
+uint64_t endian_swap_u64(uint64_t x) {
+  x = (x >> 56) |
+      ((x << 40) & 0x00FF000000000000) |
+      ((x << 24) & 0x0000FF0000000000) |
+      ((x << 8)  & 0x000000FF00000000) |
+      ((x >> 8)  & 0x00000000FF000000) |
+      ((x >> 24) & 0x0000000000FF0000) |
+      ((x >> 40) & 0x000000000000FF00) |
+      (x << 56);
+  return x;
+}
+
+/**
  * Returns the current time solely in milliseconds
  */
 unsigned long get_time_millis(void) {

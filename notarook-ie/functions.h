@@ -63,11 +63,13 @@ extern void take_null_move(Board_t *);
 extern uint64_t perft_test(int32_t, Board_t *, bool);
 
 /* search.c */
-extern void search_position(Board_t *, SearchInfo_t *);
+extern void search_position(Board_t *, SearchInfo_t *, bool, const Polybook_t);
 
 /* util.c */
 extern unsigned long get_time_millis(void);
-extern void read_input(SearchInfo_t *info);
+extern void read_input(SearchInfo_t *);
+extern uint16_t endian_swap_u16(uint16_t);
+extern uint64_t endian_swap_u64(uint64_t);
 
 /* hashset.c */
 extern void init_hashset(PVTable_t *);
@@ -80,13 +82,18 @@ extern int32_t get_pv_line(const int32_t, Board_t *);
 extern int32_t eval_position(const Board_t *);
 
 /* uci.c */
-extern void UCI_loop(Board_t *, SearchInfo_t *);
+extern void UCI_loop(Board_t *, SearchInfo_t *, Polybook_t, bool);
 
 /* xboard.c */
-extern void XBoard_loop(Board_t *, SearchInfo_t *);
+extern void XBoard_loop(Board_t *, SearchInfo_t *, Polybook_t, bool);
 extern bool check_result(Board_t *);
 
 /* console.c */
-extern void console_loop(Board_t *, SearchInfo_t *);
+extern void console_loop(Board_t *, SearchInfo_t *, Polybook_t, bool);
+
+/* polybook.c */
+extern void clean_polybook(Polybook_t *);
+extern bool init_polybook(Polybook_t *, char *);
+extern uint32_t get_book_move(Board_t *, const Polybook_t);
 
 #endif
