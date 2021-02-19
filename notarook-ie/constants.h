@@ -52,7 +52,7 @@ printf("on line %d\n", __LINE__); \
 exit(1);}
 #endif
 
-#define NAME "NotARook-ie v1.3.0"
+#define NAME "NotARook-ie v2.0.0"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
