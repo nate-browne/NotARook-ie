@@ -4,12 +4,12 @@
 I started playing chess recently, so why not keep my skills in C up to date by writing a chess engine?
 
 ### Overview
-This engine uses [alpha-beta pruning implemented with negamax](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) for move selection as well as [IDDFS](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search) to speed things up and to provide a decently good move if the algorithm is interrupted before it can calculate the best possible move.
-This engine compatible with xboard using the xboard protocol or other GUIs that use the <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html" target="_blank" style="text-decoration:none;">UCI protocol</a> for chess. It can also be played in command line mode.
+This engine uses [alpha-beta pruning implemented with negamax](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) for move selection as well as [IDDFS](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search) to speed things up and to provide a decently good move if the algorithm is interrupted before it can calculate the best possible move. It also uses the [killer heuristic/history heuristic](https://en.wikipedia.org/wiki/Killer_heuristic) to help speed up the search for best moves.
+This engine is compatible with xboard using the [xboard protocol](https://www.gnu.org/software/xboard/engine-intf.html) or other GUIs that use the <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html" target="_blank" style="text-decoration:none;">UCI protocol</a> for chess. It can also be played in command line mode without any need for an external GUI.
 
 The engine uses the same board representation as the <a href="https://www.chessprogramming.org/Cray-1" target="_blank" style="text-decoration:none;">Cray-1 supercomputer</a> where the board is 120 squares. The top and bottom have two buffer
 rows, and each side of the board has one buffer row. This is to ensure that when calculating all possible moves, null moves
-are accounted for and the engine doesn't just try to move a piece off of the board.
+are accounted for and the engine doesn't just try to move a piece off of the board. The code itself is full of comments explaining why things are the way that they are ot hopefully help those needing inspiration for their own engines.
 
 See the [issues tab](https://github.com/nate-browne/NotARook-ie/issues) to see what kinds of improvements are on the way in the future.
 
