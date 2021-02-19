@@ -54,7 +54,7 @@ TEST_OBJS = $(TEST_SRCS:.c=.o)
 # Used by the OBJS and TEST_OBJS targets below
 .c.o:
 	@echo "Compiling each C source file separately..."
-	$(GCC) $(C_FLAGS) $(D_FLAG) $<
+	$(GCC) $(C_FLAGS) $(OPT) $<
 	@echo ""
 
 # Target for creating the engine exectuable
@@ -62,7 +62,7 @@ TEST_OBJS = $(TEST_SRCS:.c=.o)
 # moves the exectuable to the bin directory, and echos the results out.
 $(EXE): $(OBJS)
 	@echo "Creating executable..."
-	$(GCC) -o $(EXE) $(LD_FLAGS) $(D_FLAG) $(OBJS)
+	$(GCC) -o $(EXE) $(LD_FLAGS) $(OPT) $(OBJS)
 	@mv $(EXE) ../bin
 	@echo ""
 	@echo "Compilation successful!"
@@ -72,7 +72,7 @@ $(EXE): $(OBJS)
 # moves the exectuable to the bin directory, and echos the results out.
 $(TEST): $(TEST_OBJS)
 	@echo "Creating executable..."
-	$(GCC) -o $(TEST) $(LD_FLAGS) $(D_FLAG) $(TEST_OBJS)
+	$(GCC) -o $(TEST) $(LD_FLAGS) $(OPT) $(TEST_OBJS)
 	@mv $(TEST) ../bin
 	@echo ""
 	@echo "Compilation successful!"
