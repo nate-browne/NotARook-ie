@@ -25,10 +25,11 @@ Here are the steps:
     * For windows, [check here](https://www.gnu.org/software/xboard/#tag-A1). Fair warning that this engine may or may not run well (or at all, really) on windows (haven't tested it).
 2. Clone the repo
 3. Type `make` to build the program.
-4. To play against the engine, run `xboard -cp -fcp bin/notarookie <path to openings book to use (optional)> &`.
+4. To play against the engine, run `xboard -cp -fcp "bin/notarookie <path to openings book to use (optional)>" &`.
     * This will start the engine with you playing the white pieces.
-5. To have the engine play itself, run `xboard -mm -fcp bin/notarookie <path to openings book to use (optional)> -fd "$(pwd)" -scp bin/notarookie <path to openings book to use (optional)> -sd "$(pwd)" &`.
-6. Once in xboard, you can use the "Mode" tab to switch if the engine is playing the white pieces or the black pieces.
+5. To have the engine play itself, run `xboard -fcp "bin/notarookie <path to openings book to use (optional)>" -fd "$(pwd)" -scp bin/notarookie <path to openings book to use (optional)> -sd "$(pwd)" &`.
+6. To play another engine, run the above command but change the part after `-scp` to be the path to the other engine's executable.
+7. Once in xboard, you can use the "Mode" tab to switch if the engine is playing the white pieces or the black pieces.
 
 #### Arena/PyChess (UCI protocol setup)
 Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to set up the engine to run in Arena chess.
