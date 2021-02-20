@@ -5,6 +5,9 @@
 #include "functions.h"
 #include "constants.h"
 
+/**
+ * Prints the list of commands available when `help` is typed.
+ */
 static void print_help(void) {
   printf("Commands:\n");
   printf("quit - quit game\n");
@@ -32,22 +35,28 @@ void console_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool usin
   info->game_mode = CONSOLEMODE;
   info->post_thinking = true;
 
+  // turn off buffering for stdin and stdout
+  // we did this back in engine.c, but can't hurt to do it again
   setvbuf(stdin, NULL, _IONBF, 0);
   setvbuf(stdout, NULL, _IONBF, 0);
 
+  // initialize some stuff we'll be using
   int32_t depth = MAX_DEPTH, movetime = 0;
   enum COLORS engine_side = BLACK;
   uint32_t move = NOMOVE;
   bool res;
 
+  // create our input and command buffers
   char in[XBOARD_BUFFER_SIZE], cmd[XBOARD_BUFFER_SIZE];
 
+  // set up the starting position on the board
   parse_FEN(START_FEN, board);
 
   while(true) {
 
     fflush(stdout);
 
+    // determine if the engine should be playing a move
     if(board->side == engine_side && !(res = check_result(board))) {
       info->starttime = get_time_millis();
       info->depth = depth;
@@ -57,6 +66,7 @@ void console_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool usin
         info->stoptime = info->starttime + movetime;
       }
 
+      // find, print, and play the best move the engine can
       search_position(board, info, using_book, book);
     }
 
@@ -66,22 +76,26 @@ void console_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool usin
       printf("gg! Type `new` to set up a new game or `quit` to quit.\n");
     }
 
+    // print out the prompt to the screen
     printf("\nNotARook-ie> ");
     fflush(stdout);
 
+    // reset the input buffer
     memset(in, '\0', XBOARD_BUFFER_SIZE);
 
+    // grab the user string and restart the loop if no input provided
     if(!fgets(in, XBOARD_BUFFER_SIZE, stdin)) continue;
 
+    // parse just the command section of the string (no args)
     sscanf(in, "%s", cmd);
 
-    // this one is obvious too
+    // this one is obvious
     if(!strncmp(cmd, "help", strlen("help"))) {
       print_help();
       continue;
     }
 
-    // this one is obvious
+    // this one is obvious too
     if(!strncmp(cmd, "quit", strlen("quit"))) {
       info->quit = true;
       break;
@@ -162,6 +176,7 @@ void console_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool usin
       continue;
     }
 
+    // play the user's move
     make_move(board, move);
     board->ply = 0;
   }

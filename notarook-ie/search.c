@@ -5,12 +5,6 @@
 #include "functions.h"
 #include "constants.h"
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
 /**
  * Called every so often to check if the time is up or the GUI
  * has sent an interrupt
@@ -21,11 +15,13 @@ static void check_up(SearchInfo_t *info) {
     info->stopped = true;
   }
 
+  // check for commands like "quit" from console/GUI
   read_input(info);
 }
 
 /**
  * Swaps out the move we're looking at to find the better score at that point
+ * Essential for better move ordering, speeding up our entire search.
  */
 static void pick_next_move(int32_t move_num, MoveList_t *list) {
   Move_t temp;
@@ -69,6 +65,7 @@ static bool is_repetition(const Board_t *board) {
  * Clear relevant info for searching to get ready for a new search
  */
 static void clear_for_search(SearchInfo_t *info, Board_t *board) {
+  // reset our search history and our search killers
   for(int32_t idx = 0; idx < 13; ++idx) {
     for(int32_t idy = 0; idy < BOARD_SQ_NUM; ++idy) {
       board->search_history[idx][idy] = 0;
@@ -81,6 +78,7 @@ static void clear_for_search(SearchInfo_t *info, Board_t *board) {
     }
   }
 
+  // clear the principle variation table
   clear_hashset(&board->pvt);
   board->ply = 0;
 
@@ -96,7 +94,7 @@ static void clear_for_search(SearchInfo_t *info, Board_t *board) {
  */
 static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInfo_t *info) {
 
-  check_board(board);
+  ASSERT(check_board(board));
 
   // check every 2048 nodes to see if we've run out of time
   if(!(info->nodes & 2047)) check_up(info);
@@ -164,7 +162,7 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
  */
 static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Board_t *board, SearchInfo_t *info, bool null_allowed) {
 
-  check_board(board);
+  ASSERT(check_board(board));
 
   // use quiescence to evaluate depth 0 to avoid the horizon effect
   if(!depth) return quiescence(alpha, beta, board, info);
@@ -295,12 +293,14 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
     best_move = get_book_move(board, book);
   }
 
+  // we found a book move to play
   if(best_move != NOMOVE) {
     int32_t wait_time = MIN_WAIT_TIME + ((rand() % (3 - 1 + 1)) + 1);
     printf("Found position in openings book. Skipping search, waiting for %ds, then playing...\n", wait_time);
     sleep(wait_time);
   }
 
+  // no book move, so time to do our IDDFS
   if(best_move == NOMOVE) {
     printf("Didn't find a book move, searching...\n");
     // iterative deepening begins
@@ -309,7 +309,6 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
       best_score = alpha_beta_search(-INFINITY, INFINITY, curr_depth, board, info, true);
 
       if(info->stopped) break;
-
 
       // get (and print out) the pv line for the depth
       pv_moves = get_pv_line(curr_depth, board);
@@ -327,6 +326,7 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
         printf("score:%d depth:%d nodes:%ld time:%lu(ms) ", best_score, curr_depth, info->nodes, get_time_millis() - info->starttime);
       }
 
+      // print the current principal variation line if required
       if(info->game_mode == UCIMODE || info->post_thinking) {
         pv_moves = get_pv_line(curr_depth, board);
         printf("pv");

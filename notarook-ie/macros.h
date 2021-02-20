@@ -55,4 +55,12 @@
 /* only from the perspective of white */
 #define ENDGAME_MAT (1 * PIECE_VAL[wR] + 2 * PIECE_VAL[wN] + 2 * PIECE_VAL[wP] + PIECE_VAL[wK])
 
+// macro for declaring numbers as unsigned long long ints
+// varies depending on platform (unix-ish vs windows)
+#ifdef _MSC_VER
+#define U64(u) (u##ui64)
+#else
+#define U64(u) (u##ULL)
+#endif
+
 #endif

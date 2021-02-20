@@ -18,6 +18,21 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifdef WIN32
+#include <windows.h>
+// for converting endianness of uint16_t and uint64_t
+#include <winsock2.h>
+#else
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+#include <sys/select.h>
+// for converting endianness of uint16_t and uint64_t
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#endif
+
 #include "enums.h"
 #include "macros.h"
 
@@ -36,7 +51,7 @@
 
 // kind of messy, but this whole mess allows us to throw in
 // assert debug statements without mass commenting them out later
-// just comment out line 35
+// just comment out line 50
 // to be clear, I took this from a book and didn't come up with this macro
 // myself
 #ifndef DEBUG
@@ -52,13 +67,15 @@ printf("on line %d\n", __LINE__); \
 exit(1);}
 #endif
 
-#define NAME "NotARook-ie v2.0.0"
+#define NAME "NotARook-ie v2.0.1"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 #define MIN3 "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - - 0 1"
 #define MIN1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
+#define WELCOME_STR "Welcome to %s! Type 'console' for console mode, 'uci' for UCI engine mode, or 'xboard' for xboard engine mode. \
+Type 'quit' to exit.\n"
 
 // number in half-moves
 // this is a safe assumption; I don't think games can be 1024 full turns
@@ -314,5 +331,8 @@ extern uint64_t ISOLATED_MASK[STANDARD_BOARD_SIZE];
 
 // used to create the mirror board for evaluation checking
 extern const int32_t MIRROR_64[STANDARD_BOARD_SIZE];
+
+// defined in consts.c
+extern const uint64_t Random64[781];
 
 #endif

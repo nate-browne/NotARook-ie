@@ -105,6 +105,7 @@ static void add_piece(const int32_t sq, Board_t *board, const int32_t piece) {
     SETBIT(board->pawns[BOTH], SQ64(sq));
   }
 
+  // update material value and place the piece on the piece list
   board->material[col] += PIECE_VAL[piece];
   board->piece_list[piece][board->piece_num[piece]++] = sq;
 }
@@ -156,27 +157,32 @@ static void move_piece(const int32_t from, const int32_t to, Board_t *board) {
  * This function is used for null move pruning
  */
 void make_null_move(Board_t *board) {
-  check_board(board);
+  ASSERT(check_board(board));
 
+  // just quickly verify that we're not in check
   ASSERT(!square_attacked(board->kings_sq[board->side], board->side ^ 1, board));
 
+  // up the ply and hashkey as if we actually did something
   board->ply++;
   board->history[board->hist_ply].hashkey = board->hashkey;
 
+  // if we had on croissant available, hash it in
   if(board->passant != NO_SQ) HASH_PAS;
 
+  // set up everything as if we played, except set the move to NOMOVE
   board->history[board->hist_ply].move_played = NOMOVE;
   board->history[board->hist_ply].move_counter = board->move_counter;
   board->history[board->hist_ply].passant = board->passant;
   board->history[board->hist_ply].castle_permission = board->castle_permission;
 
+  // flip sides
   board->passant = NO_SQ;
   board->move_counter++;
   board->side ^= 1;
   board->hist_ply++;
   HASH_SIDE;
 
-  check_board(board);
+  ASSERT(check_board(board));
 }
 
 /**
@@ -184,33 +190,34 @@ void make_null_move(Board_t *board) {
  * This function is used for null move pruning
  */
 void take_null_move(Board_t *board) {
-  check_board(board);
+  ASSERT(check_board(board));
 
   board->hist_ply--;
   board->ply--;
 
   if(board->passant != NO_SQ) HASH_PAS;
 
+  // pull in every field from the history
   board->castle_permission = board->history[board->hist_ply].castle_permission;
   board->move_counter = board->history[board->hist_ply].move_counter;
   board->passant = board->history[board->hist_ply].passant;
   board->hashkey = board->history[board->hist_ply].hashkey;
   board->side ^= 1;
 
-  check_board(board);
+  ASSERT(check_board(board));
 }
 
 /**
  * Function to undo a move made by the below function
  */
 void take_move(Board_t *board) {
-  check_board(board);
+  ASSERT(check_board(board));
 
   // decrement the ply values
   board->hist_ply--;
   board->ply--;
 
-  // grab the move before our illegal move
+  // grab the move before our move
   uint32_t move = board->history[board->hist_ply].move_played;
   int32_t from = FROMSQ(move);
   int32_t to = TOSQ(move);
@@ -236,6 +243,7 @@ void take_move(Board_t *board) {
   board->side ^= 1;
   HASH_SIDE;
 
+  // revert castling and en passant
   if(move & MFLAGEP) {
     if(board->side == WHITE) add_piece(to - 10, board, bP);
     else add_piece(to + 10, board, wP);
@@ -279,7 +287,7 @@ void take_move(Board_t *board) {
     add_piece(from, board, (PIECE_COL[PROMOTED(move)] == WHITE ? wP : bP));
   }
 
-  check_board(board);
+  ASSERT(check_board(board));
 }
 
 /**
@@ -289,12 +297,14 @@ void take_move(Board_t *board) {
  */
 bool make_move(Board_t *board, uint32_t move) {
 
-  check_board(board);
+  ASSERT(check_board(board));
 
+  // grab info about the move
   int32_t from = FROMSQ(move);
   int32_t to = TOSQ(move);
   int32_t side = board->side;
 
+  // validate move info
   ASSERT(square_on_board(from));
   ASSERT(square_on_board(to));
   ASSERT(side_valid(side));
@@ -363,6 +373,7 @@ bool make_move(Board_t *board, uint32_t move) {
   board->hist_ply++;
   board->ply++;
 
+  // reset 50 move rule counter for pawn moves
   if(PIECE_PAWN[board->pieces[from]]) {
     board->move_counter = 0;
 
@@ -399,7 +410,7 @@ bool make_move(Board_t *board, uint32_t move) {
   board->side ^= 1;
   HASH_SIDE;
 
-  check_board(board);
+  ASSERT(check_board(board));
 
   // if after we move the king is in check, undo and it's a nope
   if(square_attacked(board->kings_sq[side], board->side, board)) {

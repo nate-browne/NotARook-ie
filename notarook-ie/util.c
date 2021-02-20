@@ -3,42 +3,8 @@
  */
 
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <unistd.h>
-#include <sys/select.h>
-#endif
-
 #include "functions.h"
 #include "constants.h"
-
-/**
- * Function for swapping the endianness of an unsigned short
- * Required cause polybook format is big endian, for some reason.
- */
-uint16_t endian_swap_u16(uint16_t x) {
-  return (x >> 8) | (x << 8);
-}
-
-/**
- * You can guess what this does
- * Required cause polybook format is big endian, for some reason.
- */
-uint64_t endian_swap_u64(uint64_t x) {
-  x = (x >> 56) |
-      ((x << 40) & 0x00FF000000000000) |
-      ((x << 24) & 0x0000FF0000000000) |
-      ((x << 8)  & 0x000000FF00000000) |
-      ((x >> 8)  & 0x00000000FF000000) |
-      ((x >> 24) & 0x0000000000FF0000) |
-      ((x >> 40) & 0x000000000000FF00) |
-      (x << 56);
-  return x;
-}
 
 /**
  * Returns the current time solely in milliseconds
@@ -64,7 +30,7 @@ unsigned long get_time_millis(void) {
 /**
  * Peeks stdin to see if we need to interrupt our engine while it is thinking
  */
-static bool input_waiting() {
+static bool input_waiting(void) {
 
 #ifndef WIN32
 
@@ -116,11 +82,12 @@ void read_input(SearchInfo_t *info) {
   if(input_waiting()) {
     info->stopped = true;
     do {
-      bytes = read(fileno(stdin), input, 256);
+      bytes = read(fileno(stdin), input, sizeof(input));
     } while(bytes < 0);
     endc = strchr(input, '\n');
     if(endc) *endc = '\0';
 
+    // handle the command sent in
     if(strlen(input) > 0) {
       if(!strncmp(input, "quit", strlen("quit"))) {
         info->quit = true;

@@ -16,12 +16,14 @@ int32_t get_pv_line(const int32_t depth, Board_t *board) {
 
   ASSERT(depth < MAX_DEPTH);
 
+  // grab the move for this position from the PV table
   uint32_t move = find_move(board);
   int32_t count = 0; // number of moves we're putting into the array
 
   while(move != NOMOVE && count < depth) {
     ASSERT(count < MAX_DEPTH);
 
+    // make the move and store it in our table
     if(move_exists(board, move)) {
       make_move(board, move);
       board->pv_array[count] = move;
@@ -32,7 +34,8 @@ int32_t get_pv_line(const int32_t depth, Board_t *board) {
     move = find_move(board);
   }
 
-  // need to take the moves back to actually play the move we found
+  // take back all of our "played" moves
+  // to return to the original state
   while(board->ply > 0) {
     take_move(board);
   }
@@ -74,10 +77,11 @@ void clear_hashset(PVTable_t *pvt) {
  * We cross those bridges when/if we get there, though.
  */
 void store_move(Board_t *board, const uint32_t move) {
+  // grab our index and verify it
   unsigned long index = board->hashkey % (board->pvt.entries);
-
   ASSERT(index >= 0 && index < board->pvt.entries);
 
+  // store the move at that section
   board->pvt.table[index].move = move;
   board->pvt.table[index].hashkey = board->hashkey;
 }
@@ -87,11 +91,12 @@ void store_move(Board_t *board, const uint32_t move) {
  * Returns the move calculated for the given board position
  */
 uint32_t find_move(const Board_t *board) {
+  // grab our index and verify it
   unsigned long index = board->hashkey % (board->pvt.entries);
-
   ASSERT(index >= 0 && index < board->pvt.entries);
 
   uint64_t found_hashkey = board->pvt.table[index].hashkey;
 
+  // if the hashkey at the position we found matches our current one, return the move
   return (found_hashkey == board->hashkey) ? board->pvt.table[index].move : NOMOVE;
 }

@@ -6,7 +6,6 @@
 
 #include "constants.h"
 #include "functions.h"
-#include "polykeys.h"
 
 // convert from our piece representation (enums.h) to the polyglot format
 static const int32_t poly_kind_of_piece[13] = {-1, 1, 3, 5, 7, 9, 11, 0, 2, 4, 6, 8, 10};
@@ -33,6 +32,7 @@ bool init_polybook(Polybook_t *book, char *bookstr) {
   // this won't be a fatal error; we'll just go at it without the book
   if(end < (long)sizeof(PolybookEntry_t)) {
     fprintf(stderr, "book has no entries.\n");
+    fclose(bk);
     return false;
   }
 
@@ -44,11 +44,13 @@ bool init_polybook(Polybook_t *book, char *bookstr) {
   // it'll prob never fail but it never hurts to be careful
   if(!book->entries) {
     fprintf(stderr, "memory alloc failed!\n");
+    fclose(bk);
     exit(1);
   }
 
   // read in the entries
   fread(book->entries, sizeof(PolybookEntry_t), book->num_entries, bk);
+  fclose(bk);
   return book->num_entries > 0;
 }
 
@@ -98,11 +100,12 @@ static uint64_t polykey_from_board(const Board_t *board) {
     if(piece != NO_SQ && piece != EMPTY && piece != OFFBOARD) {
       ASSERT(piece >= wP && piece <= bK);
 
+      // convert the piece from our rep to the polyboard book rep
       poly_piece = poly_kind_of_piece[piece];
       rank = RANKS_BOARD[sq];
       file = FILES_BOARD[sq];
 
-      // this is from the site
+      // this equation is from the site
       offset = (STANDARD_BOARD_SIZE * poly_piece) + (8 * rank) + file;
       ret ^= Random64[offset];
     }
@@ -144,7 +147,7 @@ static uint32_t convert_poly_to_internal(uint16_t move, Board_t *board) {
   // no promotion piece
   if(pp == 0) {
     snprintf(movestr, sizeof(movestr), "%c%c%c%c",
-    FILE_CHAR[ff], RANK_CHAR[fr], FILE_CHAR[tf], RANK_CHAR[tr]);
+      FILE_CHAR[ff], RANK_CHAR[fr], FILE_CHAR[tf], RANK_CHAR[tr]);
   } else {
     char prom = 'q';
     switch(pp) {
@@ -159,9 +162,11 @@ static uint32_t convert_poly_to_internal(uint16_t move, Board_t *board) {
         break;
     }
     snprintf(movestr, sizeof(movestr), "%c%c%c%c%c",
-    FILE_CHAR[ff], RANK_CHAR[fr], FILE_CHAR[tf], RANK_CHAR[tr], prom);
+      FILE_CHAR[ff], RANK_CHAR[fr], FILE_CHAR[tf], RANK_CHAR[tr], prom);
   }
 
+  // we already wrote a move parser, so go from their representation to ours via
+  // our parser
   return parse_move(movestr, board);
 }
 
@@ -181,8 +186,8 @@ uint32_t get_book_move(Board_t *board, const Polybook_t book) {
   // loop through the book entries one by one
   // annoyingly, the book entries are big endian so we gotta flip em
   for(entry = book.entries; entry < book.entries + book.num_entries; ++entry) {
-    if(poly_key == endian_swap_u64(entry->key)) {
-      move = endian_swap_u16(entry->move);
+    if(poly_key == ntohll(entry->key)) {
+      move = ntohs(entry->move);
       tmp = convert_poly_to_internal(move, board);
 
       if(tmp != NOMOVE) {
@@ -192,7 +197,8 @@ uint32_t get_book_move(Board_t *board, const Polybook_t book) {
     }
   }
 
-  // instead of picking a good book move, we'll randomly select one
+  // randomly select one of the book moves for this position
+  // this is to ensure we don't play the same book opening every time
   return (count > 0) ? book_moves[rand() % count] : NOMOVE;
 
 }

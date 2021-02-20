@@ -52,7 +52,7 @@ int32_t count_bits(uint64_t board) {
 
 /**
  * Function to print out the internal representation of the passed in
- * bitboard for human-readable viewing
+ * bitboard for human-readable viewing. Mostly a debugging function
  */
 void print_bboard(const uint64_t board) {
 

@@ -1,4 +1,10 @@
 This project adheres to [semantic versioning](https://semver.org/).
+# 2.0.1 (2021-02-19)
+***
+### Release Highlights
+* Cleaned up the code and added comments. Should see slight performance boost where in
+10 + 5 games the engine will get to a depth of ~7-9 before it plays a move.
+
 # 2.0.0 (2021-02-18)
 ***
 ### Release Highlights

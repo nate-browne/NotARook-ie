@@ -42,6 +42,8 @@ static void init_eval_masks(void) {
   }
 
   // initialize them
+  // you can use the print_bboard function to see what these end up
+  // being
   for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
     tsq = sq + 8;
     while(tsq < STANDARD_BOARD_SIZE) {
@@ -125,9 +127,12 @@ static void init_files_ranks_arrays(void) {
   int32_t index, file, rank, sq;
   index = 0, file = FILE_A, rank = RANK_1, sq = A1;
 
+  // first, set everything to offboard
+  // this is so that we just fill in the relevant squares next
   for( ; index < BOARD_SQ_NUM; ++index)
     FILES_BOARD[index] = RANKS_BOARD[index] = OFFBOARD;
 
+  // rank by rank, fill in the coordinates
   for(rank = RANK_1; rank <= RANK_8; ++rank) {
     for(file = FILE_A; file <= FILE_H; ++file) {
       sq = CONVERT_COORDS(file, rank);

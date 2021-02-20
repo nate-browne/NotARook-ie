@@ -5,11 +5,11 @@
 
 # STEP 1: Create variables used
 # why so many warnings flags? because it's good practice to be warning and error free
-# the -Werror flag turns any compiler warnings into errors
+# the -Werror flag turns any compiler warnings into errors, stopping compilation
 C_FLAGS   = -c -std=c99 -pedantic -Wall -Wextra -D__EXTENSIONS__
 OPT       = -O3 -Werror
 D_FLAG    = -g
-LD_FLAGS  = -Wall -Wextra -Werror
+LD_FLAGS  = -Wall -Wextra
 EXE       = notarookie
 TEST      = stresstest
 GCC       = gcc
@@ -29,12 +29,12 @@ endif
 endif
 
 # These are the C header files used.
-HEADERS   = constants.h functions.h macros.h enums.h polykeys.h
+HEADERS   = constants.h functions.h macros.h enums.h
 
 # These are the C source files for the engine executable
 SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
             printer.c movegen.c validation.c makemove.c perft.c search.c util.c \
-	    hashset.c evaluate.c uci.c xboard.c console.c polybook.c polykeys.c
+	    hashset.c evaluate.c uci.c xboard.c console.c polybook.c
 
 # These are the C source files for the perft testing executable
 TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \

@@ -28,7 +28,7 @@ extern void reset_board(Board_t *);
 extern bool parse_FEN(char *, Board_t *);
 extern void print_board(const Board_t *);
 extern void update_material(Board_t *);
-extern void check_board(const Board_t *);
+extern bool check_board(const Board_t *);
 extern void mirror_board(Board_t *);
 
 /* attack.c */
@@ -68,8 +68,6 @@ extern void search_position(Board_t *, SearchInfo_t *, bool, const Polybook_t);
 /* util.c */
 extern unsigned long get_time_millis(void);
 extern void read_input(SearchInfo_t *);
-extern uint16_t endian_swap_u16(uint16_t);
-extern uint64_t endian_swap_u64(uint64_t);
 
 /* hashset.c */
 extern void init_hashset(PVTable_t *);

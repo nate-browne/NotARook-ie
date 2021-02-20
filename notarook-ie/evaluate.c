@@ -5,6 +5,8 @@
 #include "constants.h"
 #include "functions.h"
 
+// table for giving point values to pawns
+// table is read from top to bottom rank 1 to rank 8
 static const int32_t PAWN_TABLE[STANDARD_BOARD_SIZE] = {
 0,0,0,0,0,0,0,0,
 10 , 10 , 0 , -10 , -10 , 0 , 10 , 10 ,
@@ -16,6 +18,8 @@ static const int32_t PAWN_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
 };
 
+// table for giving point values to knights
+// table is read from top to bottom rank 1 to rank 8
 static const int32_t KNIGHT_TABLE[STANDARD_BOARD_SIZE] = {
 0 , -10 , 0 , 0 , 0 , 0 , -10 , 0 ,
 0 , 0 , 0 , 5 , 5 , 0 , 0 , 0 ,
@@ -27,6 +31,8 @@ static const int32_t KNIGHT_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0  
 };
 
+// table for giving point values to bishops
+// table is read from top to bottom rank 1 to rank 8
 static const int32_t BISHOP_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 0 , -10 , 0 , 0 , -10 , 0 , 0 ,
 0 , 0 , 0 , 10 , 10 , 0 , 0 , 0 ,
@@ -38,6 +44,8 @@ static const int32_t BISHOP_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
 };
 
+// table for giving point values to rooks
+// table is read from top to bottom rank 1 to rank 8
 static const int32_t ROOK_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 0 , 5 , 10 , 10 , 5 , 0 , 0 ,
 0 , 0 , 5 , 10 , 10 , 5 , 0 , 0 ,
@@ -50,6 +58,9 @@ static const int32_t ROOK_TABLE[STANDARD_BOARD_SIZE] = {
 };
 
 // evaluation table for king in the end game
+// tries to encourage the king to be active towards
+// the middle of the board instead of passively doing
+// nothing
 static const int32_t KING_E[STANDARD_BOARD_SIZE] = {
  -50 , -10 , 0 , 0 , 0 , 0 , -10 , -50 ,
  -10, 0 , 10 , 10 , 10 , 10 , 0 , -10 ,
@@ -79,6 +90,7 @@ static const int32_t KING_O[STANDARD_BOARD_SIZE] = {
 static const int32_t pawn_isolated = -10;
 
 // give bonuses for passed pawns depending on which rank they're on
+// goes from 1st rank to 8th rank left to right
 static const int32_t PAWN_PASSED[8] = {0, 5, 10, 20, 35, 60, 100, 200};
 
 // give a bonus for putting the rook on an open file
@@ -89,13 +101,14 @@ static const int32_t rook_semiopen_file = 5;
 
 // give a bonus for putting the rook on an open file
 // queen gets lower values since it is able to be used
-// on more than just files
+// on diagonals as well, making open files less useful
 static const int32_t queen_open_file = 5;
 
-// give a smaller bonus for putting a rook on a semiopen file
+// give a smaller bonus for putting a queen on a semiopen file
 static const int32_t queen_semiopen_file = 3;
 
 // give a decently large bonus for keeping both bishops
+// on the board
 static const int32_t bishop_pair = 30;
 
 /**
@@ -147,23 +160,33 @@ static bool material_draw(const Board_t *board) {
  * This function takes in a position on the board
  * and returns the evaluation of the position in
  * 100s of a pawn from the point of view of the side to move
+ * white == positive, black == negative. we negate at the end if black is to move
  */
 int32_t eval_position(const Board_t * board) {
 
   int32_t piece, square;
 
-  // white == positive, black == negative
-  // we negate at the end if black is to move
+  // to start, we just subtract the balance of pieces
   int32_t score = board->material[WHITE] - board->material[BLACK];
 
   // if our position is drawn purely by material, return so
+  // for this, we need to know that we have no pawns at all on the board
   if(!board->piece_num[wP] && !board->piece_num[bP] && material_draw(board)) return 0;
+
+  /* 
+   * next section is piece specific score manipulation
+   * we loop through the number of each piece on the board and use the
+   * above tables to add/subtract from the score
+   */
 
   // white pawns first
   piece = wP;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+
+    // add/subtract from the score given the position of the pawn
     score += PAWN_TABLE[SQ64(square)];
 
     // check for isolated pawns and deduct from the score if we have them
@@ -182,8 +205,11 @@ int32_t eval_position(const Board_t * board) {
   // black pawns next
   piece = bP;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+
+    // add/subtract from the score given the position of the pawn
     score -= PAWN_TABLE[MIRROR64(SQ64(square))];
 
     // check for isolated pawns and add to the score if we have them
@@ -204,40 +230,50 @@ int32_t eval_position(const Board_t * board) {
   // r/whiteknighting
   piece = wN;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+    // add/subtract from the score given the position of the knight
     score += KNIGHT_TABLE[SQ64(square)];
   }
 
   // black knights
   piece = bN;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+    // add/subtract from the score given the position of the knight
     score -= KNIGHT_TABLE[MIRROR64(SQ64(square))];
   }
 
   // white bishops
   piece = wB;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+    // add/subtract from the score given the position of the bishop
     score += BISHOP_TABLE[SQ64(square)];
   }
 
   // black bishops
   piece = bB;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+    // add/subtract from the score given the position of the bishop
     score -= BISHOP_TABLE[MIRROR64(SQ64(square))];
   }
 
   // white rooks
   piece = wR;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+    // add/subtract from the score given the position of the rook
     score += ROOK_TABLE[SQ64(square)];
 
     // check for open files
@@ -252,8 +288,10 @@ int32_t eval_position(const Board_t * board) {
   // black rooks
   piece = bR;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
+    // add/subtract from the score given the position of the rook
     score -= ROOK_TABLE[MIRROR64(SQ64(square))];
 
     // check for open files
@@ -268,6 +306,7 @@ int32_t eval_position(const Board_t * board) {
   // white queen
   piece = wQ;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
 
@@ -283,6 +322,7 @@ int32_t eval_position(const Board_t * board) {
   // black queen
   piece = bQ;
   for(int32_t idx = 0; idx < board->piece_num[piece]; ++idx) {
+    // get and verify which square the current piece is on
     square = board->piece_list[piece][idx];
     ASSERT(square_on_board(square));
 

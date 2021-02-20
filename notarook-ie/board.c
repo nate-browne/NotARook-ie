@@ -13,7 +13,7 @@
  * our ASSERT macro to enforce validity, ending the program
  * if the board isn't valid.
  */
-void check_board(const Board_t * board) {
+bool check_board(const Board_t * board) {
   int32_t temp_piece_num[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
   int32_t temp_big_piece[2] = {0,0};
   int32_t temp_maj_piece[2] = {0,0};
@@ -97,6 +97,8 @@ void check_board(const Board_t * board) {
   // make sure the kings are still on the board
   ASSERT(board->pieces[board->kings_sq[WHITE]] == wK);
   ASSERT(board->pieces[board->kings_sq[BLACK]] == bK);
+
+  return true; // not really needed, but this allows this function to be placed in the ASSERT macro
 }
 
 /**
@@ -139,7 +141,7 @@ void mirror_board(Board_t *board) {
 
   update_material(board);
 
-  check_board(board);
+  ASSERT(check_board(board));
 }
 
 /**

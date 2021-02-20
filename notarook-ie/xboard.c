@@ -102,6 +102,10 @@ bool check_result(Board_t *board) {
   }
 }
 
+/**
+ * Prints all options available to the GUI.
+ * Used when given the "protover 2" command
+ */
 static void print_options(void) {
   printf("feature ping=1 setboard=1 nps=0 san=0 colors=0 usermove=1 sigint=0 sigterm=0 post=1 nopost=1\n");
   printf("feature done=1\n");
@@ -129,12 +133,14 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
   int32_t mps; // moves per session
   uint32_t move = NOMOVE;
 
+  // set up input and command buffers
   char in[XBOARD_BUFFER_SIZE], cmd[XBOARD_BUFFER_SIZE];
 
   while(true) {
 
     fflush(stdout);
 
+    // determine if it is the engine's turn to go
     if(board->side == engine_side && !check_result(board)) {
       info->starttime = get_time_millis();
       info->depth = depth;
@@ -150,6 +156,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
         info->depth = MAX_DEPTH;
       }
 
+      // find, report, and play the best move
       printf("time:%d start:%lu stop:%lu depth:%d timeset:%d movestogo:%d mps: %d\n",
         time, info->starttime, info->stoptime, info->depth, info->timeset, movestogo[board->side], mps);
       search_position(board, info, using_book, book);
@@ -164,15 +171,20 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
 
     fflush(stdout);
 
+    // reset the buffer every time through
     memset(in, '\0', XBOARD_BUFFER_SIZE);
     fflush(stdout);
+
+    // grab the input command
     if(!fgets(in, XBOARD_BUFFER_SIZE, stdin)) continue;
 
     // replace the newline with a null
     in[strcspn(in, "\n")] = '\0';
 
+    // parse away the command section specificially
     sscanf(in, "%s", cmd);
 
+    // end the loop (and the program)
     if(!strcmp(cmd, "quit")) {
       info->quit = true;
       break;
@@ -219,6 +231,8 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
     if(!strcmp(cmd, "level")) {
       sec = 0;
       movetime = -1;
+      // level command comes in either the top form or bottom form
+      // bottom form is because of giving a max amount of seconds to move
       if(sscanf(in, "level %d %d %d", &mps, &time_left, &incr) != 3) {
         sscanf(in, "level %d %d:%d %d", &mps, &time_left, &sec, &incr);
       }

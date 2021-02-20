@@ -16,7 +16,7 @@
  */
 static void perft(int32_t depth, Board_t *board, uint64_t *count) {
 
-  check_board(board);
+  ASSERT(check_board(board));
 
   if(depth < 1) {
     (*count)++;
@@ -43,7 +43,7 @@ static void perft(int32_t depth, Board_t *board, uint64_t *count) {
 uint64_t perft_test(int32_t depth, Board_t *board, bool stress) {
 
   // always good to sanity check
-  check_board(board);
+  ASSERT(check_board(board));
 
   if(!stress) {
     print_board(board);

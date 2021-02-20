@@ -14,7 +14,7 @@ bool square_attacked(const int32_t square, const int32_t side, const Board_t *bo
 
   ASSERT(square_on_board(square));
   ASSERT(side_valid(side));
-  check_board(board);
+  ASSERT(check_board(board));
 
   int32_t piece, ind, temp_square, dir;
 

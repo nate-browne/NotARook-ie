@@ -116,6 +116,8 @@ static void add_enpassant_move(uint32_t move, MoveList_t *list) {
   ASSERT(square_on_board(TOSQ(move)));
   list->moves[list->count].move = move;
   // this is always pawn takes pawn, and this number is what the above formula gives
+  // the plus 1M is for the history and killer moves heuristics
+  // this ensures that captures are searched first
   list->moves[list->count].score = 105 + 1000000;
   list->count++;
 }
@@ -169,6 +171,7 @@ static void add_white_pawn_move(const Board_t *board, const int32_t from, const 
   ASSERT(square_on_board(to));
 
   // this means we're promoting the pawn
+  // we're "adding a capture move" with the captured piece being EMPTY
   if(RANKS_BOARD[from] == RANK_7) {
     add_capture_move(board, MOVE(from,to,EMPTY,wQ,0), list);
     add_capture_move(board, MOVE(from,to,EMPTY,wR,0), list);
@@ -188,6 +191,7 @@ static void add_black_pawn_move(const Board_t *board, const int32_t from, const 
   ASSERT(square_on_board(to));
 
   // this means we're promoting the pawn
+  // we're "adding a capture move" with the captured piece being EMPTY
   if(RANKS_BOARD[from] == RANK_2) {
     add_capture_move(board, MOVE(from,to,EMPTY,bQ,0), list);
     add_capture_move(board, MOVE(from,to,EMPTY,bR,0), list);
@@ -221,7 +225,7 @@ bool move_exists(Board_t *board, const uint32_t move) {
  */
 void generate_all_captures(const Board_t *board, MoveList_t *list) {
 
-  check_board(board);
+  ASSERT(check_board(board));
 
   list->count = 0;
 
@@ -353,7 +357,7 @@ void generate_all_captures(const Board_t *board, MoveList_t *list) {
  */
 void generate_all_moves(const Board_t *board, MoveList_t *list) {
 
-  check_board(board);
+  ASSERT(check_board(board));
 
   list->count = 0;
 
