@@ -107,7 +107,7 @@ bool check_result(Board_t *board) {
  * Used when given the "protover 2" command
  */
 static void print_options(void) {
-  printf("feature ping=1 setboard=1 nps=0 san=0 colors=0 usermove=1 sigint=0 sigterm=0 post=1 nopost=1\n");
+  printf("feature ping=1 setboard=1 nps=0 san=0 myname=\"NotARook-ie\" colors=0 usermove=1 sigint=0 sigterm=0 post=1 nopost=1\n");
   printf("feature done=1\n");
 }
 
