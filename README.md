@@ -4,7 +4,7 @@
 I started playing chess recently, so why not keep my skills in C up to date by writing a chess engine?
 
 ### Overview
-This engine uses [alpha-beta pruning implemented with negamax](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) for move selection as well as [IDDFS](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search) to speed things up and to provide a decently good move if the algorithm is interrupted before it can calculate the best possible move. It also uses the [killer heuristic/history heuristic](https://en.wikipedia.org/wiki/Killer_heuristic) to help speed up the search for best moves.
+This engine uses [alpha-beta search with null-move pruning implemented via negamax](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning) for move selection as well as [IDDFS](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search) to speed things up and to provide a decently good move if the algorithm is interrupted before it can calculate the best possible move. It also uses the [killer heuristic/history heuristic](https://en.wikipedia.org/wiki/Killer_heuristic) to help speed up the search for best moves.
 This engine is compatible with xboard using the [xboard protocol](https://www.gnu.org/software/xboard/engine-intf.html) or other GUIs that use the <a href="http://wbec-ridderkerk.nl/html/UCIProtocol.html" target="_blank" style="text-decoration:none;">UCI protocol</a> for chess. It can also be played in command line mode without any need for an external GUI.
 
 The engine uses the same board representation as the <a href="https://www.chessprogramming.org/Cray-1" target="_blank" style="text-decoration:none;">Cray-1 supercomputer</a> where the board is 120 squares. The top and bottom have two buffer
@@ -27,7 +27,7 @@ Here are the steps:
 3. Type `make` to build the program.
 4. To play against the engine, run `xboard -cp -fcp "bin/notarookie <path to openings book to use (optional)>" &`.
     * This will start the engine with you playing the white pieces.
-5. To have the engine play itself, run `xboard -fcp "bin/notarookie <path to openings book to use (optional)>" -fd "$(pwd)" -scp bin/notarookie <path to openings book to use (optional)> -sd "$(pwd)" &`.
+5. To have the engine play itself, run `xboard -fcp "bin/notarookie <path to openings book to use (optional)>" -scp bin/notarookie <path to openings book to use (optional)> &`.
 6. To play another engine, run the above command but change the part after `-scp` to be the path to the other engine's executable.
 7. Once in xboard, you can use the "Mode" tab to switch if the engine is playing the white pieces or the black pieces.
 
