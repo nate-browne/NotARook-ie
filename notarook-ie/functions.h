@@ -16,7 +16,6 @@
 extern void init_all(void);
 
 /* bboard.c */
-extern void print_bboard(const uint64_t);
 extern int32_t pop_bit(uint64_t *);
 extern int32_t count_bits(uint64_t);
 
@@ -26,10 +25,8 @@ extern uint64_t generate_hashkeys(const Board_t *);
 /* board.c */
 extern void reset_board(Board_t *);
 extern bool parse_FEN(char *, Board_t *);
-extern void print_board(const Board_t *);
 extern void update_material(Board_t *);
 extern bool check_board(const Board_t *);
-extern void mirror_board(Board_t *);
 
 /* attack.c */
 extern bool square_attacked(const int32_t, const int32_t, const Board_t *);
@@ -37,6 +34,8 @@ extern bool square_attacked(const int32_t, const int32_t, const Board_t *);
 /* printer.c */
 extern char * print_square(const int32_t);
 extern char * print_move(const uint32_t);
+extern void print_bboard(const uint64_t);
+extern void print_board(const Board_t *);
 extern char * print_algebraic_move(const uint32_t, Board_t *);
 extern uint32_t parse_move(char *, Board_t *);
 

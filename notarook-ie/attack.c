@@ -27,14 +27,14 @@ bool square_attacked(const int32_t square, const int32_t side, const Board_t *bo
   }
 
   // knights
-  for(ind = 0; ind < (int32_t)(sizeof(KNIGHT_DIRS) / sizeof(KNIGHT_DIRS[0])); ++ind) {
+  for(ind = 0; ind < (int32_t)(sizeof(KNIGHT_DIRS) / sizeof(*KNIGHT_DIRS)); ++ind) {
     piece = board->pieces[square + KNIGHT_DIRS[ind]];
     if(piece != EMPTY && piece != OFFBOARD && IsKn(piece) && PIECE_COL[piece] == side)
       return true;
   }
 
   // rooks and queens
-  for(ind = 0; ind < (int32_t)(sizeof(ROOK_DIRS) / sizeof(ROOK_DIRS[0])); ++ind) {
+  for(ind = 0; ind < (int32_t)(sizeof(ROOK_DIRS) / sizeof(*ROOK_DIRS)); ++ind) {
     dir = ROOK_DIRS[ind];
     temp_square = square + dir;
     piece = board->pieces[temp_square];
@@ -52,7 +52,7 @@ bool square_attacked(const int32_t square, const int32_t side, const Board_t *bo
   }
 
   // bishops and queens
-  for(ind = 0; ind < (int32_t)(sizeof(BISHOP_DIRS) / sizeof(BISHOP_DIRS[0])); ++ind) {
+  for(ind = 0; ind < (int32_t)(sizeof(BISHOP_DIRS) / sizeof(*BISHOP_DIRS)); ++ind) {
     dir = BISHOP_DIRS[ind];
     temp_square = square + dir;
     piece = board->pieces[temp_square];
@@ -70,7 +70,7 @@ bool square_attacked(const int32_t square, const int32_t side, const Board_t *bo
   }
 
   // kings
-  for(ind = 0; ind < (int32_t)(sizeof(KING_DIRS) / sizeof(KING_DIRS[0])); ++ind) {
+  for(ind = 0; ind < (int32_t)(sizeof(KING_DIRS) / sizeof(*KING_DIRS)); ++ind) {
     piece = board->pieces[square + KING_DIRS[ind]];
     if(piece != OFFBOARD && piece != EMPTY && IsKi(piece) && PIECE_COL[piece] == side)
       return true;

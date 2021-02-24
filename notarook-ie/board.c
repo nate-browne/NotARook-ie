@@ -9,9 +9,6 @@
 /**
  * Checks if a given board position is actually valid.
  * Kind of a chonky boi of a function.
- * Returns void instead of a boolean cause it uses
- * our ASSERT macro to enforce validity, ending the program
- * if the board isn't valid.
  */
 bool check_board(const Board_t * board) {
   int32_t temp_piece_num[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -99,49 +96,6 @@ bool check_board(const Board_t * board) {
   ASSERT(board->pieces[board->kings_sq[BLACK]] == bK);
 
   return true; // not really needed, but this allows this function to be placed in the ASSERT macro
-}
-
-/**
- * Mirrors the board so that we can check ourselves when evaluating
- */
-void mirror_board(Board_t *board) {
-  int32_t temp_pieces_array[STANDARD_BOARD_SIZE];
-  int32_t temp_side = board->side ^ 1;
-
-  int32_t swap_piece[13] = {EMPTY, bP, bN, bB, bR, bQ, bK, wP, wN, wB, wR, wQ, wK};
-  int32_t temp_castle_perm = 0;
-  int32_t temp_passant = NO_SQ;
-
-  int32_t sq, tp;
-
-  if(board->castle_permission & WKCAS) temp_castle_perm |= BKCAS;
-  if(board->castle_permission & WQCAS) temp_castle_perm |= BQCAS;
-
-  if(board->castle_permission & BKCAS) temp_castle_perm |= WKCAS;
-  if(board->castle_permission & BQCAS) temp_castle_perm |= WQCAS;
-
-  if(board->passant != NO_SQ) temp_passant = SQ120(MIRROR64(SQ64(board->passant)));
-
-  for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
-    temp_pieces_array[sq] = board->pieces[SQ120(MIRROR64(sq))];
-  }
-
-  reset_board(board);
-
-  for(sq = 0; sq < STANDARD_BOARD_SIZE; ++sq) {
-    tp = swap_piece[temp_pieces_array[sq]];
-    board->pieces[SQ120(sq)] = tp;
-  }
-
-  board->side = temp_side;
-  board->castle_permission = temp_castle_perm;
-  board->passant = temp_passant;
-
-  board->hashkey = generate_hashkeys(board);
-
-  update_material(board);
-
-  ASSERT(check_board(board));
 }
 
 /**
@@ -286,7 +240,7 @@ bool parse_FEN(char *fen, Board_t *board) {
   /* parse the rest of the FEN now since we've handled all of the characters */
 
   // at this point, the fen pointer should either be on a 'w' or a 'b'
-  ASSERT(*fen == 'w' || *fen == 'b')
+  ASSERT(*fen == 'w' || *fen == 'b');
 
   // next move
   board->side = (*fen == 'w') ? WHITE : BLACK;
@@ -416,41 +370,4 @@ void reset_board(Board_t *board) {
   board->castle_permission = 0;
 
   board->hashkey = (uint64_t)0;
-}
-
-/**
- * Print the current board struct state in a readable
- * to humans way.
- */
-void print_board(const Board_t *board) {
-  int32_t sq, file, rank, piece;
-
-
-  printf("\nGame Board:\n\n");
-
-  for(rank = RANK_8; rank >= RANK_1; --rank) {
-    printf("%d  ", rank + 1);
-    for(file = FILE_A; file <= FILE_H; ++file) {
-      sq = CONVERT_COORDS(file, rank);
-      piece = board->pieces[sq];
-      printf("%3c", PIECE_CHAR[piece]);
-    }
-    printf("\n");
-  }
-
-  printf("\n   ");
-  for(file = FILE_A; file <= FILE_H; ++file)
-    printf("%3c", 'a' + file);
-
-  printf("\n");
-
-  printf("side to move: %c\n", SIDE_CHAR[board->side]);
-  printf("turn: %d\n", board->hist_ply);
-  printf("en passant square: %d\n", board->passant);
-  printf("castling opportunities: %c %c %c %c\n",
-          board->castle_permission & WKCAS ? 'K' : '-',
-          board->castle_permission & WQCAS ? 'Q' : '-',
-          board->castle_permission & BKCAS ? 'k' : '-',
-          board->castle_permission & BQCAS ? 'q' : '-');
-  printf("position hashcode: %llX\n", board->hashkey);
 }

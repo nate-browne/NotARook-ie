@@ -77,7 +77,7 @@ static bool input_waiting(void) {
  */
 void read_input(SearchInfo_t *info) {
   int32_t bytes;
-  char input[256] = "", *endc;
+  char input[256] = "", *endc = NULL;
 
   if(input_waiting()) {
     info->stopped = true;

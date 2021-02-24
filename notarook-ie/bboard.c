@@ -49,31 +49,3 @@ int32_t count_bits(uint64_t board) {
 
   return result;
 }
-
-/**
- * Function to print out the internal representation of the passed in
- * bitboard for human-readable viewing. Mostly a debugging function
- */
-void print_bboard(const uint64_t board) {
-
-  int32_t rank, file, sq, sq64;
-  rank = file = sq = sq64 = 0;
-
-  printf("\n");
-
-  // run through the board printing every value in
-  // a way that looks like, you know, a chessboard
-  for(rank = RANK_8; rank >= RANK_1; --rank) {
-    for(file = FILE_A; file <= FILE_H; ++file) {
-      sq = CONVERT_COORDS(file, rank); // engine coords
-      sq64 = SQ64(sq);
-
-      // if we shift to the corresponding index and bitwise AND
-      // it and get a 1, there is a piece there.
-      if(CHECK_TAGGED(sq64, board)) printf("X");
-      else printf("-");
-    }
-    printf("\n");
-  }
-  printf("\n\n");
-}

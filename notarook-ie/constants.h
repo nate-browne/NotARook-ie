@@ -70,9 +70,6 @@ exit(1);}
 #define NAME "NotARook-ie v2.0.1"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#define TRICKY_FEN "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
-#define MIN3 "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - - 0 1"
-#define MIN1 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
 #define WELCOME_STR "Welcome to %s! Type 'console' for console mode, 'uci' for UCI engine mode, or 'xboard' for xboard engine mode. \
 Type 'quit' to exit.\n"
@@ -89,7 +86,7 @@ Type 'quit' to exit.\n"
 
 // max number of moves for a given position in the book
 // this is a huge overestimation (that's on purpose)
-#define MAX_BOOK_MOVES 40
+#define MAX_BOOK_MOVES 95
 
 // define minimum wait time for the engine
 // this is used in search.c when we find a book move to make it so that

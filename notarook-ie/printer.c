@@ -135,10 +135,10 @@ char * print_algebraic_move(const uint32_t move, Board_t *board) {
 
   // short castles
   if(!strncmp(tmp, "e1g1", strlen("e1g1")) || !strncmp(tmp, "e8g8", strlen("e8g8"))) {
-    return "O-O";
+    return "0-0";
   // long castles
   } else if(!strncmp(tmp, "e1c1", strlen("e1c1")) || !strncmp(tmp, "e8c8", strlen("e8c8"))) {
-    return "O-O-O";
+    return "0-0-0";
   }
 
 
@@ -271,4 +271,69 @@ char * print_algebraic_move(const uint32_t move, Board_t *board) {
   }
   take_move(board);
   return move_algebraic_str;
+}
+
+/**
+ * Function to print out the internal representation of the passed in
+ * bitboard for human-readable viewing. Mostly a debugging function
+ */
+void print_bboard(const uint64_t board) {
+
+  int32_t rank, file, sq, sq64;
+  rank = file = sq = sq64 = 0;
+
+  printf("\n");
+
+  // run through the board printing every value in
+  // a way that looks like, you know, a chessboard
+  for(rank = RANK_8; rank >= RANK_1; --rank) {
+    for(file = FILE_A; file <= FILE_H; ++file) {
+      sq = CONVERT_COORDS(file, rank); // engine coords
+      sq64 = SQ64(sq);
+
+      // if we shift to the corresponding index and bitwise AND
+      // it and get a 1, there is a piece there.
+      if(CHECK_TAGGED(sq64, board)) printf("X");
+      else printf("-");
+    }
+    printf("\n");
+  }
+  printf("\n\n");
+}
+
+/**
+ * Print the current board struct state in a readable
+ * to humans way.
+ */
+void print_board(const Board_t *board) {
+  int32_t sq, file, rank, piece;
+
+
+  printf("\nGame Board:\n\n");
+
+  for(rank = RANK_8; rank >= RANK_1; --rank) {
+    printf("%d  ", rank + 1);
+    for(file = FILE_A; file <= FILE_H; ++file) {
+      sq = CONVERT_COORDS(file, rank);
+      piece = board->pieces[sq];
+      printf("%3c", PIECE_CHAR[piece]);
+    }
+    printf("\n");
+  }
+
+  printf("\n   ");
+  for(file = FILE_A; file <= FILE_H; ++file)
+    printf("%3c", 'a' + file);
+
+  printf("\n");
+
+  printf("side to move: %c\n", SIDE_CHAR[board->side]);
+  printf("turn: %d\n", board->hist_ply);
+  printf("en passant square: %d\n", board->passant);
+  printf("castling opportunities: %c %c %c %c\n",
+          board->castle_permission & WKCAS ? 'K' : '-',
+          board->castle_permission & WQCAS ? 'Q' : '-',
+          board->castle_permission & BKCAS ? 'k' : '-',
+          board->castle_permission & BQCAS ? 'q' : '-');
+  printf("position hashcode: %llX\n", board->hashkey);
 }
