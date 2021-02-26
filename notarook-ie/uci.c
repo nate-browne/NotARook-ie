@@ -177,11 +177,7 @@ void UCI_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using_bo
     } else if(!strncmp(buf, "setoption name Book value ", 26)) {
       char *ptr = NULL;
       ptr = strstr(buf, "true");
-      if(ptr) {
-        using_book = true;
-      } else {
-        using_book = false;
-      }
+      using_book = (ptr) ? true : false;
     }
 
     // check for quit if it was sent inside of when we said "go"

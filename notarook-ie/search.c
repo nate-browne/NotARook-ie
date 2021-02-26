@@ -302,7 +302,7 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
 
   // no book move, so time to do our IDDFS
   if(best_move == NOMOVE) {
-    printf("Didn't find a book move, searching...\n");
+    printf("Didn't find a book move. searching...\n");
     // iterative deepening begins
     for(curr_depth = 1; curr_depth <= info->depth; ++curr_depth) {
       // first, find the best move
