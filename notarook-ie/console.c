@@ -44,7 +44,7 @@ void console_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool usin
   int32_t depth = MAX_DEPTH, movetime = 0;
   enum COLORS engine_side = BLACK;
   uint32_t move = NOMOVE;
-  bool res;
+  bool res = false;
 
   // create our input and command buffers
   char in[XBOARD_BUFFER_SIZE], cmd[XBOARD_BUFFER_SIZE];
