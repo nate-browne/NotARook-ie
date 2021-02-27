@@ -135,10 +135,10 @@ char * print_algebraic_move(const uint32_t move, Board_t *board) {
 
   // short castles
   if(!strncmp(tmp, "e1g1", strlen("e1g1")) || !strncmp(tmp, "e8g8", strlen("e8g8"))) {
-    return "0-0";
+    return "O-O";
   // long castles
   } else if(!strncmp(tmp, "e1c1", strlen("e1c1")) || !strncmp(tmp, "e8c8", strlen("e8c8"))) {
-    return "0-0-0";
+    return "O-O-O";
   }
 
 
