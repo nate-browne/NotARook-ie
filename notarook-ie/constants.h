@@ -67,7 +67,7 @@ printf("on line %d\n", __LINE__); \
 exit(1);}
 #endif
 
-#define NAME "NotARook-ie v2.0.1"
+#define NAME "NotARook-ie v2.0.2"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 

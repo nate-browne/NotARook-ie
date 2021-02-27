@@ -38,7 +38,8 @@ SRCS      = init.c engine.c bboard.c hashkey.c board.c consts.c attack.c \
 
 # These are the C source files for the perft testing executable
 TEST_SRCS = init.c stresstest.c bboard.c hashkey.c board.c consts.c attack.c \
-            printer.c movegen.c validation.c makemove.c perft.c
+            printer.c movegen.c validation.c makemove.c perft.c xboard.c search.c \
+	    hashset.c polybook.c util.c evaluate.c
 
 # Generic variable for converting the engine source files into object files
 OBJS      = $(SRCS:.c=.o)

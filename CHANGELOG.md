@@ -1,9 +1,15 @@
 This project adheres to [semantic versioning](https://semver.org/).
+# 2.0.2 (2021-02-27)
+***
+### Release Highlights
+* Fixed a bug involving pawn move generation regarding quiet moves vs capture moves.
+
 # 2.0.1 (2021-02-19)
 ***
 ### Release Highlights
 * Cleaned up the code and added comments. Should see slight performance boost where in
-10 + 5 games the engine will get to a depth of ~7-9 before it plays a move.
+10 + 5 games the engine will get to a depth of ~7-9 before it plays a move on my 2017 MacBook Pro.
+Stronger computers should get to a deeper depth.
 
 # 2.0.0 (2021-02-18)
 ***

@@ -173,12 +173,12 @@ static void add_white_pawn_move(const Board_t *board, const int32_t from, const 
   // this means we're promoting the pawn
   // we're "adding a capture move" with the captured piece being EMPTY
   if(RANKS_BOARD[from] == RANK_7) {
-    add_capture_move(board, MOVE(from,to,EMPTY,wQ,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,wR,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,wB,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,wN,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,wQ,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,wR,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,wB,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,wN,0), list);
   } else {
-    add_capture_move(board, MOVE(from,to,EMPTY,EMPTY,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,EMPTY,0), list);
   }
 }
 
@@ -193,12 +193,12 @@ static void add_black_pawn_move(const Board_t *board, const int32_t from, const 
   // this means we're promoting the pawn
   // we're "adding a capture move" with the captured piece being EMPTY
   if(RANKS_BOARD[from] == RANK_2) {
-    add_capture_move(board, MOVE(from,to,EMPTY,bQ,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,bR,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,bB,0), list);
-    add_capture_move(board, MOVE(from,to,EMPTY,bN,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,bQ,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,bR,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,bB,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,bN,0), list);
   } else {
-    add_capture_move(board, MOVE(from,to,EMPTY,EMPTY,0), list);
+    add_quiet_move(board, MOVE(from,to,EMPTY,EMPTY,0), list);
   }
 }
 
