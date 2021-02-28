@@ -58,10 +58,6 @@ For PyChess, you can [download here](https://pychess.github.io/download/).
 
 **WARNING**: The engine in console mode is somewhat difficult to read since it displays everything in text on screen. It may help to have a board open (either physically or on chess.com/lichess.org) as well to make the move you see for better readability, but make sure that you _turn off_ engine evaluation on those online tools so that you're not cheating :)
 
-Another thing to note is that if you use an openings book and chose a time control that qualifies as bullet (1 minute or less time)
-the engine will probably time out since it has a random number generator to sleep after finding a book move because otherwise it'll play
-a book move in a ridiculously short time (less than 0.1 seconds). As a result, the shortest time control I'd recommend you play is 3 minute 1 second increment to make sure you don't time the engine out in a cheap way without actually beating it.
-
 ### Acknowledgements
 Shoutout to [Bluefever software](https://www.youtube.com/user/BlueFeverSoft) for providing a basic guide to the steps for implementing a chess engine over on YouTube. It really helped keep me from floundering around trying to guess on what task to do next.
 
