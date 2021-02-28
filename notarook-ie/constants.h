@@ -265,7 +265,7 @@ typedef struct PolybookEntry {
 // struct representing a book
 typedef struct Polybook {
   PolybookEntry_t *entries; // the entries of the book
-  long num_entries; // number of entries
+  unsigned long num_entries; // number of entries
 } Polybook_t;
 
 

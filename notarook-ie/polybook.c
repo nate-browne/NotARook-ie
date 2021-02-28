@@ -19,7 +19,7 @@ bool init_polybook(Polybook_t *book, char *bookstr) {
   book->entries = NULL;
 
   if(!bk) {
-    fprintf(stderr, "book file failed to be read!\n");
+    fprintf(stderr, "book file failed to open!\n");
     exit(1);
   }
 
@@ -36,7 +36,7 @@ bool init_polybook(Polybook_t *book, char *bookstr) {
     return false;
   }
 
-  book->num_entries = end / (long)sizeof(PolybookEntry_t);
+  book->num_entries = end / (unsigned long)sizeof(PolybookEntry_t);
 
   book->entries = calloc(book->num_entries, sizeof(PolybookEntry_t));
 
@@ -49,9 +49,9 @@ bool init_polybook(Polybook_t *book, char *bookstr) {
   }
 
   // read in the entries
-  fread(book->entries, sizeof(PolybookEntry_t), book->num_entries, bk);
+  size_t ent = fread(book->entries, sizeof(PolybookEntry_t), book->num_entries, bk);
   fclose(bk);
-  return book->num_entries > 0;
+  return ent > 0 && ent == book->num_entries;
 }
 
 /**

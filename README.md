@@ -15,6 +15,8 @@ See the [issues tab](https://github.com/nate-browne/NotARook-ie/issues) to see w
 
 ### Setup and Usage
 
+*__NOTE__: I recommend using the `Performance.bin` openings book when playing the engine due to the variety of openings provided in it, but any of the provided books in the `books/` directory are fine to try.*
+
 #### XBoard/WinBoard setup
 Here are the steps:
 1. Download xboard or winboard
