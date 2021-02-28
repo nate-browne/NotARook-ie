@@ -180,7 +180,7 @@ static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Boa
 
   // we've reached the deepest we will search in our board
   if(board->ply > MAX_DEPTH - 1) return eval_position(board);
- 
+
   // add in some checks (hah) for if we're being checked at all
   // increase the depth because maybe there's a way out
   bool in_check = square_attacked(board->kings_sq[board->side], board->side ^ 1, board);
@@ -295,7 +295,7 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
   if(info->timeset) {
     unsigned long time = (info->stoptime - info->starttime) / 1000;
     // we'll say that 2 minutes or fewer defines a bullet game
-    // if bullet 
+    // if bullet
     nowait = (time <= 2) ? true : false;
   }
 

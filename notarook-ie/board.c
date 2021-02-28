@@ -250,7 +250,7 @@ bool parse_FEN(char *fen, Board_t *board) {
   if(*fen != '-') {
     for(ind = 0; ind < 4; ++ind) {
       if(*fen == ' ') break;
-      
+
       // OR in each value depending on who can castle when and which side
       switch(*fen) {
         case 'K':

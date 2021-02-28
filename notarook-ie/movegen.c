@@ -109,7 +109,7 @@ static void add_capture_move(const Board_t * board, uint32_t move, MoveList_t *l
 
 /**
  * this one too
- */ 
+ */
 static void add_enpassant_move(uint32_t move, MoveList_t *list) {
 
   ASSERT(square_on_board(FROMSQ(move)));

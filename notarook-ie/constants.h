@@ -2,7 +2,7 @@
  * This main header file contains the other included headers, as
  * well as many of the definitions used throughout the other files
  * in this program.
- * 
+ *
  * Yeah, it's messy. Maybe at some point I'll actually separate things
  * out more granularly into other header files, but for now this will do
  * just fine, thank you.
@@ -119,7 +119,7 @@ Type 'quit' to exit.\n"
  * We could use signed, but since we're using only the least significant 7 nibbles,
  * it doesn't really matter. Plus, it's generally safer to use unsigned when manipulating
  * bits.
- * 
+ *
  * The layout is as follows
  * 0000 0000 0000 0000 0000 0111 1111 -> From section of the move (0x7F)
  * 0000 0000 0000 0011 1111 1000 0000 -> To section of the move (0x7F shifted << by 7)
@@ -128,7 +128,7 @@ Type 'quit' to exit.\n"
  * 0000 0000 1000 0000 0000 0000 0000 -> pawn start (0x80000 or 0x8 shifted by 16)
  * 0000 1111 0000 0000 0000 0000 0000 -> promotion (0xF00000 or 0xF shifted by 20) 
  * 0001 0000 0000 0000 0000 0000 0000 -> castling (0x1000000)
- * 
+ *
  * To see the macros that we use to interact with these, check macros.h
  */
 

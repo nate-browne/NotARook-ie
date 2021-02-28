@@ -1,7 +1,7 @@
 /**
  * File for interacting with the hashkey field of the
  * board and undo structs.
- * 
+ *
  * This seems like it'd be a super complex maneuver, but
  * in reality all we're really doing is XORing the locations
  * of the pieces and options in the board.

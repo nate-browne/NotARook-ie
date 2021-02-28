@@ -3,7 +3,7 @@
  * Bitboards are used for concice representation of the entire chessboard
  * within one unsigned 64 bit integer.
  * See https://en.wikipedia.org/wiki/Bitboard for more info.
- * 
+ *
  * Lots of this stuff comes from the chess programming wiki, in case
  * you're interested. Specifically, from here:
  * https://www.chessprogramming.org/Looking_for_Magics

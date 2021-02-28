@@ -15,7 +15,7 @@ static const int32_t PAWN_TABLE[STANDARD_BOARD_SIZE] = {
 5 , 5 , 5 , 10 , 10 , 5 , 5 , 5 ,
 10 , 10 , 10 , 20 , 20 , 10 , 10 , 10 ,
 20 , 20 , 20 , 30 , 30 , 20 , 20 , 20 ,
-0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
+0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 };
 
 // table for giving point values to knights
@@ -28,7 +28,7 @@ static const int32_t KNIGHT_TABLE[STANDARD_BOARD_SIZE] = {
 5 , 10 , 15 , 20 , 20 , 15 , 10 , 5 ,
 5 , 10 , 10 , 20 , 20 , 10 , 10 , 5 ,
 0 , 0 , 5 , 10 , 10 , 5 , 0 , 0 ,
-0 , 0 , 0 , 0 , 0 , 0 , 0 , 0  
+0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 };
 
 // table for giving point values to bishops
@@ -41,7 +41,7 @@ static const int32_t BISHOP_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 10 , 15 , 20 , 20 , 15 , 10 , 0 ,
 0 , 0 , 10 , 15 , 15 , 10 , 0 , 0 ,
 0 , 0 , 0 , 10 , 10 , 0 , 0 , 0 ,
-0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 
+0 , 0 , 0 , 0 , 0 , 0 , 0 , 0
 };
 
 // table for giving point values to rooks
@@ -54,7 +54,7 @@ static const int32_t ROOK_TABLE[STANDARD_BOARD_SIZE] = {
 0 , 0 , 5 , 10 , 10 , 5 , 0 , 0 ,
 0 , 0 , 5 , 10 , 10 , 5 , 0 , 0 ,
 25 , 25 , 25 , 25 , 25 , 25 , 25 , 25 ,
-0 , 0 , 5 , 10 , 10 , 5 , 0 , 0  
+0 , 0 , 5 , 10 , 10 , 5 , 0 , 0
 };
 
 // evaluation table for king in the end game
@@ -82,7 +82,7 @@ static const int32_t KING_O[STANDARD_BOARD_SIZE] = {
  -70 , -70 , -70 , -70 , -70 , -70 , -70 , -70 ,
  -70 , -70 , -70 , -70 , -70 , -70 , -70 , -70 ,
  -70 , -70 , -70 , -70 , -70 , -70 , -70 , -70 ,
- -70 , -70 , -70 , -70 , -70 , -70 , -70 , -70  
+ -70 , -70 , -70 , -70 , -70 , -70 , -70 , -70
 };
 
 // have a negative reward for isolated pawns to discourage the
@@ -173,7 +173,7 @@ int32_t eval_position(const Board_t * board) {
   // for this, we need to know that we have no pawns at all on the board
   if(!board->piece_num[wP] && !board->piece_num[bP] && material_draw(board)) return 0;
 
-  /* 
+  /*
    * next section is piece specific score manipulation
    * we loop through the number of each piece on the board and use the
    * above tables to add/subtract from the score

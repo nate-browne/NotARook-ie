@@ -1,7 +1,7 @@
 /**
  * A whole host of functions, the purpose of which are to validate that
  * stuff makes sense throughout the rest of the engine.
- * 
+ *
  * Most of these validations have to do with the values seen in enums.h
  */
 
