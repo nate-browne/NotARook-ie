@@ -3,6 +3,8 @@ This project adheres to [semantic versioning](https://semver.org/).
 ***
 ### Release Highlights
 * Fixed a bug involving pawn move generation regarding quiet moves vs capture moves.
+* Engine is better at playing bullet.
+    * In these time controls, the engine will only "think" for one second maximum when it finds a book move to play as opposed to the 2-4 second "think" time when playing blitz/rapid/classical/correspondence.
 
 # 2.0.1 (2021-02-19)
 ***

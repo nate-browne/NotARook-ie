@@ -29,7 +29,8 @@ static void pick_next_move(int32_t move_num, MoveList_t *list) {
   int32_t index;
   int32_t best_num = move_num;
 
-  // find the best move
+  // find the best move according to which move has
+  // the highest score
   for(index = move_num; index < list->count; ++index) {
     if(list->moves[index].score > best_score) {
       best_score = list->moves[index].score;
@@ -163,9 +164,11 @@ static int32_t quiescence(int32_t alpha, int32_t beta, Board_t *board, SearchInf
 static int32_t alpha_beta_search(int32_t alpha, int32_t beta, int32_t depth, Board_t *board, SearchInfo_t *info, bool null_allowed) {
 
   ASSERT(check_board(board));
+  ASSERT(beta > alpha);
+  ASSERT(depth >= 0);
 
   // use quiescence to evaluate depth 0 to avoid the horizon effect
-  if(!depth) return quiescence(alpha, beta, board, info);
+  if(depth <= 0) return quiescence(alpha, beta, board, info);
 
   // check every 2048 nodes to see if we've run out of time
   if(!(info->nodes & 2047)) check_up(info);
@@ -284,8 +287,17 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
   int32_t best_score = -INFINITY;
   int32_t curr_depth = 0;
   int32_t pv_moves = 0;
+  bool nowait = false;
 
   clear_for_search(info, board);
+
+  // change "thinking" for bullet games
+  if(info->timeset) {
+    unsigned long time = (info->stoptime - info->starttime) / 1000;
+    // we'll say that 2 minutes or fewer defines a bullet game
+    // if bullet 
+    nowait = (time <= 2) ? true : false;
+  }
 
   // use the openings book
   if(use_book) {
@@ -294,8 +306,10 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
   }
 
   // we found a book move to play
+  // for bullet time controls, "think" for no more than 1 second
+  // otherwise, think for anywhere from 2 to 4 seconds
   if(best_move != NOMOVE) {
-    int32_t wait_time = MIN_WAIT_TIME + ((rand() % (3 - 1 + 1)) + 1);
+    int32_t wait_time = (nowait) ? MIN_WAIT_TIME : MIN_WAIT_TIME + ((rand() % (3 - 1 + 1)) + 1);
     printf("Found position in openings book. Skipping search, waiting for %ds, then playing...\n", wait_time);
     sleep(wait_time);
   }

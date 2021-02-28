@@ -221,7 +221,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
     // time control command for engine
     if(!strcmp(cmd, "time")) {
       sscanf(in, "time %d", &time);
-      time *= 10;
+      time *= 10; // time comes in in centiseconds according to the protocol
       printf("ok, setting time for engine to %dms\n", time);
       continue;
     }
