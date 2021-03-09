@@ -4,7 +4,7 @@ Each book here was created from master level games (a.k.a >= 2000 ELO).
 The criteria was that each position comes from a minimum of 3 games where either white won
 or black won (no draws).
 
-Below is a list (ranked by number of moves) of all possible first opening moves based on which book you select if you let the engine use the white pieces.
+Below is a list (sorted by number of moves) of all possible first opening moves based on which book you select if you let the engine use the white pieces.
 This list should allow you to pick which book you want the engine to use based on what kinds of stuff you're interested in playing against.
 
 Please note that the move selected is random based on availability of moves in the position; therefore, you cannot force
