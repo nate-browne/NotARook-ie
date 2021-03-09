@@ -9,13 +9,13 @@ This engine is compatible with xboard using the [xboard protocol](https://www.gn
 
 The engine uses the same board representation as the <a href="https://www.chessprogramming.org/Cray-1" target="_blank" style="text-decoration:none;">Cray-1 supercomputer</a> where the board is 120 squares. The top and bottom have two buffer
 rows, and each side of the board has one buffer row. This is to ensure that when calculating all possible moves, null moves
-are accounted for and the engine doesn't just try to move a piece off of the board. The code itself is full of comments explaining why things are the way that they are ot hopefully help those needing inspiration for their own engines.
+are accounted for and the engine doesn't just try to move a piece off of the board. The code itself is full of comments explaining why things are the way that they are to hopefully help those needing inspiration for their own engines.
 
 See the [issues tab](https://github.com/nate-browne/NotARook-ie/issues) to see what kinds of improvements are on the way in the future.
 
-### Setup and Usage
+Also note that this engine comes bundled with a ton of opening books in the form of Polyglot books (found in the `books/` directory). See the `README.md` file instead of the `books/` directory for more information.
 
-*__NOTE__: I recommend using the `Performance.bin` openings book when playing the engine due to the variety of openings provided in it, but any of the provided books in the `books/` directory are fine to try.*
+### Setup and Usage
 
 #### XBoard/WinBoard setup
 Here are the steps:
