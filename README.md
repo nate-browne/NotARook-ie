@@ -18,6 +18,8 @@ Also note that this engine comes bundled with a ton of opening books in the form
 ### Setup and Usage
 
 #### XBoard/WinBoard setup
+<details>
+
 Here are the steps:
 1. Download xboard or winboard
     * on macOS, type `brew install xboard`
@@ -32,12 +34,15 @@ Here are the steps:
 5. To have the engine play itself, run `xboard -fcp "bin/notarookie <path to openings book to use (optional)>" -scp bin/notarookie <path to openings book to use (optional)> &`.
 6. To play another engine, run the above command but change the part after `-scp` to be the path to the other engine's executable.
 7. Once in xboard, you can use the "Mode" tab to switch if the engine is playing the white pieces or the black pieces.
+</details>
 
 #### Arena/PyChess (UCI protocol setup)
 Watch [this video](https://www.youtube.com/watch?v=7WUN1dgUEmw) to see how to set up the engine to run in Arena chess.
 For PyChess, you can [download here](https://pychess.github.io/download/).
 
 #### Command line setup
+<details>
+
 1. Clone the repo
 2. Type `make` to build the program.
 3. Run the program with `bin/notarookie <path to openings book to use (optional)>`
@@ -59,6 +64,8 @@ For PyChess, you can [download here](https://pychess.github.io/download/).
     * You can print the current board state with `print`
 
 **WARNING**: The engine in console mode is somewhat difficult to read since it displays everything in text on screen. It may help to have a board open (either physically or on chess.com/lichess.org) as well to make the move you see for better readability, but make sure that you _turn off_ engine evaluation on those online tools so that you're not cheating :)
+</details>
+
 
 ### Acknowledgements
 Shoutout to [Bluefever software](https://www.youtube.com/user/BlueFeverSoft) for providing a basic guide to the steps for implementing a chess engine over on YouTube. It really helped keep me from floundering around trying to guess on what task to do next.
