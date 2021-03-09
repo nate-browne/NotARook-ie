@@ -14,7 +14,7 @@ The reason I'm not listing the book possibilities if you play white is this: "1.
 
 Personally, I'd recommend trying out the `KomodoVariety.bin` book if you want a ton of possibilities or `Book.bin`/`Performance.bin` for more standard stuff. The other books are fun too, so just try them out and see what you like.
 
-*__NOTE__: For obvious reasons, I'm not listing all openings known (stuff like how 1. e4 e5 leads to the italian, the spanish, the scotch, the vienna, etc. depending on black's response).*
+*__NOTE__: I'm not listing all openings possible in each book. 1. e4 e5 leads to the italian, the ruy lópez, the scotch, the vienna, and many more depending on black's response but isn't guaranteed since you could get 1. e4 d5 (the Scandinavian), 1. e4 c5 (the Sicilian), 1. e4 c6 (the Caro-Kann) 1. e4 e6 (the French), etc.*
 
 ### `Book.bin`/`Performance.bin`
 <details>
