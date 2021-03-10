@@ -116,5 +116,5 @@ clean:
 # Recompile the engine from scratch
 # First removes everything via the `clean` target, then recompiles
 new:
-	make clean
-	make
+	@make clean
+	@make

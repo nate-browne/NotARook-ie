@@ -192,6 +192,7 @@ typedef struct SearchInfo {
   unsigned long stoptime;
   int32_t depth;
   bool timeset;
+  int32_t initial_time;
   enum MODES game_mode; // which interface we're interacting with
   bool post_thinking; // if we're thinking out loud or not
   int32_t moves_to_go;

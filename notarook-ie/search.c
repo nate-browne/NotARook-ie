@@ -291,13 +291,10 @@ void search_position(Board_t *board, SearchInfo_t *info, bool use_book, const Po
 
   clear_for_search(info, board);
 
-  // change "thinking" for bullet games
-  if(info->timeset) {
-    unsigned long time = (info->stoptime - info->starttime) / 1000;
-    // we'll say that 2 minutes or fewer defines a bullet game
-    // if bullet
-    nowait = (time <= 2) ? true : false;
-  }
+  // change "thinking" for blitz/bullet games
+  if(info->timeset && info->game_mode == XBOARDMODE)
+    // we'll say that 3 minutes or fewer defines a blitz/bullet game
+    nowait = (info->initial_time <= 3 && info->initial_time > 0) ? true : false;
 
   // use the openings book
   if(use_book) {

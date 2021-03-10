@@ -124,6 +124,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
 
   info->game_mode = XBOARDMODE;
   info->post_thinking = true;
+  info->initial_time = -1;
 
   int32_t depth = -1, movestogo[2] = {30, 30}, movetime = -1;
   int32_t time = -1, incr = 0;
@@ -236,6 +237,7 @@ void XBoard_loop(Board_t *board, SearchInfo_t *info, Polybook_t book, bool using
       if(sscanf(in, "level %d %d %d", &mps, &time_left, &incr) != 3) {
         sscanf(in, "level %d %d:%d %d", &mps, &time_left, &sec, &incr);
       }
+      info->initial_time = time_left;
       time_left *= 60000;
       time_left += sec * 1000;
       movestogo[0] = movestogo[1] = (mps) ? mps : 30;
