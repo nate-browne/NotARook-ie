@@ -13,7 +13,7 @@ const char *FILE_CHAR = "abcdefgh";
 bool PIECE_BIG[13] = {false, false, true, true, true, true, true, false, true, true, true, true, true};
 bool PIECE_MAJ[13] = {false, false, false, false, true, true, true, false, false, false, true, true, true};
 bool PIECE_MIN[13] = {false, false, true, true, false, false, false, false, true, true, false, false, false};
-int32_t PIECE_VAL[13] = {0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000};
+int32_t PIECE_VAL[13] = {0, 100, 325, 340, 550, 1000, 50000, 100, 325, 340, 550, 1000, 50000};
 int32_t PIECE_COL[13] = {BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK};
 
 const int KNIGHT_DIRS[8] = {-8, -19, -21, -12, 8, 19, 21, 12};
