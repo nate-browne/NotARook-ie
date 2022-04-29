@@ -8,3 +8,5 @@ bin/*
 *.debug
 engine/*
 engine
+.vscode
+.vcode/*
