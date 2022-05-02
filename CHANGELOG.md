@@ -1,4 +1,8 @@
 This project adheres to [semantic versioning](https://semver.org/).
+# 2.0.3 (2022-05-02)
+***
+### Release Highlights
+* Fixed compile error caused by newest varion of GCC/Clang that prevented compilation in optimized mode due to an extraneous warning flag.
 # 2.0.2 (2021-02-27)
 ***
 ### Release Highlights
