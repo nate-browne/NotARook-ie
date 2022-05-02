@@ -47,6 +47,16 @@
  * that no matter what OS runs this code, the size will be the same.
  */
 
+//#define DEBUG
+
+// kind of messy, but this whole mess allows us to throw in
+// assert debug statements without mass commenting them out later
+// just comment out line 50
+// to be clear, I took this from a book and didn't come up with this macro
+// myself
+#ifndef DEBUG
+#define ASSERT(n)
+#else
 #define ASSERT(n) \
 if(!(n)) { \
 printf("%s - \033[91mFAILED!!\033[0m", #n); \
@@ -55,6 +65,7 @@ printf("at %s ", __TIME__); \
 printf("in file %s ", __FILE__); \
 printf("on line %d\n", __LINE__); \
 exit(1);}
+#endif
 
 
 #define NAME "NotARook-ie v2.0.2"
