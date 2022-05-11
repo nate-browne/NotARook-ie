@@ -16,7 +16,10 @@ See the [issues tab](https://github.com/nate-browne/NotARook-ie/issues) to see w
 Also note that this engine comes bundled with a ton of opening books in the form of Polyglot books (found in the `books/` directory). See the `README.md` file instead of the `books/` directory for more information.
 
 ### Setup and Usage
-The easiest way to use this program is to use the script by running `scripts/run.sh`. However, instructions for manual setup are provided below.
+The easiest way to use this program is to use the script by running
+`scripts/run.sh`. However, instructions for manual setup are provided below. The
+script assumes that you've installed xboard, so go ahead and do that by
+following the first step of the instructions below.
 
 #### XBoard/WinBoard setup
 <details>
