@@ -70,8 +70,12 @@ For PyChess, you can [download here](https://pychess.github.io/download/).
 **WARNING**: The engine in console mode is somewhat difficult to read since it displays everything in text on screen. It may help to have a board open (either physically or on chess.com/lichess.org) as well to make the move you see for better readability, but make sure that you _turn off_ engine evaluation on those online tools so that you're not cheating :)
 </details>
 
+### Known Issues
+* On clang version < 13.1.6, the compiler directive
+`-Wno-unused-but-set-variable` doesn't exist so the program fails to compile. If
+this happens to you (or happens due to another version of some other compiler),
+just comment out that directive (but leave the others on that line alone!)
 
 ### Acknowledgements
-Shoutout to [Bluefever software](https://www.youtube.com/user/BlueFeverSoft) for providing a basic guide to the steps for implementing a chess engine over on YouTube. It really helped keep me from floundering around trying to guess on what task to do next.
 
 Shoutout to [@sccontre](http://github.com/sccontre) for giving me the name for this engine.
